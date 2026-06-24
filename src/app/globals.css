@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  /* Firefox scrollbar — orange thumb, no visible track */
+  scrollbar-color: rgba(255, 103, 0, 0.75) transparent;
+  scrollbar-width: thin;
+}
+
+body {
+  background-color: #fafaf7;
+  color: #0a0a0a;
+  font-family: var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Font aliasing ──
+   The site was prototyped against two licensed fonts referenced in
+   components as font-["Founders_Grotesk"] and font-['NeueMontreal'].
+   We now load Bricolage Grotesque (display) and Inter (body) via
+   next/font/google in layout.js, exposed as CSS variables.
+
+   Rather than touch every component, we intercept those legacy names
+   here via attribute selectors. Any element whose className contains
+   "Founders_Grotesk" or "NeueMontreal" picks up the new font family.
+   If you ever refactor components to use --font-display / --font-body
+   directly, you can delete these two blocks. */
+
+[class*="Founders_Grotesk"] {
+  font-family: var(--font-display), system-ui, sans-serif !important;
+}
+
+[class*="NeueMontreal"] {
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif !important;
+}
+
+/* ── Selection color — brand orange ── */
+::selection {
+  background-color: #FF6700;
+  color: #0a0a0a;
+}
+
+/* ── Scrollbar (Chromium / WebKit) ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 103, 0, 0.75);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover { background: #FF6700; }
+
+/* ── Custom cursor ──
+   CustomCursor.jsx renders <div id="custom-cursor" /> and sets its
+   position via inline style.left / style.top. We center the dot on the
+   pointer via translate(-50%, -50%). Native cursor stays visible so a
+   broken script / CSS load never leaves the user blind. */
+#custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background: #FF6700;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition:
+    width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.25s ease,
+    border 0.25s ease;
+  will-change: transform, width, height;
+}
+
+/* Hover state — expands into a ring around the interactive target */
+#custom-cursor.hovered {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 103, 0, 0.15);
+  border: 1.5px solid #FF6700;
+}
+
+/* Touch devices: hide entirely (JS also bails, but belt + braces) */
+@media (pointer: coarse) {
+  #custom-cursor { display: none; }
+}
