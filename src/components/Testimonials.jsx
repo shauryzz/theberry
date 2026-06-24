@@ -45,9 +45,9 @@ function Card({ t }) {
         max-w-[360px]
         sm:w-[420px]
         lg:w-[500px]
-        h-[420px]
-        sm:h-[460px]
-        lg:h-[500px]
+        h-[330px]
+        sm:h-[350px]
+        lg:h-[360px]
         shrink-0
         mr-4
         sm:mr-6
