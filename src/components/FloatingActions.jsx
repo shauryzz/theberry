@@ -2,20 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
-import { LuCalendarDays } from "react-icons/lu";
-import { BOOKING, whatsappLink } from "../data/booking";
+import { whatsappLink } from "../data/booking";
 
 /**
- * Persistent right-side floating actions:
- *   - "Book a Tour" pill  → DeskOS tour booking (new tab)
- *   - WhatsApp circle     → pre-filled WhatsApp chat
+ * Persistent right-side floating action:
+ *   - WhatsApp circle → pre-filled WhatsApp chat
  *
  * Behaviour:
  *   - Hidden during the first 200px of scroll (so the hero stays clean)
  *   - Stays visible everywhere else, on every page
  *   - Sits below the page-transition overlay (z-90 < z-200)
- *   - Mobile: stacked icons (label hidden on Book a Tour)
- *   - Desktop: pill with label + icon
+ *   - WhatsApp stays a circle: its glyph is universally recognised, so a
+ *     label would be redundant.
+ *
+ * NOTE: The "Book a Free Tour" pill was removed for now — WhatsApp only.
+ * To bring it back, re-add an <a href={BOOKING.tour}> pill above the
+ * WhatsApp button (and re-import BOOKING + an icon like LuCalendarDays).
  */
 export default function FloatingActions() {
   const [visible, setVisible] = useState(false);
@@ -42,30 +44,15 @@ export default function FloatingActions() {
       }`}
       aria-hidden={!visible}
     >
-      {/* Book a Tour */}
-      <a
-        href={BOOKING.tour}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Book a tour"
-        className="group flex items-center gap-2 h-12 sm:h-[52px] px-4 sm:px-5 rounded-full bg-[#FF6700] text-[#0a0a0a] font-['NeueMontreal'] text-xs sm:text-sm tracking-wide shadow-[0_10px_30px_rgba(255,103,0,0.35)] hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300 whitespace-nowrap"
-      >
-        <LuCalendarDays
-          className="w-4 h-4 sm:w-[18px] sm:h-[18px]"
-          strokeWidth={2}
-        />
-        <span className="hidden sm:inline">Book a Tour</span>
-      </a>
-
       {/* WhatsApp */}
       <a
         href={whatsappLink()}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="flex items-center justify-center w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_rgba(37,211,102,0.35)] hover:scale-105 transition-transform duration-300"
+        className="flex items-center justify-center w-12 h-12 sm:w-[52px] sm:h-[52px] md:w-[64px] md:h-[64px] rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_rgba(37,211,102,0.35)] md:shadow-[0_14px_40px_rgba(37,211,102,0.4)] hover:scale-105 transition-transform duration-300"
       >
-        <FaWhatsapp className="w-6 h-6 sm:w-[26px] sm:h-[26px]" />
+        <FaWhatsapp className="w-6 h-6 sm:w-[26px] sm:h-[26px] md:w-[32px] md:h-[32px]" />
       </a>
     </div>
   );

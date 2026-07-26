@@ -34,7 +34,7 @@ export default function Transition({ children }) {
             animate={{ y: "0%" }}
             exit={{ y: "-100%" }}
             transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-            onAnimationComplete={(def) => {
+            onAnimationComplete={() => {
               // When the slide-up finishes (y = "0%"), swap children and trigger exit
               if (transitionStage === "covering") {
                 setDisplayChildren(children);
@@ -50,14 +50,24 @@ export default function Transition({ children }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
-              className="flex flex-col items-center gap-3"
+              className="flex flex-col items-center gap-6"
             >
-              <p className='font-["Founders_Grotesk"] text-white text-3xl md:text-4xl font-bold tracking-tight uppercase'>
-                The Berry<span className="text-[#FF6700]">.</span>
-              </p>
-              <p className="font-['NeueMontreal'] text-white/40 text-[10px] uppercase tracking-[0.4em]">
-                Loading
-              </p>
+              {/* Real white Berry logo (white wordmark + orange dot) — shows on black. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/the%20berry.webp"
+                alt="The Berry"
+                className="h-14 sm:h-16 md:h-20 w-auto"
+              />
+
+              {/* Indeterminate orange loading line — keeps the brand accent on screen */}
+              <div className="relative h-[3px] w-40 sm:w-48 md:w-56 overflow-hidden rounded-full bg-white/15">
+                <motion.span
+                  className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-[#FF6700]"
+                  animate={{ x: ["-100%", "250%"] }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
             </motion.div>
           </motion.div>
         )}

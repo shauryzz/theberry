@@ -1,16 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   LuArrowUpRight,
   LuMapPin,
   LuClock,
-  LuCar,
-  LuTrainFront,
 } from "react-icons/lu";
 import { PLANS } from "../data/plans";
-import { LOCATIONS, getMapsUrl, getMapsEmbedUrl } from "../data/locations";
+import { LOCATIONS, getMapsUrl } from "../data/locations";
 import { BOOKING, getPlanBookingUrl, isExternalBooking, whatsappLink } from "../data/booking";
 
 // ── Animation variants ─────────────────────────────────────────────────────
@@ -31,13 +30,13 @@ const cardUp = {
 // Defensive accessors — handle missing or malformed fields gracefully.
 const fmt = {
   addr:  (a) => (typeof a === "string" ? a : a?.full) || "Address coming soon",
-  tag:   (s) => s || "Premium Workspace",
   desc:  (s) => s || "A premium workspace, crafted with care.",
   metro: (s) => s || "Public transit within walking distance",
-  hours: (s) => s || "Mon–Sat · 8 AM – 9 PM · 24/7 for members",
+  hours: (s) => s || "Mon to Sat, 8 AM to 8 PM.",
   park:  (s) => s || "Available on-site",
   neigh: (s) => s || "A neighbourhood worth showing up to.",
 };
+
 const galleryOf = (location) => {
   const g = location.gallery || [];
   if (g.length >= 8) return g.slice(0, 8);
@@ -55,7 +54,6 @@ const highlightsOf = (location) =>
         "Bookable meeting rooms",
         "Daily housekeeping",
         "Power backup + UPS",
-        "24/7 access for members",
         "On-site IT support",
       ];
 
@@ -75,210 +73,247 @@ function MetaItem({ icon: Icon, label, value }) {
   );
 }
 
+/* Why This Space — client mock (Switchyards style, #14): one large image
+   feature with a heading + body overlaid, and a row of tabs beneath. Clicking
+   a tab swaps the featured point and its photo. No blueprint floor-plan.
+   Each highlight becomes a tab; photos come from the gallery, cycling if there
+   are fewer photos than points, falling back to the hero. */
+/* Why This Space — built to match the Switchyards reference exactly:
+   ONE centered stacked-photo card (the other category photos peek out behind
+   the top one, offset up-and-right), the point's text set over the lower part
+   of the top photo, and a row of PILL TABS centered beneath. Clicking a pill
+   swaps the top photo and text. No subhead, no side list, no floor-plan.
+
+   Performance: ALL photos are rendered up front and crossfaded via opacity, so
+   there is no fetch-on-click lag (the old version used loading="lazy" on a
+   swapped src, which fetched each image only when its tab was clicked).
+
+   Tab labels: short names derived from each highlight (or location.highlightTabs
+   if the data supplies them), never bare numbers. */
+function shortLabel(text, i) {
+  // First 2-3 meaningful words, uppercased, for a pill label.
+  const cleaned = text.replace(/[,.]/g, "");
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  const stop = new Set(["on", "the", "a", "an", "to", "of", "and", "with", "at", "in", "every", "from"]);
+  const picked = words.filter((w) => !stop.has(w.toLowerCase())).slice(0, 2);
+  const label = (picked.length ? picked : words.slice(0, 2)).join(" ");
+  return label || `0${i + 1}`;
+}
+
+function WhyThisSpace({ location, highlights, gallery }) {
+  const [active, setActive] = useState(0);
+  const items = highlights.slice(0, 5);
+  const tabLabels = location.highlightTabs || items.map((h, i) => shortLabel(h, i));
+  const photoFor = (i) => gallery[i % gallery.length] || location.img;
+  const next = () => setActive((a) => (a + 1) % items.length);
+
+  return (
+    <section className="relative w-full bg-[#0a0a0a] overflow-hidden px-5 sm:px-10 md:px-20 py-16 sm:py-24 md:py-28">
+      {/* dotted texture, same device as the Enterprises dark sections */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.16] pointer-events-none"
+        style={{ backgroundImage: "radial-gradient(#fafaf7 1.5px,transparent 1.5px)", backgroundSize: "26px 26px" }}
+      />
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-80px" }}
+        variants={stagger}
+        className="relative"
+      >
+        {/* Heading, top-left — light on dark */}
+        <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] tracking-tighter leading-[0.95] text-[#fafaf7] overflow-hidden pb-[0.05em] mb-12 sm:mb-16'>
+          <motion.span variants={lineUp} className="block">
+            Why This <span className="text-[#FF6700]">Space.</span>
+          </motion.span>
+        </h2>
+
+        {/* Full-width horizontal card. Click it to advance to the next point. */}
+        <motion.div variants={fadeUp} className="relative">
+          {/* stack layers peeking out behind, offset up-and-right (light on dark) */}
+          <div aria-hidden="true" className="absolute -top-4 right-[-14px] w-full h-full rounded-2xl bg-[#fafaf7]/[0.07]" />
+          <div aria-hidden="true" className="absolute -top-2 right-[-7px] w-full h-full rounded-2xl bg-[#fafaf7]/[0.11]" />
+
+          <button
+            type="button"
+            onClick={next}
+            aria-label="Next highlight"
+            className="group relative block w-full text-left rounded-2xl overflow-hidden aspect-[16/10] sm:aspect-[16/9] lg:aspect-[21/9] shadow-[0_40px_90px_-40px_rgba(0,0,0,0.7)] cursor-pointer"
+          >
+            {/* All images stacked and preloaded; only the active one is opaque.
+                No network request happens on tab change. */}
+            {items.map((_, i) => (
+              <img
+                key={i}
+                src={photoFor(i)}
+                alt={i === active ? `${location.label}: ${items[i]}` : ""}
+                aria-hidden={i !== active}
+                onError={(e) => { if (e.currentTarget.src !== location.img) e.currentTarget.src = location.img; }}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  i === active ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+
+            {/* darken lower-left so the text reads */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0a0a]/92 via-[#0a0a0a]/30 to-transparent" />
+
+            {/* subtle zoom hint on hover */}
+            <span aria-hidden="true" className="absolute inset-0 bg-[#0a0a0a]/0 group-hover:bg-[#0a0a0a]/[0.06] transition-colors duration-500" />
+
+            {/* text on the lower-left */}
+            <div className="absolute inset-x-0 bottom-0 p-7 sm:p-10 md:p-14">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={active}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight leading-[1.05] text-white text-2xl sm:text-4xl md:text-5xl max-w-[24ch]"
+                >
+                  {items[active]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+          </button>
+        </motion.div>
+
+        {/* Name pills below — light on dark */}
+        <motion.div variants={fadeUp} className="mt-6 sm:mt-8 flex flex-wrap gap-2.5">
+          {items.map((h, i) => (
+            <button
+              key={h}
+              onClick={() => setActive(i)}
+              aria-pressed={i === active}
+              className={`font-['NeueMontreal'] text-[11px] sm:text-xs tracking-[0.18em] uppercase rounded-full border px-4 sm:px-5 py-2.5 transition-colors duration-300 ${
+                i === active
+                  ? "bg-[#FF6700] border-[#FF6700] text-[#0a0a0a]"
+                  : "border-[#fafaf7]/25 text-[#fafaf7]/60 hover:border-[#fafaf7]/50 hover:text-[#fafaf7]"
+              }`}
+            >
+              {tabLabels[i]}
+            </button>
+          ))}
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
+
 export default function LocationDetail({ location }) {
   const others        = LOCATIONS.filter((l) => l.id !== location.id);
   const locationIndex = LOCATIONS.findIndex((l) => l.id === location.id);
   const gallery       = galleryOf(location);
   const highlights    = highlightsOf(location);
   const mapsUrl       = getMapsUrl(location);
-  const mapsEmbed     = getMapsEmbedUrl(location);
 
   return (
     <>
       {/* ── 1. HERO ───────────────────────────────────────────────────── */}
-      <section className="relative w-full h-[80vh] sm:h-[90vh] md:h-screen min-h-[600px] md:min-h-[700px] overflow-hidden">
-        <img
-          src={location.img}
-          alt={location.label}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/45 to-[#0a0a0a]/15" />
-
-        {/* Top eyebrow */}
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={stagger}
-          className="absolute top-0 inset-x-0 px-6 sm:px-10 md:px-20 pt-24 sm:pt-28 md:pt-32 flex items-center justify-between gap-6"
-        >
-          <motion.div variants={fadeUp} className="flex items-center gap-3">
-            <span className="w-8 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Location · 0{locationIndex + 1}
-            </p>
-          </motion.div>
-          <motion.p
-            variants={fadeUp}
-            className="hidden md:block text-[10px] uppercase tracking-[0.4em] text-white/50 font-['NeueMontreal'] text-right"
-          >
-            The Berry / Locations / {location.label}
-          </motion.p>
-        </motion.div>
-
-        {/* Bottom content */}
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={stagger}
-          className="absolute inset-x-0 bottom-0 px-6 sm:px-10 md:px-20 pb-10 sm:pb-14 md:pb-20"
-        >
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
-            <span className="text-[10px] tracking-[0.2em] uppercase font-['NeueMontreal'] text-white border border-white/35 rounded-full px-3 py-1 backdrop-blur-sm bg-black/10">
-              {fmt.tag(location.tag)}
-            </span>
-            <span className="text-[10px] tracking-[0.2em] uppercase font-['NeueMontreal'] text-white/60">
-              Delhi NCR
-            </span>
-          </motion.div>
-
-          {/* Title — clamp() prevents long names ("JHANDEWALAN") from clipping
-              on narrow phones (~360-412px). break-words is a belt-and-braces
-              safety net in case a single word ever exceeds the container.   */}
-          <h1
-            className='font-["Founders_Grotesk"] font-bold uppercase tracking-tighter leading-[0.9] text-white break-words md:text-[8vw] lg:text-[7vw]'
-            style={{ fontSize: "clamp(2.5rem, 11vw, 7rem)" }}
-          >
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block">{location.label}</motion.span>
-            </span>
+      {/* Consistency: same structure as Solutions / For Enterprises — heading
+          and intro on plain cream (no type over a photo), then a wide, shallow
+          image band. Replaces the old full-screen photo-overlay hero. */}
+      <section className="px-5 sm:px-10 md:px-20 pt-32 sm:pt-40 md:pt-48 pb-12 sm:pb-16">
+        <motion.div initial="hidden" animate="show" variants={stagger} className="max-w-5xl">
+          <h1 className='font-["Founders_Grotesk"] font-bold uppercase tracking-tighter leading-[0.95] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
+            <motion.span variants={lineUp} className="block break-words">{location.label}</motion.span>
           </h1>
 
           <motion.p
             variants={fadeUp}
-            className="mt-4 sm:mt-6 max-w-[60ch] font-['NeueMontreal'] text-base sm:text-lg text-white/75 leading-relaxed"
+            className="mt-8 sm:mt-10 max-w-[58ch] font-['NeueMontreal'] text-base sm:text-lg md:text-xl text-[#0a0a0a]/65 leading-relaxed"
           >
             {fmt.desc(location.desc)}
           </motion.p>
         </motion.div>
       </section>
 
+      {/* Full-bleed image band. */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full h-[38vh] sm:h-[46vh] md:h-[58vh] min-h-[280px] max-h-[620px] overflow-hidden bg-[#0a0a0a]/5"
+      >
+        <motion.img
+          src={location.img}
+          alt={location.label}
+          initial={{ scale: 1.08 }}
+          whileInView={{ scale: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </motion.div>
+
       {/* ── 2. META STRIP ─────────────────────────────────────────────── */}
+      {/* Client (Oct 2026): drop Metro, Parking and Capacity as headline stats.
+          Capacity "not to be shared", metro "not required in such a main spot",
+          parking "we don't want to mention". Address + Hours remain. Metro etc.
+          still live in the copy (desc / highlights / neighbourhood) where they
+          read as prose rather than a broadcast stat. */}
       <section className="border-b border-[#0a0a0a]/10 bg-[#fafaf7]">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#0a0a0a]/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#0a0a0a]/10">
           <div className="bg-[#fafaf7] p-5 sm:p-7 md:p-10">
             <MetaItem icon={LuMapPin} label="Address" value={fmt.addr(location.address)} />
           </div>
           <div className="bg-[#fafaf7] p-5 sm:p-7 md:p-10">
-            <MetaItem icon={LuTrainFront} label="Metro" value={fmt.metro(location.metro)} />
-          </div>
-          <div className="bg-[#fafaf7] p-5 sm:p-7 md:p-10">
             <MetaItem icon={LuClock} label="Hours" value={fmt.hours(location.hours)} />
-          </div>
-          <div className="bg-[#fafaf7] p-5 sm:p-7 md:p-10">
-            <MetaItem icon={LuCar} label="Parking" value={fmt.park(location.parking)} />
           </div>
         </div>
       </section>
 
-      {/* ── 3. GALLERY ────────────────────────────────────────────────── */}
-      <section className="px-5 sm:px-10 md:px-20 py-14 sm:py-20 md:py-28 border-b border-[#0a0a0a]/10">
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-        >
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 sm:mb-12 md:mb-14">
-            <div>
-              <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
-                <span className="w-8 h-px bg-[#FF6700]" />
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-                  Inside the Space
-                </p>
-              </motion.div>
-              <h2 className='font-["Founders_Grotesk"] font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
-                <motion.span variants={lineUp} className="block">Walk Through.</motion.span>
-              </h2>
-            </div>
-            <motion.p
-              variants={fadeUp}
-              className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/55 max-w-[36ch] md:text-right leading-relaxed"
-            >
-              Every detail considered. Every corner designed for the way you actually work.
-            </motion.p>
-          </div>
-
+      {/* ── 2b. WHAT'S INSIDE / WHO IT'S FOR ──────────────────────────── */}
+      {/* Client copy (Oct 2026). Rendered only when the fields exist, so a
+          future location without them simply skips this block. */}
+      {(location.whatsInside || location.whoItsFor) && (
+        <section className="px-5 sm:px-10 md:px-20 py-14 sm:py-20 md:py-28 border-b border-[#0a0a0a]/10">
           <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
             variants={stagger}
-            className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 md:auto-rows-[180px] lg:auto-rows-[220px]"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16"
           >
-            {gallery.map((src, i) => {
-              let spanClass = "";
-              if (i === 0)              spanClass = "md:col-span-2 md:row-span-2";
-              else if (i === 5 || i === 6) spanClass = "md:col-span-2";
-              else if (i === 7)         spanClass = "md:col-span-4";
-
-              return (
-                <motion.div
-                  key={i}
-                  variants={cardUp}
-                  className={`group overflow-hidden rounded-xl aspect-[4/5] md:aspect-auto ${spanClass}`}
+            {location.whatsInside && (
+              <div className="lg:col-span-7">
+                <motion.h2
+                  variants={fadeUp}
+                  className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight leading-[0.95] text-3xl sm:text-4xl md:text-5xl text-[#0a0a0a]"
                 >
-                  <img
-                    src={src}
-                    alt={`${location.label} interior ${i + 1}`}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                  />
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </motion.div>
-      </section>
+                  What&apos;s <span className="text-[#FF6700]">inside.</span>
+                </motion.h2>
+                <motion.p
+                  variants={fadeUp}
+                  className="mt-6 font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/70 leading-relaxed max-w-[62ch]"
+                >
+                  {location.whatsInside}
+                </motion.p>
+              </div>
+            )}
 
-      {/* ── 4. HIGHLIGHTS ─────────────────────────────────────────────── */}
-      <section className="px-5 sm:px-10 md:px-20 py-14 sm:py-20 md:py-28 border-b border-[#0a0a0a]/10">
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 mb-12 md:mb-16">
-            <div className="md:col-span-5">
-              <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
-                <span className="w-8 h-px bg-[#FF6700]" />
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-                  Highlights
-                </p>
-              </motion.div>
-              <h2 className='font-["Founders_Grotesk"] font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
-                <motion.span variants={lineUp} className="block">Why This</motion.span>
-                <motion.span variants={lineUp} className="block">
-                  <span className="text-[#FF6700]">Space.</span>
-                </motion.span>
-              </h2>
-            </div>
-            <motion.p
-              variants={fadeUp}
-              className="md:col-span-7 md:pt-4 font-['NeueMontreal'] text-base md:text-lg text-[#0a0a0a]/65 leading-relaxed max-w-[60ch]"
-            >
-              What makes {location.label} different. The details that change how a workday feels.
-            </motion.p>
-          </div>
-
-          <motion.div
-            variants={stagger}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4"
-          >
-            {highlights.map((h, i) => (
+            {location.whoItsFor && (
               <motion.div
-                key={h}
-                variants={cardUp}
-                className="group flex items-start gap-4 p-5 sm:p-6 md:p-7 rounded-xl border border-[#0a0a0a]/10 bg-[#0a0a0a]/[0.025] hover:bg-[#FF6700] hover:border-[#FF6700] transition-all duration-500 cursor-default"
+                variants={fadeUp}
+                className="lg:col-span-5 lg:border-l lg:border-[#0a0a0a]/10 lg:pl-16"
               >
-                <span className="font-['Founders_Grotesk'] text-xs tracking-[0.3em] text-[#FF6700] group-hover:text-[#0a0a0a] transition-colors mt-1 flex-shrink-0">
-                  0{i + 1}
-                </span>
-                <p className="font-['NeueMontreal'] text-sm sm:text-base text-[#0a0a0a]/80 group-hover:text-[#0a0a0a] transition-colors leading-relaxed">
-                  {h}
+                <p className="font-['Founders_Grotesk'] italic text-lg sm:text-xl text-[#0a0a0a]/45 mb-4">
+                  Who it&apos;s for
+                </p>
+                <p className="font-['NeueMontreal'] text-lg sm:text-xl text-[#0a0a0a]/85 leading-relaxed">
+                  {location.whoItsFor}
                 </p>
               </motion.div>
-            ))}
+            )}
           </motion.div>
-        </motion.div>
-      </section>
+        </section>
+      )}
+
+      {/* ── 4. WHY THIS SPACE (#14) ───────────────────────────────────── */}
+      <WhyThisSpace location={location} highlights={highlights} gallery={gallery} />
 
       {/* ── 5. NEIGHBOURHOOD ──────────────────────────────────────────── */}
       <section className="px-5 sm:px-10 md:px-20 py-14 sm:py-20 md:py-28 border-b border-[#0a0a0a]/10">
@@ -290,15 +325,9 @@ export default function LocationDetail({ location }) {
         >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 lg:gap-16">
             <div className="md:col-span-4">
-              <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
-                <span className="w-8 h-px bg-[#FF6700]" />
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-                  The Neighbourhood
-                </p>
-              </motion.div>
-              <h2 className='font-["Founders_Grotesk"] font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em] max-w-[18ch]'>
+              <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] tracking-tighter leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em] max-w-[18ch]'>
                 <motion.span variants={lineUp} className="block">What&apos;s</motion.span>
-                <motion.span variants={lineUp} className="block">Around You.</motion.span>
+                <motion.span variants={lineUp} className="block">Around <span className="text-[#FF6700]">You.</span></motion.span>
               </h2>
             </div>
             <motion.div variants={fadeUp} className="md:col-span-8 max-w-[68ch]">
@@ -310,7 +339,13 @@ export default function LocationDetail({ location }) {
         </motion.div>
       </section>
 
-      {/* ── 6. PLANS AT THIS LOCATION ─────────────────────────────────── */}
+      {/* ── 5b. WALK THROUGH ─────────────────────────────────────────────
+          The expanding-panel gallery from the For Enterprises page — the
+          treatment that works: photos sit as panels side by side; hover one and
+          it opens while the others yield, with an orange line drawing along the
+          bottom. Calm, alive, one gesture. Mobile: a swipeable snapping carousel
+          that bleeds to both edges. (Mobile must NOT use flex-1 — in a flex row
+          with auto height it collapses panels to zero; fixed w/h instead.) */}
       <section className="px-5 sm:px-10 md:px-20 py-14 sm:py-20 md:py-28 border-b border-[#0a0a0a]/10">
         <motion.div
           initial="hidden"
@@ -318,153 +353,265 @@ export default function LocationDetail({ location }) {
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
         >
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 sm:mb-12 md:mb-14">
-            <div>
-              <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
-                <span className="w-8 h-px bg-[#FF6700]" />
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-                  Plans at {location.label}
-                </p>
-              </motion.div>
-              <h2 className='font-["Founders_Grotesk"] font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
-                <motion.span variants={lineUp} className="block">Book Here.</motion.span>
-              </h2>
-            </div>
-            <Link
-              href="/workspaces"
-              className="font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase text-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300 inline-flex items-center gap-2 self-start md:self-end"
-            >
-              See all plans
-              <LuArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
+          <div className="mb-10 sm:mb-14">
+            <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] tracking-tighter leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
+              <motion.span variants={lineUp} className="block">Walk <span className="text-[#FF6700]">Through.</span></motion.span>
+            </h2>
           </div>
 
           <motion.div
-            variants={stagger}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"
+            variants={fadeUp}
+            className="
+              flex gap-3
+              overflow-x-auto snap-x snap-mandatory -mx-5 px-5 pb-2
+              [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+              sm:overflow-visible sm:mx-0 sm:px-0 sm:pb-0
+              sm:h-[440px] md:h-[520px]
+            "
           >
-            {PLANS.map((plan, i) => {
-              const price       = plan.pricing?.[location.id];
-              const bookingUrl  = getPlanBookingUrl(plan.id, location.id);
-              const isExternal  = isExternalBooking(bookingUrl);
-              const buttonLabel = price !== null && price !== undefined ? "Book Now" : "Get Quote";
-
-              return (
-                <motion.div
-                  key={plan.id}
-                  variants={cardUp}
-                  className="flex flex-col rounded-2xl border border-[#0a0a0a]/10 bg-[#0a0a0a]/[0.04] hover:bg-[#0a0a0a]/[0.06] hover:border-[#0a0a0a]/20 transition-all duration-500 p-6 sm:p-7 min-h-[280px]"
-                >
-                  <span className="font-['Founders_Grotesk'] text-xs tracking-[0.3em] text-[#FF6700] mb-5">
-                    0{i + 1}
-                  </span>
-
-                  <h3 className='font-["Founders_Grotesk"] font-bold text-xl md:text-2xl tracking-tight leading-tight text-[#0a0a0a] mb-2'>
-                    {plan.name}
-                  </h3>
-                  <p className="font-['NeueMontreal'] text-xs text-[#0a0a0a]/55 leading-relaxed mb-4">
-                    {plan.tagline}
-                  </p>
-
-                  <div className="flex-1" />
-
-                  <div className="pt-4 border-t border-[#0a0a0a]/10">
-                    {price !== null && price !== undefined ? (
-                      <div className="flex items-baseline gap-1 mb-4">
-                        <span className='font-["Founders_Grotesk"] font-bold text-2xl text-[#FF6700]'>
-                          ₹{price.toLocaleString("en-IN")}
-                        </span>
-                        <span className="font-['NeueMontreal'] text-xs text-[#0a0a0a]/45">/ mo</span>
-                      </div>
-                    ) : (
-                      <div className="mb-4">
-                        <span className='font-["Founders_Grotesk"] font-bold text-xl text-[#FF6700]'>
-                          Custom Quote
-                        </span>
-                      </div>
-                    )}
-
-                    {isExternal ? (
-                      <a
-                        href={bookingUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/btn flex items-center justify-between gap-2 w-full py-2.5 px-4 rounded-full bg-[#0a0a0a] text-[#fafaf7] hover:bg-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300 text-xs font-['NeueMontreal'] tracking-wide"
-                      >
-                        {buttonLabel}
-                        <LuArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-                      </a>
-                    ) : (
-                      <Link
-                        href={bookingUrl}
-                        className="group/btn flex items-center justify-between gap-2 w-full py-2.5 px-4 rounded-full bg-[#0a0a0a] text-[#fafaf7] hover:bg-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300 text-xs font-['NeueMontreal'] tracking-wide"
-                      >
-                        {buttonLabel}
-                        <LuArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-                      </Link>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
+            {gallery.slice(0, 6).map((src, i) => (
+              <div
+                key={i}
+                className="
+                  group relative shrink-0 snap-center w-[80%] h-72
+                  rounded-2xl overflow-hidden bg-[#0a0a0a]/5
+                  sm:w-auto sm:h-auto sm:shrink sm:flex-1 sm:hover:flex-[2.6]
+                  transition-[flex] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)]
+                "
+              >
+                <img
+                  src={src}
+                  alt={`${location.label} interior ${i + 1}`}
+                  loading="lazy"
+                  onError={(e) => { if (e.currentTarget.src !== location.img) e.currentTarget.src = location.img; }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {/* Dim non-hovered panels only where hover exists (not on touch). */}
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 sm:bg-[#0a0a0a]/30 sm:group-hover:bg-[#0a0a0a]/0 transition-colors duration-700"
+                />
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 bottom-0 h-[3px] bg-[#FF6700] scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                />
+              </div>
+            ))}
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── 7. MAP ────────────────────────────────────────────────────── */}
-      <section className="border-b border-[#0a0a0a]/10">
+      {/* ── 6. PLANS AT THIS LOCATION (dark — 2nd contrast moment) ──────── */}
+      <section className="relative w-full bg-[#0a0a0a] overflow-hidden px-5 sm:px-10 md:px-20 py-16 sm:py-24 md:py-28">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-[0.16] pointer-events-none"
+          style={{ backgroundImage: "radial-gradient(#fafaf7 1.5px,transparent 1.5px)", backgroundSize: "26px 26px" }}
+        />
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
+          className="relative"
         >
-          <div className="px-5 sm:px-10 md:px-20 pt-14 sm:pt-20 md:pt-28 pb-10 sm:pb-12 md:pb-14">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-              <div>
-                <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
-                  <span className="w-8 h-px bg-[#FF6700]" />
-                  <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-                    Find Us
+          <div className="mb-10 sm:mb-12 md:mb-14">
+            <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] tracking-tighter leading-[0.95] text-[#fafaf7] overflow-hidden pb-[0.05em]'>
+              <motion.span variants={lineUp} className="block">Book <span className="text-[#FF6700]">Here.</span></motion.span>
+            </h2>
+          </div>
+
+          {(() => {
+            const visible = PLANS.filter((plan) => plan.availableAt?.includes(location.id));
+
+            // Card renderer, shared between the grid and single-plan layouts.
+            const renderCard = (plan, i) => {
+              const price       = plan.pricing?.[location.id];
+              const bookingUrl  = getPlanBookingUrl(plan.id, location.id);
+              const isExternal  = isExternalBooking(bookingUrl);
+              const buttonLabel = price !== null && price !== undefined ? "Book Now" : "Get Quote";
+              return (
+                <motion.div
+                  key={plan.id}
+                  variants={cardUp}
+                  className="group relative flex flex-col rounded-3xl border border-[#0a0a0a]/10 bg-white overflow-hidden hover:border-[#FF6700]/40 hover:shadow-[0_40px_90px_-45px_rgba(10,10,10,0.35)] transition-all duration-500 p-7 sm:p-9 min-h-[300px]"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 h-[3px] bg-[#FF6700] scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  />
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="font-['Founders_Grotesk'] font-bold text-sm tracking-[0.3em] text-[#FF6700]">
+                      0{i + 1}
+                    </span>
+                    <span className="w-9 h-9 rounded-full border border-[#0a0a0a]/15 flex items-center justify-center text-[#0a0a0a]/40 group-hover:bg-[#FF6700] group-hover:border-[#FF6700] group-hover:text-[#0a0a0a] transition-all duration-300">
+                      <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
+                    </span>
+                  </div>
+                  <h3 className='font-["Founders_Grotesk"] font-bold uppercase text-2xl md:text-3xl tracking-tight leading-[0.95] text-[#0a0a0a] mb-3'>
+                    {plan.name}
+                  </h3>
+                  <p className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/55 leading-relaxed max-w-[34ch]">
+                    {plan.tagline}
                   </p>
+                  <div className="flex-1" />
+                  <div className="mt-8 pt-6 border-t border-[#0a0a0a]/10">
+                    {price !== null && price !== undefined ? (
+                      <div className="flex items-baseline gap-1.5 mb-5">
+                        <span className='font-["Founders_Grotesk"] font-bold text-4xl md:text-5xl tracking-tighter text-[#0a0a0a]'>
+                          ₹{price.toLocaleString("en-IN")}
+                        </span>
+                        <span className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/45">/ mo</span>
+                      </div>
+                    ) : (
+                      <div className="mb-5">
+                        <span className='font-["Founders_Grotesk"] font-bold text-3xl tracking-tighter text-[#0a0a0a]'>
+                          Custom quote
+                        </span>
+                      </div>
+                    )}
+                    {isExternal ? (
+                      <a href={bookingUrl} target="_blank" rel="noopener noreferrer"
+                        className="group/btn relative flex items-center justify-center gap-2 w-full py-3.5 rounded-full overflow-hidden border border-[#0a0a0a] text-sm font-['NeueMontreal'] tracking-wide">
+                        <span aria-hidden="true" className="absolute inset-0 bg-[#0a0a0a] group-hover/btn:bg-[#FF6700] transition-colors duration-300" />
+                        <span className="relative text-[#fafaf7] group-hover/btn:text-[#0a0a0a] transition-colors duration-300">{buttonLabel}</span>
+                        <LuArrowUpRight className="relative w-4 h-4 text-[#fafaf7] group-hover/btn:text-[#0a0a0a] transition-all duration-300 group-hover/btn:rotate-45" />
+                      </a>
+                    ) : (
+                      <Link href={bookingUrl}
+                        className="group/btn relative flex items-center justify-center gap-2 w-full py-3.5 rounded-full overflow-hidden border border-[#0a0a0a] text-sm font-['NeueMontreal'] tracking-wide">
+                        <span aria-hidden="true" className="absolute inset-0 bg-[#0a0a0a] group-hover/btn:bg-[#FF6700] transition-colors duration-300" />
+                        <span className="relative text-[#fafaf7] group-hover/btn:text-[#0a0a0a] transition-colors duration-300">{buttonLabel}</span>
+                        <LuArrowUpRight className="relative w-4 h-4 text-[#fafaf7] group-hover/btn:text-[#0a0a0a] transition-all duration-300 group-hover/btn:rotate-45" />
+                      </Link>
+                    )}
+                  </div>
                 </motion.div>
-                <h2 className='font-["Founders_Grotesk"] font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
-                  <motion.span variants={lineUp} className="block">Get Directions.</motion.span>
-                </h2>
-              </div>
-              <motion.div variants={fadeUp} className="flex flex-col gap-2 md:items-end">
-                <p className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/65 leading-relaxed max-w-[42ch] md:text-right">
-                  {fmt.addr(location.address)}
-                </p>
-                {mapsUrl && (
+              );
+            };
+
+            // SINGLE PLAN (e.g. Barakhamba): a lone card in a 4-col grid strands
+            // three empty columns. Instead, pair the card with a copy panel so
+            // the row is balanced and the space does real work.
+            if (visible.length === 1) {
+              return (
+                <motion.div
+                  variants={stagger}
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center"
+                >
+                  {renderCard(visible[0], 0)}
+                  <motion.div variants={fadeUp} className="lg:pl-6">
+                    <p className="font-['Founders_Grotesk'] italic text-lg sm:text-xl text-[#fafaf7]/45 mb-4">
+                      One home for your team here
+                    </p>
+                    <p className="font-['NeueMontreal'] text-base sm:text-lg text-[#fafaf7]/70 leading-relaxed max-w-[46ch] mb-8">
+                      This address is a private-office space, built for teams who want a room of their own at {location.label}. Coworking, day passes and meeting rooms live at our other centres.
+                    </p>
+                    <Link
+                      href="/solutions"
+                      className="group/cta relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-[#fafaf7]/25 px-7 py-3.5 hover:border-[#FF6700] transition-colors duration-300"
+                    >
+                      <span aria-hidden="true" className="absolute inset-0 bg-[#FF6700] translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+                      <span className="relative font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase text-[#fafaf7] group-hover/cta:text-[#0a0a0a] transition-colors duration-300">Compare all plans</span>
+                      <LuArrowUpRight className="relative w-4 h-4 text-[#fafaf7] group-hover/cta:text-[#0a0a0a] transition-all duration-300 group-hover/cta:rotate-45" />
+                    </Link>
+                  </motion.div>
+                </motion.div>
+              );
+            }
+
+            const lgCols = visible.length === 2 ? "lg:grid-cols-2"
+                         : visible.length === 3 ? "lg:grid-cols-3"
+                         : "lg:grid-cols-4";
+            return (
+          <>
+            <motion.div
+              variants={stagger}
+              className={`grid grid-cols-1 sm:grid-cols-2 ${lgCols} gap-4 md:gap-5`}
+            >
+              {visible.map((plan, i) => renderCard(plan, i))}
+            </motion.div>
+
+            {/* Secondary link sits BELOW the cards, centered — the site never
+                floats a link to the right of a heading. */}
+            <motion.div variants={fadeUp} className="mt-10 sm:mt-12 flex justify-center">
+              <Link
+                href="/solutions"
+                className="group font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase text-[#fafaf7]/55 hover:text-[#FF6700] transition-colors duration-300 inline-flex items-center gap-2"
+              >
+                See all plans and pricing
+                <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-45" />
+              </Link>
+            </motion.div>
+          </>
+            );
+          })()}
+        </motion.div>
+      </section>
+
+      {/* ── 7. FIND US (#12: no embedded map) ───────────────────────────
+          Client: don't show the map on the page. Present the address as a
+          designed block with a GET DIRECTIONS button that opens Google Maps
+          in a new tab — the Switchyards pattern. */}
+      <section className="px-5 sm:px-10 md:px-20 py-14 sm:py-20 md:py-28 border-b border-[#0a0a0a]/10">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          variants={stagger}
+          className="rounded-3xl border border-[#0a0a0a]/10 bg-[#0a0a0a]/[0.02] overflow-hidden"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Left: the words */}
+            <div className="p-8 sm:p-12 md:p-16 flex flex-col justify-center">
+              <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] tracking-tighter leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
+                <motion.span variants={lineUp} className="block">Find <span className="text-[#FF6700]">us.</span></motion.span>
+              </h2>
+
+              <motion.div variants={fadeUp} className="mt-8 flex items-start gap-4">
+                <span className="mt-1 inline-flex w-10 h-10 rounded-full bg-[#FF6700] items-center justify-center flex-shrink-0">
+                  <LuMapPin className="w-4 h-4 text-white" strokeWidth={2.25} />
+                </span>
+                <div>
+                  <p className="font-['Founders_Grotesk'] font-bold text-base text-[#0a0a0a] leading-tight mb-1">
+                    The Berry Coworks · {location.label}
+                  </p>
+                  <p className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/65 leading-relaxed max-w-[40ch]">
+                    {fmt.addr(location.address)}
+                  </p>
+                </div>
+              </motion.div>
+
+              {mapsUrl && (
+                <motion.div variants={fadeUp} className="mt-8">
                   <a
                     href={mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase text-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300 inline-flex items-center gap-2"
+                    className="group/cta relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-[#0a0a0a]/25 px-7 py-3.5 hover:border-[#FF6700] transition-colors duration-300"
                   >
-                    Open in Google Maps
-                    <LuArrowUpRight className="w-3.5 h-3.5" />
+                    <span aria-hidden="true" className="absolute inset-0 bg-[#FF6700] translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+                    <span className="relative font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase text-[#0a0a0a]">
+                      Get Directions
+                    </span>
+                    <LuArrowUpRight className="relative w-4 h-4 text-[#0a0a0a] transition-transform duration-300 group-hover/cta:rotate-45" />
                   </a>
-                )}
-              </motion.div>
+                </motion.div>
+              )}
             </div>
-          </div>
 
-          <motion.div variants={fadeUp} className="w-full aspect-[16/10] sm:aspect-[16/8] md:aspect-[2/1] bg-[#0a0a0a]/5">
-            {mapsEmbed ? (
-              <iframe
-                src={mapsEmbed}
-                className="w-full h-full border-0 grayscale-[0.15]"
+            {/* Right: a location photo standing in for the map visual —
+                deliberately NOT an interactive embed. */}
+            <motion.div variants={fadeUp} className="relative min-h-[280px] lg:min-h-full overflow-hidden order-first lg:order-last">
+              <img
+                src={gallery[0] || location.img}
+                alt={`${location.label} location`}
                 loading="lazy"
-                title={`Map of ${location.label}`}
+                onError={(e) => { e.currentTarget.src = location.img; }}
+                className="absolute inset-0 w-full h-full object-cover"
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center font-['NeueMontreal'] text-sm text-[#0a0a0a]/40">
-                Map unavailable
-              </div>
-            )}
-          </motion.div>
+            </motion.div>
+          </div>
         </motion.div>
       </section>
 
@@ -476,15 +623,9 @@ export default function LocationDetail({ location }) {
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
         >
-          <motion.div variants={fadeUp} className="flex items-center gap-3 mb-5 sm:mb-6">
-            <span className="w-8 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Also at The Berry
-            </p>
-          </motion.div>
 
-          <h2 className='font-["Founders_Grotesk"] font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em] mb-8 sm:mb-10 md:mb-12'>
-            <motion.span variants={lineUp} className="block">More to Explore.</motion.span>
+          <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] tracking-tighter leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em] mb-8 sm:mb-10 md:mb-12'>
+            <motion.span variants={lineUp} className="block">More to <span className="text-[#FF6700]">Explore.</span></motion.span>
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
@@ -500,18 +641,12 @@ export default function LocationDetail({ location }) {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/85 via-[#0a0a0a]/30 to-transparent" />
 
-                    <div className="absolute top-5 right-5">
-                      <span className="text-[10px] tracking-[0.2em] uppercase font-['NeueMontreal'] text-white/80 border border-white/30 rounded-full px-3 py-1 backdrop-blur-sm">
-                        {fmt.tag(other.tag)}
-                      </span>
-                    </div>
-
                     <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 md:p-8 flex items-end justify-between gap-4">
                       <div>
                         <p className="text-[10px] tracking-[0.3em] uppercase text-white/65 font-['NeueMontreal'] mb-2">
                           Delhi NCR
                         </p>
-                        <h3 className='font-["Founders_Grotesk"] font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-none text-white uppercase break-words'>
+                        <h3 className='font-["Founders_Grotesk"] font-bold uppercase text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tighter leading-[0.9] text-white break-words'>
                           {other.label}
                         </h3>
                       </div>
@@ -544,15 +679,8 @@ export default function LocationDetail({ location }) {
           variants={stagger}
           className="relative px-5 sm:px-10 md:px-20 max-w-5xl mx-auto text-center"
         >
-          <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 mb-5 sm:mb-6">
-            <span className="w-8 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Come Visit
-            </p>
-            <span className="w-8 h-px bg-[#FF6700]" />
-          </motion.div>
 
-          <h2 className='font-["Founders_Grotesk"] font-bold uppercase leading-[0.95] tracking-tighter text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] break-words'>
+          <h2 className='font-["Founders_Grotesk"] font-bold uppercase leading-[0.95] tracking-tighter text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] break-words'>
             <span className="block overflow-hidden pb-[0.05em]">
               <motion.span variants={lineUp} className="block">See {location.label}</motion.span>
             </span>
@@ -563,13 +691,6 @@ export default function LocationDetail({ location }) {
             </span>
           </h2>
 
-          <motion.p
-            variants={fadeUp}
-            className="mt-6 sm:mt-8 text-base sm:text-lg text-[#0a0a0a]/60 font-['NeueMontreal'] leading-relaxed max-w-[48ch] mx-auto"
-          >
-            Book a free 15-minute tour. We&apos;ll walk you through the space, answer questions, and let you feel it for yourself.
-          </motion.p>
-
           <motion.div
             variants={fadeUp}
             className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
@@ -578,19 +699,19 @@ export default function LocationDetail({ location }) {
               href={BOOKING.tour}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300"
+              className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300"
             >
               Book a Free Tour
-              <LuArrowUpRight className="w-4 h-4" />
+              <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
             </a>
             <a
               href={whatsappLink()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-[#0a0a0a]/25 rounded-full text-sm text-[#0a0a0a]/85 font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#fafaf7] transition-all duration-300"
+              className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-[#0a0a0a]/25 rounded-full text-sm text-[#0a0a0a]/85 font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#fafaf7] transition-all duration-300"
             >
               WhatsApp Us
-              <LuArrowUpRight className="w-4 h-4" />
+              <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
             </a>
           </motion.div>
         </motion.div>

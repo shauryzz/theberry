@@ -1,98 +1,57 @@
-// Pricing is per location → per plan. Replace numbers with real ones from client.
-// Set price to null for "Custom quote / Contact us".
+// ──────────────────────────────────────────────────────────────────────────
+// PLANS — the two priced, self-serve workspace products.
+//
+// RESTRUCTURED (Oct 2026) from the client's combined Solutions content:
+//
+//   • "Private Cabin" and "Private Office" are ONE product. Named
+//     Private Office here, with the cabin wording kept in `alias`.
+//   • "Flexible Seat", "Open Seat", "Hot Desk" and "Dedicated Desk" are ONE
+//     product. Named Dedicated Desk, with the other names kept in `alias`.
+//   • "Managed Office" has MOVED OFF this page entirely. It is an enterprise
+//     offering now and lives on the For Enterprises page, so it is no longer
+//     a self-serve plan and is deliberately absent from this array.
+//
+// PRICING BASIS CHANGED: private offices are priced PER SEAT, dedicated desks
+// PER MONTH. `priceUnit` carries that, so the UI never hardcodes "/mo".
+// A null price means the product is not offered at that location and the
+// location is simply omitted from the price list (never shown as "N/A").
+//
+// Day passes and meeting rooms are NOT here: they are booked through DeskOS
+// and carry no on-site pricing. They live in data/solutions.js.
+// ──────────────────────────────────────────────────────────────────────────
 export const PLANS = [
   {
-    id: "hot-desk",
-    name: "Hot Desk",
-    tagline: "For nomads & freelancers",
-    description: "Any open seat, any day. Walk in, plug in, work.",
-    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&q=85&fit=crop",
+    id: "private-office",
+    name: "Private Office",
+    alias: "Also called a private cabin",
+    tagline: "A closed office for your team",
+    description:
+      "A closed, furnished office built for privacy and comfort, ready for your team to move straight in.",
+    image: "https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1200&q=85&fit=crop",
+    availableAt: ["connaught", "jhandewalan", "noida"],
+    priceUnit: "per seat + taxes",
     pricing: {
-      connaught:   8500,
-      jhandewalan: 7500,
-      noida:       6500,
+      connaught:   16500,
+      jhandewalan: 11500,
+      noida:        7500,
     },
-    features: [
-      "Access to all open seating areas",
-      "High-speed WiFi & power",
-      "Use of phone booths & lounges",
-      "F&B counter access",
-      "Community events & networking",
-    ],
     badge: null,
   },
   {
     id: "dedicated-desk",
     name: "Dedicated Desk",
-    tagline: "For consistent solo work",
-    description: "Your own desk, every day. Locker, monitor, and a permanent setup.",
-    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&q=85&fit=crop",
+    alias: "Open seat, hot desk and dedicated desk all describe the same thing here",
+    tagline: "A place on the floor that is yours",
+    description:
+      "A desk on our coworking floor, whether you need it for a single day, want the same one held for you, or just want the flexibility of moving around. A place on the floor that is yours whenever you need it.",
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=85&fit=crop",
+    availableAt: ["jhandewalan", "noida"],   // Barakhamba: coworking not offered
+    priceUnit: "per month + taxes",
     pricing: {
-      connaught:   15000,
-      jhandewalan: 12500,
-      noida:       11000,
+      connaught:   null,                     // not offered
+      jhandewalan: 8500,
+      noida:       5500,
     },
-    features: [
-      "Your own permanent desk",
-      "Personal locker & storage",
-      "Ergonomic chair & monitor option",
-      "Priority booking for meeting rooms",
-      "All Hot Desk benefits included",
-      "24/7 access",
-    ],
     badge: "Most Popular",
   },
-  {
-    id: "private-cabin",
-    name: "Private Cabin",
-    tagline: "For small teams (2-6 seats)",
-    description: "A lockable private space designed for focused team work.",
-    image: "https://images.unsplash.com/photo-1577412647305-991150c7d163?w=900&q=85&fit=crop",
-    pricing: {
-      connaught:   45000,
-      jhandewalan: 38000,
-      noida:       32000,
-    },
-    features: [
-      "Lockable private cabin",
-      "Configurable for 2-6 people",
-      "Branded signage option",
-      "Dedicated meeting room hours",
-      "Mail & courier handling",
-      "All Dedicated Desk benefits",
-    ],
-    badge: null,
-  },
-  {
-    id: "custom-suite",
-    name: "Custom Suite",
-    tagline: "For enterprises (10+ seats)",
-    description: "A bespoke workspace, built around your team's identity and workflow.",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=85&fit=crop",
-    pricing: {
-      connaught:   null,
-      jhandewalan: null,
-      noida:       null,
-    },
-    features: [
-      "Fully branded private suite",
-      "Custom layout & build-out",
-      "Dedicated reception & support",
-      "Reserved meeting rooms",
-      "Custom IT & networking",
-      "Enterprise SLA & invoicing",
-    ],
-    badge: null,
-  },
-];
-
-export const ALL_PLANS_INCLUDE = [
-  "Gigabit WiFi",
-  "F&B Counter",
-  "Phone Booths",
-  "Meeting Rooms",
-  "Printing & Scanning",
-  "Mail Handling",
-  "Community Events",
-  "Metro Access",
 ];

@@ -3,22 +3,23 @@
 export const SITE = {
   name: "The Berry Coworks",
   shortName: "The Berry",
-  tagline: "Premium Workspaces in Delhi NCR",
+  // Tagline: short, specific, no filler. Used in <title> tags and hero fallbacks.
+  tagline: "A workspace worth showing up to.",
   description:
-    "Premium coworking spaces in Connaught Place, Jhandewalan & Noida. Natural light, ergonomic design, and a community built for ambitious people.",
+    "Coworking spaces in Barakhamba, Jhandewalan, and Noida. Ready-to-move-in cabins, flexible seats, meeting rooms, and managed offices across Delhi NCR.",
 
   // Contact — confirmed from brand deck (June 2026)
-  email:        "hello@theberrycoworks.com",          // PLACEHOLDER — confirm with client
-  emailHref:    "mailto:hello@theberrycoworks.com",   // PLACEHOLDER — confirm with client
+  email:        "contact@theberrycoworks.com",        // Confirmed by client (Oct 2026)
+  emailHref:    "mailto:contact@theberrycoworks.com",
   phone:        "+91 81784 49718",
   phoneHref:    "tel:+918178449718",
   whatsapp:     "+91 72908 11818",
   whatsappHref: "https://wa.me/917290811818",
 
-  // Hours (general — see locations.js for per-location hours).
-  // Standardised to 8 AM to match locations.js + amenities.js. The brand deck
-  // does not state operating hours; update this one value if the client confirms otherwise.
-  hours:        "Mon–Sat · 8 AM – 9 PM · 24/7 for members",
+  // Hours (general; per-location hours live in locations.js).
+  // Standardised to 8 AM to match locations.js. Update this one value if the
+  // client confirms different operating hours.
+  hours:        "Mon to Sat, 8 AM to 8 PM.",
 
   // Brand
   founded: 2020,
@@ -26,53 +27,58 @@ export const SITE = {
 
   belief: "Together we strive for better.",
 
-  addressLine: "Connaught Place · Jhandewalan · Noida",
+  addressLine: "Barakhamba, Jhandewalan, Noida",
 };
 
+// Client listed only Instagram and LinkedIn (Oct 2026). Facebook and Twitter
+// were removed rather than hidden, so nothing links to a dormant profile.
+// Re-add here if those accounts become active; the footer and mobile menu
+// both read from this array, so no component changes are needed.
 export const SOCIALS = [
   { name: "Instagram", href: "https://instagram.com/theberrycoworks" },
   { name: "LinkedIn",  href: "https://in.linkedin.com/company/theberrycoworks" },
-  { name: "Facebook",  href: "https://m.facebook.com/theberrycoworks/" },
-  { name: "Twitter",   href: "https://twitter.com/theberrycoworks" },
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
 // Founders — names confirmed from brand deck.
 // Photos are still placeholders; swap when client supplies real headshots.
+// Bios rewritten to be shorter and less abstract. Same voice, less filler.
 // ──────────────────────────────────────────────────────────────────────────
 export const FOUNDERS = [
   {
     name: "Vishesh Kalkhandey",
     role: "Co-Founder",
-    bio: "Vishesh co-founded The Berry Coworks alongside Parul in 2020. A designer by training, he leads strategy, locations, and the long-term shape of the business — turning the original belief that great design shouldn't be a luxury into a network across Delhi NCR.",
+    bio: "Vishesh co-founded The Berry Coworks with Parul in 2020. He leads strategy and locations. His background is in design.",
     photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=85&fit=crop",   // PLACEHOLDER
     linkedin: "https://linkedin.com",                                                          // PLACEHOLDER
   },
   {
     name: "Parul Jain",
     role: "Co-Founder",
-    bio: "Parul co-founded The Berry Coworks alongside Vishesh in 2020. A designer by training, she runs operations, community, and the daily experience of every member — the small details that separate a workspace people tolerate from one they actually want to be in.",
+    bio: "Parul co-founded The Berry Coworks with Vishesh in 2020. She runs operations and community. Her background is in design.",
     photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=85&fit=crop", // PLACEHOLDER
     linkedin: "https://linkedin.com",                                                          // PLACEHOLDER
   },
 ];
 
-// Long-form belief statements used on About page
+// Long-form belief statements used on About page.
+// Trimmed heavily. Every line now says one specific thing instead of one
+// abstract thing dressed up in punchier punctuation.
 export const BELIEFS = [
   {
     title: "Light matters.",
-    desc:  "Every desk gets natural light. Not because it's pretty — because the work is better. We turned down two larger leases for this reason alone.",
+    desc:  "Every desk gets a window. We turned down two larger leases so this stayed true.",
   },
   {
     title: "Community over inventory.",
     desc:  "We measure ourselves by who chooses to keep working here, not by how many seats we can fit. Three locations, five hundred members, almost zero churn.",
   },
   {
-    title: "Premium isn't loud.",
-    desc:  "The best spaces feel quiet. Considered. Like someone thought about the small things — the chair, the lighting, the coffee, the silence — because we did.",
+    title: "The small things add up.",
+    desc:  "The chair, the coffee, the acoustics, the entrance. None of these are big decisions on their own. Together they are the difference.",
   },
   {
     title: "Show up for each other.",
-    desc:  "Members refer members. Founders meet founders. The network behind the desk is the whole point, and we work every day to keep it real.",
+    desc:  "Members refer members. Founders introduce founders. The network is the whole point, and we work to keep it real.",
   },
 ];

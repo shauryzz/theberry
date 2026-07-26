@@ -4,9 +4,14 @@ import Marquee from "../components/Marquee";
 import About from "../components/About";
 import TrustedBy from "../components/TrustedBy";
 import PullQuote from "../components/PullQuote";
-import WorkspaceTypes from "../components/WorkspaceTypes";
+// DETACHED (Oct 2026) — the "Choose Your Way of Working" plan-card grid was
+// pulled from the homepage at the client's request. The component file
+// src/components/WorkspaceTypes.jsx is intentionally KEPT and untouched, so
+// restoring it is just a matter of uncommenting this import and the tag below.
+// Nothing else depends on it: the /workspaces route renders WorkspacesContent,
+// which is a different component and is unaffected.
+// import WorkspaceTypes from "../components/WorkspaceTypes";
 import Featured from "../components/Featured";
-import Testimonials from "../components/Testimonials";
 import AppShowcase from "../components/AppShowcase";
 import FinalCTA from "../components/FinalCTA";
 import Footer from "../components/Footer";
@@ -20,9 +25,11 @@ export default function Home() {
       <About />
       <TrustedBy />
       <PullQuote />
-      <WorkspaceTypes />
+      {/* DETACHED — see the commented import above. To bring the plan-card
+          grid back, uncomment this line and that import. It sat here, between
+          PullQuote and Featured. */}
+      {/* <WorkspaceTypes /> */}
       <Featured />
-      <Testimonials />
       <AppShowcase />
       <FinalCTA />
       <Footer />

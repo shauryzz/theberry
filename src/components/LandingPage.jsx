@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaArrowUpLong } from "react-icons/fa6";
 import { BOOKING } from "../data/booking";
 
 const stagger = {
@@ -46,9 +45,9 @@ export default function LandingPage() {
 
           <motion.p
             variants={fadeUp}
-            className="text-white/85 text-base sm:text-lg md:text-xl font-['NeueMontreal'] leading-relaxed max-w-[44ch] mb-8 sm:mb-10"
+            className="text-white/85 text-base sm:text-lg font-['NeueMontreal'] leading-relaxed max-w-[60ch] mb-8 sm:mb-10"
           >
-            Premium coworking in Delhi NCR. Built around natural light, real community, and the way you actually work.
+            The Berry Coworks brings founders, freelancers, and growing teams into one space, and gives them a reason to feel part of a bigger community. It&apos;s an atmosphere built to look after people, with The Berry Coworks working behind the scenes to make each day feel good.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3 sm:gap-4">
@@ -56,17 +55,17 @@ export default function LandingPage() {
               href={BOOKING.tour}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 bg-[#FF6700] text-white hover:bg-[#0a0a0a] hover:text-[#FF6700] px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-['NeueMontreal'] transition-colors duration-300"
+              className="group inline-flex items-center gap-2.5 bg-[#FF6700] text-white hover:bg-[#0a0a0a] hover:text-[#FF6700] px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-['NeueMontreal'] transition-colors duration-300"
             >
-              <span>Book a Tour</span>
-              <FaArrowUpLong className="rotate-45 text-xs group-hover:rotate-90 transition-transform duration-300" />
+              <span>Plan Your Visit</span>
+              <span className="w-2 h-2 rounded-full bg-white group-hover:bg-[#FF6700] transition-colors duration-300" />
             </a>
             <Link
-              href="/locations"
-              className="group inline-flex items-center gap-2 border border-white/40 text-white hover:bg-white hover:text-[#0a0a0a] hover:border-white px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-['NeueMontreal'] transition-colors duration-300"
+              href="/contact"
+              className="group inline-flex items-center gap-2.5 border border-white/40 text-white hover:bg-white hover:text-[#0a0a0a] hover:border-white px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-['NeueMontreal'] transition-colors duration-300"
             >
-              <span>See Spaces</span>
-              <FaArrowUpLong className="rotate-45 text-xs group-hover:rotate-90 transition-transform duration-300" />
+              <span>Get in Touch</span>
+              <span className="w-2 h-2 rounded-full bg-white group-hover:bg-[#0a0a0a] transition-colors duration-300" />
             </Link>
           </motion.div>
 

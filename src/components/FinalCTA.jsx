@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { LuArrowUpRight } from "react-icons/lu";
-import { BOOKING, whatsappLink } from "../data/booking";
+import { BOOKING } from "../data/booking";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } } };
 const lineUp = {
@@ -33,21 +34,13 @@ export default function FinalCTA() {
         variants={stagger}
         className="relative px-5 sm:px-10 md:px-20 max-w-5xl mx-auto text-center"
       >
-        <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 mb-5 sm:mb-6">
-          <span className="w-8 h-px bg-[#FF6700]" />
-          <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-            The Next Step
-          </p>
-          <span className="w-8 h-px bg-[#FF6700]" />
-        </motion.div>
-
         <h2 className='font-["Founders_Grotesk"] font-bold uppercase leading-[0.95] tracking-tighter text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw]'>
           <span className="block overflow-hidden pb-[0.05em]">
-            <motion.span variants={lineUp} className="block">Ready to work</motion.span>
+            <motion.span variants={lineUp} className="block">Reserve a</motion.span>
           </span>
           <span className="block overflow-hidden pb-[0.05em]">
             <motion.span variants={lineUp} className="block">
-              <span className="text-[#FF6700]">better?</span>
+              <span className="text-[#FF6700]">walkthrough.</span>
             </motion.span>
           </span>
         </h2>
@@ -56,7 +49,7 @@ export default function FinalCTA() {
           variants={fadeUp}
           className="mt-6 sm:mt-8 text-base sm:text-lg text-[#0a0a0a]/60 font-['NeueMontreal'] leading-relaxed max-w-[52ch] mx-auto"
         >
-          Book a free 15-minute tour. We&apos;ll show you around, answer questions, and help you pick the right plan and the right space. No pressure.
+          Book a free 15-minute tour. We&apos;ll show you around, answer questions, and help you pick the right plan and the right space.
         </motion.p>
 
         <motion.div
@@ -67,20 +60,18 @@ export default function FinalCTA() {
             href={BOOKING.tour}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300"
+            className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300"
           >
-            Book a Free Tour
-            <LuArrowUpRight className="w-4 h-4" />
+            Book a Visit
+            <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
           </a>
-          <a
-            href={whatsappLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-[#0a0a0a]/25 rounded-full text-sm text-[#0a0a0a]/85 font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#fafaf7] transition-all duration-300"
+          <Link
+            href="/contact"
+            className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-[#0a0a0a]/25 rounded-full text-sm text-[#0a0a0a]/85 font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#fafaf7] transition-all duration-300"
           >
-            WhatsApp Us
-            <LuArrowUpRight className="w-4 h-4" />
-          </a>
+            Get in Touch
+            <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
+          </Link>
         </motion.div>
       </motion.div>
     </section>

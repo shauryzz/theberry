@@ -1,14 +1,17 @@
 import "./globals.css";
-import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { Manrope, Inter } from "next/font/google";
 import SmoothScrollProvider from "../components/SmoothScrollProvider";
 import CustomCursor from "../components/CustomCursor";
 import Transition from "../components/Transition";
 import FloatingActions from "../components/FloatingActions";
 import { SITE } from "../data/site";
 
-// Both are variable fonts — next/font loads all weights automatically
-// and self-hosts them at build time. Works perfectly with output: "export".
-const fontDisplay = Bricolage_Grotesque({
+// DISPLAY FONT — Manrope (modern grotesque). Loaded as a variable font,
+// so any weight from 200–800 is available. Components use font-bold
+// (weight 700) with tracking-tighter uppercase — exactly as originally
+// designed. globals.css aliases legacy font-["Founders_Grotesk"] classes
+// to --font-display, so no component edits are needed to change fonts.
+const fontDisplay = Manrope({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",

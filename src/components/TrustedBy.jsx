@@ -12,9 +12,66 @@ const fadeUp = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 };
 
-export default function TrustedBy() {
+/**
+ * One scrolling logo row. Each logo sits in a uniform white "chip" so mixed
+ * native backgrounds (transparent PNGs vs. solid-colour lockups) all read as
+ * consistent, evenly-sized tiles. We render two copies of the list so the
+ * -50% / +50% translate loops seamlessly.
+ *   direction: "left"  → scrolls right-to-left
+ *   direction: "right" → scrolls left-to-right
+ */
+function LogoRow({ logos, direction = "left", duration = 40 }) {
+  const from = direction === "left" ? "0%" : "-50%";
+  const to   = direction === "left" ? "-50%" : "0%";
   return (
-    <section className="w-full bg-[#fafaf7] border-t border-[#0a0a0a]/10 py-20 sm:py-28 md:py-32 overflow-hidden">
+    <div className="overflow-hidden">
+      <motion.div
+        className="flex w-max items-center"
+        animate={{ x: [from, to] }}
+        transition={{ repeat: Infinity, ease: "linear", duration }}
+      >
+        {Array.from({ length: 2 }).map((_, copy) => (
+          <div key={copy} className="flex items-center shrink-0">
+            {logos.map((logo, i) => (
+              <div
+                key={i}
+                className="mx-3 sm:mx-4 flex items-center justify-center shrink-0 rounded-2xl bg-white border border-[#0a0a0a]/[0.06] shadow-[0_10px_30px_-18px_rgba(10,10,10,0.25)] h-24 sm:h-28 md:h-32 w-44 sm:w-52 md:w-60 px-6 sm:px-8"
+              >
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  draggable="false"
+                  loading="lazy"
+                  className="max-h-14 sm:max-h-16 md:max-h-20 max-w-full w-auto object-contain select-none"
+                />
+              </div>
+            ))}
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+export default function TrustedBy() {
+  const logos = MEDIA.memberLogos;
+  const mid = Math.ceil(logos.length / 2);
+  const rowTop = logos.slice(0, mid);
+  const rowBottom = logos.slice(mid);
+
+  return (
+    <section className="relative w-full bg-white border-t border-[#0a0a0a]/10 py-20 sm:py-28 md:py-32 overflow-hidden">
+      {/* Orange dot texture — fills the whole section, showing through around
+          and between the two logo rows so it reads as decorative padding.
+          The rows fade into this background at their left/right edges. */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(rgba(255,103,0,0.20) 1.5px, transparent 1.5px)",
+          backgroundSize: "24px 24px",
+        }}
+        aria-hidden="true"
+      />
 
       {/* Heading + subheading — centered */}
       <motion.div
@@ -22,15 +79,16 @@ export default function TrustedBy() {
         whileInView="show"
         viewport={{ once: true, margin: "-80px" }}
         variants={stagger}
-        className="px-5 sm:px-10 md:px-20 text-center mb-12 sm:mb-16 md:mb-20"
+        className="relative z-10 px-5 sm:px-10 md:px-20 text-center mb-12 sm:mb-16 md:mb-20"
       >
-        <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 mb-6 sm:mb-8">
-          <span className="w-8 h-px bg-[#FF6700]" />
-          <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-            Our Members
-          </p>
-          <span className="w-8 h-px bg-[#FF6700]" />
-        </motion.div>
+        {/* Not the tracked-caps eyebrow used elsewhere: a plain italic line in
+            the display face, echoing the italics in the About panel and stats. */}
+        <motion.p
+          variants={fadeUp}
+          className="font-['Founders_Grotesk'] italic text-lg sm:text-xl md:text-2xl text-[#0a0a0a]/40 mb-4 sm:mb-5"
+        >
+          In good company
+        </motion.p>
 
         <h2 className='font-["Founders_Grotesk"] font-bold uppercase tracking-tighter leading-[0.95] text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw]'>
           <span className="block overflow-hidden pb-[0.05em]">
@@ -40,45 +98,30 @@ export default function TrustedBy() {
           </span>
         </h2>
 
-        <motion.p
-          variants={fadeUp}
-          className="mt-6 sm:mt-8 mx-auto max-w-[54ch] font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/60 leading-relaxed"
-        >
-          From scrappy startups to established firms, 500+ members across Delhi NCR call The Berry home.
-        </motion.p>
       </motion.div>
 
-      {/* Scrolling brand-logo strip */}
+      {/* Two logo rows — no card. Each fades at its left/right edges into the
+          section's base colour, so the orange dots read as decorative padding
+          around and between the rows. The rows scroll in opposite directions. */}
       <motion.div
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-60px" }}
         variants={fadeUp}
-        className="relative border-y border-[#0a0a0a]/10 py-10 sm:py-12 md:py-14"
+        className="relative z-10 space-y-4 sm:space-y-6 md:space-y-8"
       >
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 sm:w-32 md:w-48 bg-gradient-to-r from-[#fafaf7] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 sm:w-32 md:w-48 bg-gradient-to-l from-[#fafaf7] to-transparent" />
+        {/* Row 1 — scrolls left */}
+        <div className="relative overflow-hidden py-2">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 sm:w-24 md:w-40 bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 sm:w-24 md:w-40 bg-gradient-to-l from-white to-transparent" />
+          <LogoRow logos={rowTop} direction="left" duration={42} />
+        </div>
 
-        <div className="overflow-hidden">
-          <motion.div
-            className="flex w-max items-center"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 28 }}
-          >
-            {Array.from({ length: 2 }).map((_, copy) => (
-              <div key={copy} className="flex items-center shrink-0">
-                {MEDIA.brandStrip.map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt=""
-                    draggable="false"
-                    className="h-12 sm:h-16 md:h-20 w-auto object-contain px-8 sm:px-12 md:px-16 shrink-0 select-none"
-                  />
-                ))}
-              </div>
-            ))}
-          </motion.div>
+        {/* Row 2 — scrolls right (opposite) */}
+        <div className="relative overflow-hidden py-2">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 sm:w-24 md:w-40 bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 sm:w-24 md:w-40 bg-gradient-to-l from-white to-transparent" />
+          <LogoRow logos={rowBottom} direction="right" duration={42} />
         </div>
       </motion.div>
     </section>

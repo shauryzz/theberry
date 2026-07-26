@@ -1,69 +1,105 @@
 // ──────────────────────────────────────────────────────────────────────────
-//  All booking + external action URLs in ONE place.
+//  BOOKING — all external booking + action URLs in ONE place.
 //
-//  The client confirmed DeskOS provides BOTH:
-//    - A global "Book a Tour" URL (opens a location/plan picker)
-//    - Per-plan × per-location DEEP LINKS (meeting room, day pass, etc.)
+//  Real DeskOS URLs wired in Oct 2026 from client's spreadsheet.
+//  DeskOS domain: berry.deskos.net
 //
-//  Strategy: every external action below is a new-tab link. Iframe embed
-//  is supported by DeskOS too — if the client later wants in-page booking,
-//  we add a small <BookingModal /> wrapper. For launch, new tab is fastest
-//  and avoids payment-gateway CSP / X-Frame-Options headaches.
+//  URL naming inside DeskOS:
+//    /meeting-rooms/berry?campus_id={N}  →  location-scoped meeting-room picker
+//    /day-pass/{campus_id}/{plan_id}     →  specific day-pass plan
 //
-//  TO SWAP IN REAL LINKS:
-//    Replace BASE with the real DeskOS sub-domain the client gives you,
-//    then verify each plan path matches the deep-link shape they provide.
+//  Campus IDs (from client spreadsheet):
+//    80 = Noida
+//    81 = Jhandewalan
+//    82 = Barakhamba (Connaught Place)
+//
+//  SELF-SERVICE vs ENQUIRY-ONLY (confirmed with client Oct 2026):
+//    Self-service via DeskOS: Meeting Rooms, Day Pass, Multi Visit Plans.
+//    Everything else (Flexible Seat, Dedicated Desk, Private Cabin, Managed
+//    Office, Virtual Office) is enquiry-only → routes to /contact by design.
+//    This is intentional; do NOT re-add placeholder URLs.
+//
+//  PLAN ID CHANGES (Oct 2026):
+//    - hot-desk     → flexible-seat  (renamed per client language)
+//    - custom-suite → managed-office (renamed + scope narrowed to Noida)
 // ──────────────────────────────────────────────────────────────────────────
 
-const BASE = "https://book.theberrycoworks.com"; // PLACEHOLDER
+const DESKOS = "https://berry.deskos.net";
 
 export const BOOKING = {
   // ── Generic CTAs ────────────────────────────────────────────────────────
-  // Used by the floating "Book a Tour" pill and any "Book a Free Tour" CTA.
-  tour: `${BASE}/tour`,
+  // "Book a Free Tour" buttons across the site → /contact form.
+  // Client confirmed tours are handled through enquiry rather than DeskOS.
+  tour: "/contact",
 
   // ── Per-plan × per-location deep links ──────────────────────────────────
-  // Lookup happens via getPlanBookingUrl() below. Custom suite has no direct
-  // booking link — it routes to /contact for a custom quote.
+  // All plans below are enquiry-only. `null` routes to /contact via
+  // getPlanBookingUrl(). This is the intended behaviour, not missing data.
   plans: {
-    "hot-desk": {
-      connaught:   `${BASE}/cp/hot-desk`,
-      jhandewalan: `${BASE}/jhandewalan/hot-desk`,
-      noida:       `${BASE}/noida/hot-desk`,
+    "flexible-seat": {
+      connaught:   null,   // Not offered at Barakhamba
+      jhandewalan: null,   // Enquiry-only
+      noida:       null,   // Enquiry-only
     },
     "dedicated-desk": {
-      connaught:   `${BASE}/cp/dedicated-desk`,
-      jhandewalan: `${BASE}/jhandewalan/dedicated-desk`,
-      noida:       `${BASE}/noida/dedicated-desk`,
+      connaught:   null,   // Enquiry-only
+      jhandewalan: null,   // Enquiry-only
+      noida:       null,   // Enquiry-only
     },
     "private-cabin": {
-      connaught:   `${BASE}/cp/private-cabin`,
-      jhandewalan: `${BASE}/jhandewalan/private-cabin`,
-      noida:       `${BASE}/noida/private-cabin`,
+      connaught:   null,   // Enquiry-only
+      jhandewalan: null,   // Enquiry-only
+      noida:       null,   // Enquiry-only
     },
-    "custom-suite": {
-      // Enterprise — always routes to /contact (custom quote)
+    "managed-office": {
+      // Enterprise, Noida-only. Enquiry-only → routes to /contact.
       connaught:   null,
       jhandewalan: null,
       noida:       null,
     },
   },
 
-  // ── Confirmed by client: deep links exist for these ─────────────────────
-  dayPass: {
-    connaught:   `${BASE}/cp/day-pass`,
-    jhandewalan: `${BASE}/jhandewalan/day-pass`,
-    noida:       `${BASE}/noida/day-pass`,
-  },
+  // ── Meeting Rooms — universal booking link (client decision, Oct 2026) ──
+  // `all` is the ONE link used site-wide. It opens the DeskOS meeting-room
+  // picker where the user chooses campus + room (Mulberry / Raspberry / Açaí).
+  //
+  // The per-campus and per-room deep links from the client's spreadsheet are
+  // deliberately NOT used — the client asked for the universal link only, so
+  // there is a single booking entry point and no link rot when rooms change.
+  // Campus IDs kept here for reference only: 80 Noida · 81 Jhandewalan · 82 Barakhamba.
   meetingRoom: {
-    connaught:   `${BASE}/cp/meeting-room`,
-    jhandewalan: `${BASE}/jhandewalan/meeting-room`,
-    noida:       `${BASE}/noida/meeting-room`,
+    all: `${DESKOS}/meeting-rooms/berry`,
   },
+
+  // ── Virtual Office — enquiry-only, routes to /contact ───────────────────
   virtualOffice: {
-    connaught:   `${BASE}/cp/virtual-office`,
-    jhandewalan: `${BASE}/jhandewalan/virtual-office`,
-    noida:       `${BASE}/noida/virtual-office`,
+    connaught:   null,   // Enquiry-only
+    jhandewalan: null,   // Enquiry-only
+    noida:       null,   // Enquiry-only
+  },
+
+  // ── Day Pass bundles — real URLs from client, one entry per bundle ──────
+  // The Solutions page Day Pass card opens a picker modal that renders this
+  // structure. Barakhamba has no bundles (day passes not offered).
+  //
+  // "Monthly" is used for both Jhandewalan's "30 DAYS PLAN" and Noida's
+  // "MONTH PLAN" — same product, normalized label so the modal reads clean.
+  dayPassBundles: {
+    connaught: [],  // Not offered at Barakhamba
+    jhandewalan: [
+      { id: "single",   label: "Day Pass",       sub: "1 visit",    url: `${DESKOS}/day-pass/81/90` },
+      { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: `${DESKOS}/day-pass/81/92` },
+      { id: "visits15", label: "15-Visit Pack",  sub: "15 visits",  url: `${DESKOS}/day-pass/81/93` },
+      { id: "monthly",  label: "Monthly Pass",   sub: "30 days",    url: `${DESKOS}/day-pass/81/91` },
+      { id: "visits45", label: "45-Visit Pack",  sub: "45 visits",  url: `${DESKOS}/day-pass/81/94` },
+    ],
+    noida: [
+      { id: "single",   label: "Day Pass",       sub: "1 visit",    url: `${DESKOS}/day-pass/80/85` },
+      { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: `${DESKOS}/day-pass/80/87` },
+      { id: "visits15", label: "15-Visit Pack",  sub: "15 visits",  url: `${DESKOS}/day-pass/80/88` },
+      { id: "monthly",  label: "Monthly Pass",   sub: "30 days",    url: `${DESKOS}/day-pass/80/86` },
+      { id: "visits45", label: "45-Visit Pack",  sub: "45 visits",  url: `${DESKOS}/day-pass/80/89` },
+    ],
   },
 
   // ── WhatsApp (confirmed from brand deck) ────────────────────────────────
@@ -76,12 +112,14 @@ export const BOOKING = {
 };
 
 // Helper: returns the right booking URL for a plan + location combo.
-// Custom suite (or any null) falls back to /contact for a custom quote.
+// Returns "/contact" when the plan is unavailable at that location (null)
+// or when the plan itself has no direct booking (e.g. Managed Office).
 export function getPlanBookingUrl(planId, locationId) {
   return BOOKING.plans[planId]?.[locationId] || "/contact";
 }
 
-// Helper: returns true if the URL is external (DeskOS) vs internal (/contact).
+// Helper: returns true if the URL is external (DeskOS / WhatsApp / etc.)
+// vs internal (/contact). Used to decide target="_blank" on links.
 export function isExternalBooking(url) {
   return typeof url === "string" && url.startsWith("http");
 }

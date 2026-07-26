@@ -3,10 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { LuArrowUpRight } from "react-icons/lu";
-import { PILLARS, STATS, FLEX_OPTIONS } from "../data/content";
+import { PERKS, STATS, FLEX_OPTIONS } from "../data/content";
 import { BOOKING } from "../data/booking";
 import { MEDIA } from "../data/media";
-import { useParallax } from "./useParallax";
 import CountUp from "./CountUp";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
@@ -18,14 +17,21 @@ const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   show:   { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 };
-const cardUp = {
-  hidden: { opacity: 0, y: 40 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
-};
+
+/* Photos arranged in the OUTER MARGINS either side of the headline, not over
+   it — the text column is capped (lg:max-w-4xl) so these sit clear of it and
+   nothing gets covered. Percentage offsets keep the collage scaling with the
+   container. Shown only at `lg` and up: below that the margins are too narrow
+   to hold a photo without it crossing the type, so they are hidden outright. */
+const ABOUT_SHOTS = [
+  { i: 0, box: "left-0 top-[34%] w-[13%] aspect-square rounded-full -rotate-6" },
+  { i: 1, box: "right-0 top-[3%] w-[14%] aspect-[5/4] rounded-[1.6rem] rotate-[4deg]" },
+  { i: 2, box: "right-[1%] bottom-[8%] w-[12%] aspect-[4/3] rounded-[1.4rem] -rotate-3" },
+];
 
 export default function About() {
-  const heroImg = useParallax(-0.5);
 
+  // Perks slider — which card is centred (drives the counter + progress bar).
   const pillarsScrollRef = useRef(null);
   const cardRefs         = useRef([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -65,278 +71,375 @@ export default function About() {
     };
   }, []);
 
+  // "However you like to work" list — the entry nearest the viewport centre
+  // becomes active, which drives the sticky image on the right.
+  const flexRefs = useRef([]);
+  const [activeFlex, setActiveFlex] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const mid = window.innerHeight / 2;
+      let best = 0, bestDist = Infinity;
+      flexRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const d = Math.abs(r.top + r.height / 2 - mid);
+        if (d < bestDist) { bestDist = d; best = i; }
+      });
+      setActiveFlex(best);
+    };
+
+    const lenis = typeof window !== "undefined" ? window.__lenis : null;
+    if (lenis) {
+      lenis.on("scroll", onScroll);
+      onScroll();
+      return () => lenis.off("scroll", onScroll);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Scroll ONLY the slider container. `scrollIntoView` was shifting the whole
+  // page sideways on the last cards, because it scrolls every scrollable
+  // ancestor to satisfy the request. Clamping to the container's own range
+  // keeps the section anchored.
   const scrollToCard = (idx) => {
-    const card = cardRefs.current[idx];
-    if (card) card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    const container = pillarsScrollRef.current;
+    const card      = cardRefs.current[idx];
+    if (!container || !card) return;
+    const target = card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2;
+    const max    = container.scrollWidth - container.offsetWidth;
+    container.scrollTo({ left: Math.max(0, Math.min(target, max)), behavior: "smooth" });
   };
 
   return (
     <div id="about"
-      className="relative mt-[-2px] z-20 w-full bg-[#fafaf7] rounded-tl-3xl rounded-tr-3xl text-[#0a0a0a] overflow-hidden">
+      className="relative mt-[-2px] z-20 w-full bg-[#fafaf7] rounded-tl-3xl rounded-tr-3xl text-[#0a0a0a] overflow-clip">
 
-      {/* ── 1. HERO ──────────────────────────────────────────────────── */}
-      <div className="relative w-full h-[90vh] sm:h-[95vh] md:h-screen min-h-[600px] md:min-h-[700px] overflow-hidden">
-
-        <div ref={heroImg.ref} className="absolute inset-0">
-          <img
-            style={heroImg.style}
-            src={MEDIA.homeAboutHero}
-            alt="The Berry Coworks interior"
-            className="absolute inset-0 w-full h-[115%] object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#fafaf7] via-[#fafaf7]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#fafaf7]/85 via-[#fafaf7]/30 to-transparent" />
-        </div>
+      {/* ── 1. HERO — editorial statement panel (image-in-text) ────────── */}
+      {/* White panel. The Marquee strip directly above is a shade darker
+          (#EDEDE7) on purpose, so this panel's rounded top corners still
+          read as a distinct edge. Changing one means rechecking the other. */}
+      <div className="relative w-full bg-white overflow-hidden px-6 sm:px-10 md:px-16 py-20 sm:py-28 md:py-36">
+        {/* Ambient warm glow */}
+        <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[620px] h-[620px] rounded-full bg-[#FF6700]/[0.07] blur-3xl" />
 
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
           variants={stagger}
-          className="absolute inset-x-0 bottom-0 px-6 sm:px-10 md:px-16 pb-10 sm:pb-14 md:pb-20"
+          className="relative max-w-7xl mx-auto text-center"
         >
-          <div className="max-w-4xl">
-
-            <h2 className='font-["Founders_Grotesk"] font-bold leading-[0.9] tracking-tighter uppercase text-[11vw] sm:text-[9vw] md:text-[7vw] lg:text-[5.5vw] text-[#0a0a0a]'>
-              <span className="block overflow-hidden pb-[0.05em]">
-                <motion.span variants={lineUp} className="block">Work That</motion.span>
+          {/* Photo collage — desktop only, sits in the side margins. */}
+          <div className="hidden lg:block pointer-events-none absolute inset-0 z-20" aria-hidden="true">
+            {ABOUT_SHOTS.map(({ i, box }) => (
+              <span
+                key={i}
+                className={`absolute overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] ${box}`}
+              >
+                <img
+                  src={MEDIA.aboutInlineShots[i]}
+                  alt=""
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
               </span>
-              <span className="block overflow-hidden pb-[0.05em]">
-                <motion.span variants={lineUp} className="block">
-                  Feels <span className="text-[#FF6700]">Good.</span>
-                </motion.span>
-              </span>
-            </h2>
-
-            <div className="mt-7 sm:mt-9 flex flex-col gap-6 sm:gap-7 max-w-[46ch]">
-              <motion.p variants={fadeUp}
-                className="font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/70 leading-relaxed">
-                More than a desk — a space built around natural light, greenery, and the way ambitious people actually work.
-              </motion.p>
-
-              <motion.div variants={fadeUp}>
-                <Link href="/contact"
-                  className="group inline-flex items-center gap-3 px-6 sm:px-7 py-3 sm:py-3.5 bg-[#0a0a0a] hover:bg-[#FF6700] transition-colors duration-300 rounded-full text-[#fafaf7] hover:text-[#0a0a0a] text-sm font-['NeueMontreal'] tracking-wide w-fit">
-                  Book a Free Tour
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF6700] group-hover:bg-[#0a0a0a] transition-colors duration-300" />
-                </Link>
-              </motion.div>
-            </div>
+            ))}
           </div>
+
+          {/* Site display face, not a serif. Italics carry the editorial
+              feel the reference has, without introducing a new typeface. */}
+          <motion.h2
+            variants={fadeUp}
+            className="relative z-10 font-['Founders_Grotesk'] font-medium text-[#0a0a0a] leading-[1.15] tracking-tight text-[8.5vw] sm:text-[7vw] md:text-[6vw] lg:text-[4.8vw] max-w-[15ch] sm:max-w-none lg:max-w-4xl mx-auto"
+          >
+            A space <em className="italic">that gets the</em> balance{" "}
+            <em className="italic text-[#FF6700]">right.</em>
+          </motion.h2>
+
+          <motion.p
+            variants={fadeUp}
+            className="mt-8 sm:mt-10 mx-auto max-w-[62ch] font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/65 leading-relaxed"
+          >
+            The Berry Coworks blends the comfort of working from home with the energy of a shared workplace, giving you room for focus and company in the same day, in a space you&apos;ll genuinely want to work from.
+          </motion.p>
         </motion.div>
       </div>
 
       {/* ── 2. STATS GRID ────────────────────────────────────────────── */}
+      {/* Continues the white of the statement panel above, so the two read as
+          one editorial block. The italic sub-line echoes the headline's
+          italics rather than introducing a separate treatment. */}
       <motion.div
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-80px" }}
         variants={stagger}
-        className="grid grid-cols-2 md:grid-cols-4 border-t border-[#0a0a0a]/10"
+        className="grid grid-cols-1 sm:grid-cols-3 bg-white border-t border-[#0a0a0a]/[0.08]"
       >
         {STATS.map((s, i) => (
           <motion.div
             variants={fadeUp}
             key={s.label}
-            className={`p-6 sm:p-8 md:p-14
-              ${i < 2 ? "border-b md:border-b-0" : ""}
-              ${i % 2 === 0 ? "border-r" : ""}
-              md:border-r last:md:border-r-0
-              border-[#0a0a0a]/10`}
+            className={`text-center px-6 sm:px-8 md:px-10 py-12 sm:py-16 md:py-20
+              ${i < STATS.length - 1 ? "border-b sm:border-b-0" : ""}
+              sm:border-r last:sm:border-r-0
+              border-[#0a0a0a]/[0.08]`}
           >
-            <p className='font-["Founders_Grotesk"] text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter leading-[0.9] text-[#FF6700]'>
+            <p className='font-["Founders_Grotesk"] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.85] text-[#FF6700]'>
               <CountUp value={s.value} />
             </p>
-            <p className="mt-3 sm:mt-4 text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/50 font-['NeueMontreal']">
+
+            <p className="mt-5 sm:mt-6 text-[10px] uppercase tracking-[0.35em] text-[#0a0a0a]/45 font-['NeueMontreal']">
               {s.label}
             </p>
+
+            {s.sub && (
+              <p className="mt-3 font-['Founders_Grotesk'] italic text-base sm:text-lg text-[#0a0a0a]/60 leading-snug max-w-[24ch] mx-auto">
+                {s.sub}
+              </p>
+            )}
           </motion.div>
         ))}
       </motion.div>
 
-      {/* ── 3. OUR APPROACH ──────────────────────────────────────────── */}
+      {/* ── 3. WHAT WORKING HERE GETS YOU — slider ───────────────────── */}
       <div
         id="approach"
-        className="relative px-5 sm:px-8 md:px-16 py-14 sm:py-20 md:py-28 border-t border-[#0a0a0a]/10 overflow-hidden"
+        className="relative py-14 sm:py-20 md:py-28 border-t border-[#0a0a0a]/10 overflow-hidden"
       >
         <div className="absolute top-0 right-0 w-[480px] h-[480px] rounded-full blur-3xl bg-[#FF6700]/[0.05] pointer-events-none -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-3xl bg-[#0a0a0a]/[0.04] pointer-events-none translate-y-1/3 -translate-x-1/3" />
 
+        {/* Header */}
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="relative mb-10 sm:mb-14 md:mb-20 max-w-5xl"
+          className="relative px-5 sm:px-8 md:px-16 mb-10 sm:mb-14 md:mb-16 max-w-5xl"
         >
-          <motion.div variants={fadeUp} className="flex items-center gap-3 mb-5 sm:mb-6">
-            <span className="w-10 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Our Approach
-            </p>
-          </motion.div>
-
-          <h3 className='font-["Founders_Grotesk"] font-bold uppercase tracking-tighter leading-[0.95] text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] overflow-hidden pb-[0.05em] mb-4 sm:mb-5 md:mb-6'>
+          <h3 className='font-["Founders_Grotesk"] font-bold uppercase tracking-tighter leading-[0.95] text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] overflow-hidden pb-[0.05em]'>
             <motion.span variants={lineUp} className="block">
-              Four <span className="text-[#FF6700]">Pillars.</span>
+              Working from The Berry Coworks gets <span className="text-[#FF6700]">you.</span>
             </motion.span>
           </h3>
+        </motion.div>
 
-          <motion.p
-            variants={fadeUp}
-            className="font-['NeueMontreal'] text-base sm:text-lg md:text-xl text-[#0a0a0a]/55 tracking-tight leading-relaxed"
+        {/* Slider — track + side arrows share this relative wrapper so the
+            arrows sit on the vertical middle of the CARDS, not the section. */}
+        <div className="relative">
+          <div
+            ref={pillarsScrollRef}
+            className="relative flex overflow-x-auto snap-x snap-mandatory px-5 sm:px-8 md:px-16 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            Light. Design. People. Place.
-          </motion.p>
-        </motion.div>
-
-        <motion.div
-          ref={pillarsScrollRef}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
-          variants={stagger}
-          className="
-            relative flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-5 px-5
-            [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-            sm:grid sm:grid-cols-2 sm:overflow-visible sm:mx-0 sm:px-0 sm:pb-0
-            lg:grid-cols-4 lg:gap-5
-          "
-        >
-          {PILLARS.map((p, i) => {
-            const isActive = activeIndex === i;
-            return (
-              <motion.div
-                ref={(el) => (cardRefs.current[i] = el)}
-                variants={cardUp}
-                key={p.title}
-                className={`
-                  group relative overflow-hidden rounded-2xl aspect-[4/5] cursor-default
-                  snap-center flex-shrink-0 min-w-[80%]
-                  transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
-                  ${isActive ? "" : "scale-[0.94] opacity-75"}
-                  sm:min-w-0 sm:flex-shrink sm:scale-100 sm:opacity-100
-                `}
-              >
-                <img
-                  src={p.img}
-                  alt={p.title}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/55 to-[#0a0a0a]/15" />
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5 pointer-events-none" />
-
-                <div
-                  className="absolute top-4 left-5 sm:top-5 sm:left-6 font-['Founders_Grotesk'] font-bold leading-none tracking-tighter text-white/15 group-hover:text-white/25 transition-colors duration-500 pointer-events-none"
-                  style={{ fontSize: "clamp(3.5rem, 6vw, 5.5rem)" }}
+            {PERKS.map((perk, i) => {
+              const isActive = activeIndex === i;
+              return (
+                <article
+                  key={perk.title}
+                  ref={(el) => (cardRefs.current[i] = el)}
+                  onClick={() => scrollToCard(i)}
+                  className={`snap-center flex-shrink-0 w-[74vw] sm:w-[46vw] md:w-[33vw] lg:w-[25vw]
+                    border-l border-[#0a0a0a]/10 last:border-r
+                    px-5 sm:px-6 md:px-7 pt-6 pb-7 flex flex-col cursor-pointer
+                    transition-all duration-500
+                    ${isActive
+                      ? "bg-white shadow-[0_24px_60px_-24px_rgba(10,10,10,0.22)]"
+                      : "bg-transparent hover:bg-white/60"}`}
                 >
-                  0{i + 1}
-                </div>
-
-                <div className="absolute top-1/2 left-0 w-0 h-px bg-[#FF6700] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-12" />
-
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 md:p-7 flex flex-col gap-2.5">
-                  <h4 className='font-["Founders_Grotesk"] font-bold text-2xl md:text-[28px] tracking-tight leading-[1.05] text-white'>
-                    {p.title}
-                  </h4>
-                  <p className="font-['NeueMontreal'] text-sm leading-relaxed text-white/80">
-                    {p.desc}
+                  {/* Number */}
+                  <p
+                    className={`font-['Founders_Grotesk'] text-4xl sm:text-5xl leading-none tracking-tight transition-colors duration-500
+                      ${isActive ? "text-[#FF6700]" : "text-[#0a0a0a]/30"}`}
+                  >
+                    {String(i + 1).padStart(2, "0")}
                   </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
 
-        <div className="relative flex sm:hidden justify-center items-center gap-2 mt-6">
-          {PILLARS.map((p, i) => (
-            <button
-              key={p.title}
-              onClick={() => scrollToCard(i)}
-              aria-label={`Go to pillar ${i + 1}`}
-              className="h-1 rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{
-                width:           activeIndex === i ? "28px" : "6px",
-                backgroundColor: activeIndex === i ? "#FF6700" : "rgba(10,10,10,0.2)",
-              }}
+                  {/* Image */}
+                  <div className="mt-6 sm:mt-8 relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#0a0a0a]/5">
+                    <img
+                      src={perk.img}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.05]"
+                    />
+                  </div>
+
+                  {/* Label */}
+                  <p
+                    className={`mt-5 sm:mt-6 font-['NeueMontreal'] text-sm sm:text-base leading-snug transition-colors duration-500
+                      ${isActive ? "text-[#0a0a0a]" : "text-[#0a0a0a]/70"}`}
+                  >
+                    {perk.title}
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* Arrows — vertically centred on the cards, hugging each edge */}
+          <button
+            onClick={() => scrollToCard(Math.max(0, activeIndex - 1))}
+            disabled={activeIndex === 0}
+            aria-label="Previous"
+            className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white shadow-[0_10px_30px_-10px_rgba(10,10,10,0.35)] flex items-center justify-center text-[#0a0a0a] hover:bg-[#FF6700] disabled:opacity-0 disabled:pointer-events-none transition-all duration-300"
+          >
+            <LuArrowUpRight className="w-4 h-4 -rotate-[135deg]" strokeWidth={2} />
+          </button>
+
+          <button
+            onClick={() => scrollToCard(Math.min(PERKS.length - 1, activeIndex + 1))}
+            disabled={activeIndex === PERKS.length - 1}
+            aria-label="Next"
+            className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white shadow-[0_10px_30px_-10px_rgba(10,10,10,0.35)] flex items-center justify-center text-[#0a0a0a] hover:bg-[#FF6700] disabled:opacity-0 disabled:pointer-events-none transition-all duration-300"
+          >
+            <LuArrowUpRight className="w-4 h-4 rotate-45" strokeWidth={2} />
+          </button>
+        </div>
+
+        {/* Progress bar + counter */}
+        <div className="relative px-5 sm:px-8 md:px-16 mt-8 sm:mt-10 flex items-center gap-5 sm:gap-6">
+          <div className="flex-1 h-px bg-[#0a0a0a]/12 relative overflow-hidden">
+            <span
+              className="absolute inset-y-0 left-0 bg-[#FF6700] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{ width: `${((activeIndex + 1) / PERKS.length) * 100}%` }}
             />
-          ))}
+          </div>
+
+          <p className="font-['NeueMontreal'] text-xs text-[#0a0a0a]/50 tabular-nums flex-shrink-0">
+            {String(activeIndex + 1).padStart(2, "0")} / {String(PERKS.length).padStart(2, "0")}
+          </p>
         </div>
       </div>
 
-      {/* ── 4. MORE WAYS TO WORK — offer menu ────────────────────────── */}
+      {/* ── 4. HOWEVER YOU LIKE TO WORK — scroll-driven list ─────────── */}
       <div className="px-5 sm:px-8 md:px-16 py-14 sm:py-20 md:py-28 border-t border-[#0a0a0a]/10">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="mb-10 sm:mb-12 md:mb-16 max-w-3xl"
+          className="mb-12 sm:mb-16 md:mb-20 max-w-3xl"
         >
-          <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
-            <span className="w-8 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Flexible Options
-            </p>
-          </motion.div>
-          <h3 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] tracking-tighter leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em]'>
-            <motion.span variants={lineUp} className="block">More Ways to <span className="text-[#FF6700]">Work.</span></motion.span>
+          <h3 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] tracking-tighter leading-[0.95] text-[#0a0a0a] max-w-[16ch]'>
+            <span className="block overflow-hidden pb-[0.05em]">
+              <motion.span variants={lineUp} className="block">However you</motion.span>
+            </span>
+            <span className="block overflow-hidden pb-[0.05em]">
+              <motion.span variants={lineUp} className="block">
+                like to <span className="text-[#FF6700]">work.</span>
+              </motion.span>
+            </span>
           </h3>
+
           <motion.p variants={fadeUp}
-            className="mt-5 sm:mt-6 text-base text-[#0a0a0a]/60 font-['NeueMontreal'] max-w-[52ch] leading-relaxed">
-            Membership isn&apos;t the only way in. Drop by for a day, book a meeting room by the hour, or claim a prestige business address — no lock-in, no commitment.
+            className="mt-5 sm:mt-6 text-base text-[#0a0a0a]/60 font-['NeueMontreal'] max-w-[56ch] leading-relaxed">
+            Some teams work best in quiet. Others feed off the energy of a busy floor. A few just need a room to themselves, we&apos;ve built for all of it, because a workday rarely fits one template.
           </motion.p>
         </motion.div>
 
+        {/* Scroll-driven list (left) + sticky image (right) */}
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-20">
+          {/* LEFT — the list. Nearest entry to the viewport centre is active. */}
+          <div>
+            {FLEX_OPTIONS.map(({ name, desc, img }, i) => {
+              const isActive = activeFlex === i;
+              return (
+                <div
+                  key={name}
+                  ref={(el) => (flexRefs.current[i] = el)}
+                  className={`border-t border-[#0a0a0a]/15 py-8 sm:py-10 md:py-12 transition-opacity duration-500 ${
+                    isActive ? "opacity-100" : "opacity-30"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-6">
+                    <h4 className='font-["Founders_Grotesk"] font-bold text-3xl sm:text-4xl md:text-5xl tracking-tight leading-tight text-[#0a0a0a]'>
+                      {name}
+                    </h4>
+                    {/* Pill CTA — the orange fill sweeps up from below on
+                        hover and the arrow kicks to 45deg. Text and icon sit
+                        on a relative layer so the sweep passes behind them. */}
+                    <a
+                      href={BOOKING.tour}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/cta relative flex-shrink-0 inline-flex items-center gap-2 mt-1.5 overflow-hidden rounded-full border border-[#0a0a0a]/20 px-5 py-2.5 hover:border-[#FF6700] transition-colors duration-300"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0 bg-[#FF6700] translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                      />
+                      <span className="relative font-['NeueMontreal'] text-[11px] tracking-[0.18em] uppercase text-[#0a0a0a]">
+                        Book Now
+                      </span>
+                      <LuArrowUpRight className="relative w-3.5 h-3.5 text-[#0a0a0a] transition-transform duration-300 group-hover/cta:rotate-45" />
+                    </a>
+                  </div>
+
+                  <p className="mt-3 sm:mt-4 font-['NeueMontreal'] text-sm sm:text-base text-[#0a0a0a]/65 leading-relaxed max-w-[46ch]">
+                    {desc}
+                  </p>
+
+                  {/* Mobile: the image sits inline, since there is no sticky column */}
+                  <div className="lg:hidden mt-6 relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#0a0a0a]/5">
+                    <img
+                      src={img}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            <div className="border-t border-[#0a0a0a]/15" />
+          </div>
+
+          {/* RIGHT — sticky image, crossfades to match the active entry */}
+          <div className="hidden lg:block">
+            <div className="sticky top-28 relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#0a0a0a]/5">
+              {FLEX_OPTIONS.map(({ name, img }, i) => (
+                <img
+                  key={name}
+                  src={img}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    activeFlex === i ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* CTAs */}
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={stagger}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5"
+          className="mt-12 sm:mt-16 flex flex-col sm:flex-row gap-3 sm:gap-4"
         >
-          {FLEX_OPTIONS.map(({ icon: Icon, name, desc, img }, i) => (
-            <motion.div variants={cardUp} key={name}>
-              <a
-                href={BOOKING.tour}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative block"
-              >
-                <div className="relative overflow-hidden rounded-2xl aspect-[5/4] md:aspect-[16/10]">
-                  <img
-                    src={img}
-                    alt={name}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/55 to-[#0a0a0a]/20" />
-
-                  <span className="absolute top-5 right-5 font-['Founders_Grotesk'] text-xs tracking-[0.3em] text-white/40">
-                    0{i + 1}
-                  </span>
-
-                  <div className="absolute bottom-0 inset-x-0 p-6 sm:p-7 md:p-8">
-                    <span className="inline-flex w-11 h-11 rounded-full bg-[#FF6700] items-center justify-center mb-4">
-                      <Icon className="w-5 h-5 text-[#0a0a0a]" strokeWidth={1.75} />
-                    </span>
-                    <h4 className='font-["Founders_Grotesk"] font-bold text-2xl md:text-3xl tracking-tight leading-tight text-white mb-2.5'>
-                      {name}
-                    </h4>
-                    <p className="font-['NeueMontreal'] text-sm text-white/75 leading-relaxed max-w-[34ch]">
-                      {desc}
-                    </p>
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-[#FF6700] font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase">
-                      Book Now
-                      <LuArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </motion.div>
-          ))}
+          <motion.div variants={fadeUp}>
+            <Link href="/solutions"
+              className="group inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3 sm:py-3.5 bg-[#0a0a0a] hover:bg-[#FF6700] text-[#fafaf7] hover:text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide transition-colors duration-300 w-full sm:w-fit">
+              See Solutions
+              <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
+            </Link>
+          </motion.div>
+          <motion.div variants={fadeUp}>
+            <Link href="/for-enterprises"
+              className="group inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3 sm:py-3.5 border border-[#0a0a0a]/25 text-[#0a0a0a]/85 hover:bg-[#0a0a0a] hover:text-[#fafaf7] rounded-full text-sm font-['NeueMontreal'] tracking-wide transition-colors duration-300 w-full sm:w-fit">
+              See Enterprise Solutions
+              <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </div>

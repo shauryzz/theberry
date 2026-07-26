@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { LuArrowUpRight } from "react-icons/lu";
-import { LOCATIONS } from "../data/locations";
+import { LOCATIONS, UPCOMING_LOCATION, getAllLocationsMapEmbedUrl } from "../data/locations";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.12 } } };
 const lineUp = {
@@ -18,28 +18,42 @@ const cardUp = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
-function StackedCard({ loc }) {
+function LocationCard({ loc }) {
   return (
     <motion.div variants={cardUp}>
       <Link href={`/locations/${loc.id}`} className="group relative block cursor-pointer">
-        <div className="relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:h-[380px] lg:h-[420px] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_-20px_rgba(10,10,10,0.3)]">
+        <div className="relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:h-[440px] lg:h-[480px] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_-20px_rgba(10,10,10,0.3)]">
           <img
             src={loc.img}
             alt={loc.label}
             className="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/45 to-transparent" />
 
-          <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 md:p-8 flex flex-col gap-3">
-            <h3 className='font-["Founders_Grotesk"] font-bold text-white text-3xl sm:text-5xl md:text-6xl tracking-tight leading-[0.95] uppercase'>
+          <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 md:p-7 flex flex-col gap-2.5">
+            {/* Italic, cream — deliberately not the orange tracked caps used
+                before, so it reads as a quiet locator rather than a label. */}
+            {loc.area && (
+              <span className="font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#fafaf7]/65">
+                {loc.area}
+              </span>
+            )}
+
+            <h3 className='font-["Founders_Grotesk"] font-bold text-white text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[0.95] uppercase'>
               {loc.label}
             </h3>
-            <p className="font-['NeueMontreal'] text-white/75 text-xs sm:text-sm leading-relaxed max-w-[40ch] line-clamp-2">
+
+            <p className="font-['NeueMontreal'] text-white/75 text-xs sm:text-sm leading-relaxed line-clamp-2">
               {loc.desc}
             </p>
-            <div className="flex items-center gap-2 mt-1 sm:mt-2 text-[#FF6700] font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase">
-              <span>Explore</span>
-              <LuArrowUpRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" />
+
+            {/* Underline sits on the word only, not the arrow. Cream at rest,
+                orange on hover so the card still signals it is a link. */}
+            <div className="flex items-center gap-2 mt-1">
+              <span className="font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase text-[#fafaf7] border-b border-[#fafaf7]/45 pb-0.5 group-hover:text-[#FF6700] group-hover:border-[#FF6700] transition-colors duration-300">
+                Explore
+              </span>
+              <LuArrowUpRight className="w-4 h-4 text-[#fafaf7] group-hover:text-[#FF6700] transition-all duration-300 group-hover:rotate-45" />
             </div>
           </div>
         </div>
@@ -48,49 +62,49 @@ function StackedCard({ loc }) {
   );
 }
 
-function FeatureCard({ loc }) {
+/* Announced-but-not-open location. Rendered as a plain <div>, not a <Link>,
+   so it is genuinely not clickable — no href, no pointer cursor, and it stays
+   out of the tab order. Image is desaturated and dimmed to read as pending. */
+function ComingSoonCard({ loc }) {
   return (
     <motion.div variants={cardUp}>
-      <Link href={`/locations/${loc.id}`} className="group block cursor-pointer">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-[#0a0a0a]/10 bg-white transition-all duration-500 hover:-translate-y-2 hover:border-[#FF6700]/40 hover:shadow-[0_26px_60px_-20px_rgba(10,10,10,0.2)]">
+      <div className="relative block cursor-default select-none">
+        <div className="relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:h-[440px] lg:h-[480px]">
+          <img
+            src={loc.img}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="w-full h-full object-cover grayscale opacity-55"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-[#0a0a0a]/25" />
 
-          <div className="relative overflow-hidden aspect-[4/3] md:aspect-auto md:min-h-[400px]">
-            <img
-              src={loc.img}
-              alt={loc.label}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
-            />
-          </div>
+          {/* TAG CONVENTION: tags/badges site-wide are set in the display face,
+              ITALIC, in natural case — not tracked uppercase. Uppercase plus
+              letter-spacing fights an italic, so both are dropped here.
+              Cream, not orange: orange signals "interactive" everywhere else
+              (CTAs, Explore, links) and this card is deliberately not
+              clickable, so it should not promise an action it cannot do. */}
+          <span className="absolute top-4 left-4 sm:top-5 sm:left-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fafaf7]/95 backdrop-blur-sm text-[#0a0a0a] font-['Founders_Grotesk'] italic text-xs sm:text-sm shadow-[0_6px_18px_-8px_rgba(10,10,10,0.6)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6700]" aria-hidden="true" />
+            {loc.badge}
+          </span>
 
-          <div className="p-6 sm:p-8 md:p-12 lg:p-14 flex flex-col justify-between gap-8 md:gap-10">
-            <span className="text-[10px] tracking-[0.3em] uppercase font-['NeueMontreal'] text-[#0a0a0a]/50">
-              Featured Location
+          <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 md:p-7 flex flex-col gap-2.5">
+            <span className="font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#fafaf7]/55">
+              {loc.area}
             </span>
 
-            <div>
-              <h3 className='font-["Founders_Grotesk"] font-bold text-[#0a0a0a] text-5xl sm:text-6xl md:text-7xl tracking-tight leading-[0.9] uppercase'>
-                {loc.label}
-              </h3>
-              <p className="font-['NeueMontreal'] text-[#0a0a0a]/65 text-base leading-relaxed mt-5 sm:mt-6 max-w-[44ch]">
-                {loc.desc}
-              </p>
-            </div>
+            <h3 className='font-["Founders_Grotesk"] font-bold text-white/85 text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[0.95] uppercase'>
+              {loc.label}
+            </h3>
 
-            <div className="flex items-center justify-between gap-4 pt-5 sm:pt-6 border-t border-[#0a0a0a]/12">
-              <span className="text-[#FF6700] font-['NeueMontreal'] text-xs tracking-[0.2em] uppercase">
-                Visit {loc.label}
-              </span>
-              <span className="w-10 h-10 rounded-full border border-[#0a0a0a]/15 flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF6700] group-hover:border-[#FF6700] transition-colors duration-300">
-                <LuArrowUpRight
-                  className="w-4 h-4 text-[#0a0a0a]/70 group-hover:text-[#0a0a0a] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  strokeWidth={1.75}
-                />
-              </span>
-            </div>
+            <p className="font-['NeueMontreal'] text-white/60 text-xs sm:text-sm leading-relaxed">
+              {loc.desc}
+            </p>
           </div>
-
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }
@@ -107,16 +121,9 @@ export default function Featured() {
         className="px-5 sm:px-10 md:px-20 border-b border-[#0a0a0a]/10 pb-8 sm:pb-10 md:pb-14"
       >
         <div className="max-w-3xl">
-          <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
-            <span className="w-8 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Our Locations
-            </p>
-          </motion.div>
-
           <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] tracking-tighter leading-[0.95] overflow-hidden pb-[0.05em] text-[#0a0a0a]'>
             <motion.span variants={lineUp} className="block">
-              Our Prime <span className="text-[#FF6700]">Locations.</span>
+              Find <span className="text-[#FF6700]">Us.</span>
             </motion.span>
           </h2>
 
@@ -124,7 +131,7 @@ export default function Featured() {
             variants={fadeUp}
             className="mt-5 sm:mt-6 text-[#0a0a0a]/60 text-base font-['NeueMontreal'] max-w-[54ch] leading-relaxed"
           >
-            Three addresses in Delhi NCR&apos;s most-wanted neighbourhoods — each one metro-connected and built around the way you actually work.
+            Barakhamba, Jhandewalan and Noida, Sector 142, each a short walk from the metro.
           </motion.p>
         </div>
       </motion.div>
@@ -134,14 +141,39 @@ export default function Featured() {
         whileInView="show"
         viewport={{ once: true, margin: "-60px" }}
         variants={stagger}
-        className="px-5 sm:px-10 md:px-20 mt-8 sm:mt-10 md:mt-14 flex flex-col gap-5 md:gap-6"
+        className="px-5 sm:px-10 md:px-20 mt-8 sm:mt-10 md:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-          <StackedCard loc={LOCATIONS[0]} />
-          <StackedCard loc={LOCATIONS[1]} />
-        </div>
+        {LOCATIONS.map((loc) => (
+          <LocationCard key={loc.id} loc={loc} />
+        ))}
+        <ComingSoonCard loc={UPCOMING_LOCATION} />
+      </motion.div>
 
-        <FeatureCard loc={LOCATIONS[2]} />
+      {/* ── One map, all three locations ────────────────────────────────
+          Brand search embed, so each pin is the real Google Business Profile.
+          No location list here on purpose: the cards above already name all
+          three, and repeating them under the map read as duplication. */}
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-60px" }}
+        variants={stagger}
+        className="px-5 sm:px-10 md:px-20 mt-10 sm:mt-14 md:mt-16"
+      >
+        <motion.div
+          variants={fadeUp}
+          className="relative rounded-2xl md:rounded-3xl overflow-hidden border border-[#0a0a0a]/12 shadow-[0_40px_90px_-45px_rgba(10,10,10,0.4)]"
+        >
+          <iframe
+            src={getAllLocationsMapEmbedUrl()}
+            title="The Berry Coworks · Barakhamba, Jhandewalan and Noida"
+            className="w-full h-[380px] sm:h-[480px] md:h-[560px] block"
+            style={{ border: 0 }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </motion.div>
       </motion.div>
     </div>
   );

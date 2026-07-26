@@ -10,8 +10,11 @@
 // Phone: main brand number used across all locations. Replace with per-location
 // numbers when the client confirms.
 //
-// SAMPLE fields (replace as real content arrives): img, gallery,
-//   highlights, neighbourhood, parking
+// SAMPLE fields (replace as real content arrives): img, gallery, highlights,
+//   neighbourhood, parking
+//
+// Copy rewritten (Oct 2026) to remove em dashes and cut filler per client
+// feedback. Voice unchanged; every line now says something specific.
 // ─────────────────────────────────────────────────────────────────────────
 
 const HERO_CONNAUGHT   = "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1600&q=85&fit=crop";
@@ -25,43 +28,60 @@ export const LOCATIONS = [
   // ───────────────────────────────────────────────────────────────────────
   {
     id:    "connaught",
-    label: "Connaught Place",
-    tag:   "Heritage District",
+    label: "Barakhamba",
+    area:  "Barakhamba Road",
     img:   HERO_CONNAUGHT,
 
+    // Client copy (Oct 2026), verbatim. Capitalisation normalised only.
     desc:
-      "Right off the escalator from Barakhamba Metro Station, in the heart of Central Delhi. 100 seats and a Connaught Place address — dedicated cabin seats, private cabins, virtual office space, and a fully equipped 8-seater meeting room. For professionals who want a well-considered workspace in the centre of the city.",
+      "Set inside Connaught Place, one of Delhi's oldest and busiest commercial circles, Barakhamba puts you a few minutes from some of the city's best-known offices, restaurants and metro connections, right where central Delhi does its business.",
+
+    // "what's inside" — client's section, verbatim.
+    whatsInside:
+      "Barakhamba offers dedicated cabin seats and private cabins, priced at ₹16,500 per seat, both finished with the same care as the rest of the Berry Coworks. A virtual office is available for businesses that want a central Delhi address without a desk attached to it. For meetings, an eight-seater room is available at ₹1,499 an hour, with bundles running from ₹4,999 for four hours to ₹16,999 for twenty. Open seating and day passes aren't offered at this address.",
+
+    // "who it's for" — client's section, verbatim.
+    whoItsFor:
+      "Barakhamba suits anyone working out of central Delhi, from a solo professional running a virtual office to a team settling into a private cabin for the long term.",
 
     address: {
       line1:   "102, First Floor, 27 New Delhi House",
       line2:   "Barakhamba Road, Connaught Lane",
       city:    "New Delhi",
       pincode: "110001",
-      full:    "102, First Floor, 27 New Delhi House, Barakhamba Road, Connaught Lane, New Delhi 110001",
+      full:    "102, FF, 27 New Delhi House, Barakhamba Rd, Connaught Lane, Barakhamba, New Delhi, Delhi 110001",
     },
 
     phone:    "+91 81784 49718",
-    email:    "hello@theberrycoworks.com",
-    hours:    "Mon–Sat · 8 AM – 9 PM · 24/7 for members",
-    metro:    "Barakhamba Road (Blue Line) · Steps from the escalator",
-    parking:  "Paid parking · Statesman House (5 min walk)",
-    capacity: "100 seats · 8-seater meeting room",
+    email:    "contact@theberrycoworks.com",
+    // Client correction (Oct 2026): Mon–Sat, 8 AM to 8 PM (was 9 PM).
+    hours:    "Mon to Sat, 8 AM to 8 PM.",
+
+    // metro / parking / capacity retained in data but NOT rendered as headline
+    // stats on the detail page. Client asked to drop the Metro, Parking and
+    // Capacity tiles from the meta strip (capacity "not to be shared", metro
+    // "not required in such a main spot", parking "we don't want to mention").
+    // Kept here so nothing that references them breaks; simply not surfaced.
+    metro:    "Barakhamba Road (Blue Line), steps from the escalator",
+    parking:  "Paid parking at Statesman House, 5 min walk",
+    capacity: "100 seats, 8-seater meeting room",
 
     coords: { lat: 28.6302877, lng: 77.2231987 },
 
+    highlightTabs: ["The Address", "Metro", "The Area", "The Space", "Phone Booths"],
     highlights: [
-      "On Barakhamba Road — Delhi's most-recognisable business address",
+      "On Barakhamba Road, Delhi's most-recognisable business address",
       "Steps from Barakhamba Road metro on the Blue Line",
       "Walking distance to Janpath, Khan Market, and India Gate",
-      "Floor-to-ceiling windows along the entire Barakhamba-facing facade",
-      "Private phone booths every fifteen seats — never wait for a call",
+      "Floor-to-ceiling windows along the Barakhamba-facing facade",
+      "Private phone booths every fifteen seats",
       "Member-only rooftop lounge with views across central Delhi",
       "On-site espresso bar and curated lunch menu daily",
-      "Surrounded by every embassy, hotel, and boardroom that matters",
+      "Embassies, hotels, and boardrooms all on the same street",
     ],
 
     neighbourhood:
-      "Barakhamba Road is the eastern radial of Connaught Place — the road every Delhi boardroom faces. The Lalit, The Park, and a dozen embassies are on this street. The Statesman House, FICCI, and the offices of half the country's law firms are at this address.\n\nWalk five minutes in any direction and you'll find what your day needs. Lunch at Saravana Bhavan or Wenger's at the Inner Circle. Coffee at the Indian Coffee House. A meeting in the lobby of The Imperial. Late-night drinks in Khan Market. Connaught Place is not a neighbourhood — it's the centre of gravity for everyone who works in Delhi.\n\nFor members, the location pays its own rent. Clients meet you here because they'd come here anyway. Pitches feel different when you can walk a prospective partner from your desk to lunch at The Claridges in under ten minutes.",
+      "Barakhamba Road is the eastern radial of Connaught Place, the road every Delhi boardroom faces. The Lalit, The Park, and a dozen embassies are on this street. The Statesman House, FICCI, and the offices of half the country's law firms are at this address.\n\nWalk five minutes in any direction and you'll find what your day needs. Lunch at Saravana Bhavan or Wenger's at the Inner Circle. Coffee at the Indian Coffee House. A meeting in the lobby of The Imperial. Late-night drinks in Khan Market.\n\nFor members, the location pays its own rent. Clients meet you here because they'd come here anyway. Pitches feel different when you can walk a prospective partner from your desk to lunch at The Claridges in under ten minutes.",
 
     gallery: [
       "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=85&fit=crop",
@@ -69,7 +89,7 @@ export const LOCATIONS = [
       "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1000&q=85&fit=crop",
       "https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=1000&q=85&fit=crop",
       "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1582653291997-079a1c04e09b?w=1400&q=85&fit=crop",
+      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1400&q=85&fit=crop",
       "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1400&q=85&fit=crop",
       "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=1600&q=85&fit=crop",
     ],
@@ -82,42 +102,50 @@ export const LOCATIONS = [
   {
     id:    "jhandewalan",
     label: "Jhandewalan",
-    tag:   "Creative Quarter",
+    area:  "Jhandewalan Extension",
     img:   HERO_JHANDEWALAN,
 
+    // Client copy (Oct 2026), verbatim.
     desc:
-      "Ten metres from Jhandewalan Metro Station. 200 seats designed for a community that values ease as much as it values the work. Flexi seats and day passes sit alongside dedicated cabin seats, private cabins, virtual office space, and two 7-seater meeting rooms — every kind of member finds exactly what they need.",
+      "Tucked into Jhandewalan's quieter commercial stretch, this centre sits close to Paharganj and central Delhi's older business lanes, an easy reach for anyone working out of the heart of the city.",
+
+    whatsInside:
+      "Jhandewalan offers flexi seating and day passes at ₹500 a day, alongside open seating at ₹8,500 a month and private cabins at ₹11,500 per seat. A virtual office is available for businesses that need an address without a desk, and two seven-seater meeting rooms are on hand at ₹1,199 an hour, with bundles from ₹3,999 for four hours to ₹12,999 for twenty. Flexi seat bundles are also available across 10, 15, 30 and 45 day options, starting at ₹4,599.",
+
+    whoItsFor:
+      "This centre suits a wide mix of people, professionals dropping by for a single day, and teams that have made it their permanent base.",
 
     address: {
       line1:   "1-E/3, First Floor, Block E 1",
       line2:   "Jhandewalan Extension",
       city:    "New Delhi",
       pincode: "110055",
-      full:    "1-E/3, First Floor, Block E 1, Jhandewalan Extension, New Delhi 110055",
+      full:    "1-E/3, First Floor, Block E 1, Jhandewalan Extension, Jhandewalan, New Delhi, Delhi 110055",
     },
 
     phone:    "+91 81784 49718",
-    email:    "hello@theberrycoworks.com",
-    hours:    "Mon–Sat · 8 AM – 9 PM · 24/7 for members",
-    metro:    "Jhandewalan (Blue Line) · 10 metres from the station",
-    parking:  "On-site stilt parking · 30 cars",
-    capacity: "200 seats · two 7-seater meeting rooms",
+    email:    "contact@theberrycoworks.com",
+    hours:    "Mon to Sat, 8 AM to 8 PM.",
+    metro:    "Jhandewalan (Blue Line), 10 metres from the station",
+    parking:  "On-site stilt parking for 30 cars",
+    capacity: "200 seats, two 7-seater meeting rooms",
 
     coords: { lat: 28.6444417, lng: 77.2003972 },
 
+    highlightTabs: ["The Space", "Interiors", "Studio", "Metro", "Terrace"],
     highlights: [
-      "Quiet first-floor workspace tucked into Block E 1 — no street noise",
+      "Quiet first-floor workspace tucked into Block E 1",
       "Double-height ceilings, raw concrete walls, and curated art on every floor",
       "Soundproofed podcast studio bookable by members",
       "Ten metres from Jhandewalan Metro on the Blue Line",
-      "South-facing terrace lounge with full-day natural light",
-      "Free Friday lunches sourced from neighbourhood restaurants",
-      "On-site stilt parking for thirty cars — rare for central Delhi",
+      "South-facing terrace lounge",
+      "Free Friday lunches from neighbourhood restaurants",
+      "On-site stilt parking for thirty cars, rare for central Delhi",
       "Walking distance to Karol Bagh, Paharganj, and Rani Jhansi Road",
     ],
 
     neighbourhood:
-      "Jhandewalan Extension is Delhi's quiet creative hub — wide streets, reasonable rents, and half the buildings hold a design studio, an ad agency, or a film editor on the second floor.\n\nIt's an ideal address for the kind of work that needs both centrality and breathing room. You're ten minutes from Connaught Place, fifteen from Karol Bagh, walking distance to the Jhandewalan Mandir, the DDA office complex, and the New Delhi Railway Station. The Blue Line runs overground here — a small detail that means your morning has a view.\n\nThe immediate area has the best of old Delhi compressed into a few blocks: legacy printing presses, fabric wholesalers, paratha shops that have run for sixty years, and a row of small cafés that members rotate through for their afternoon meetings.",
+      "Jhandewalan Extension is Delhi's quiet creative hub. Wide streets, reasonable rents, and half the buildings hold a design studio, an ad agency, or a film editor on the second floor.\n\nYou're ten minutes from Connaught Place, fifteen from Karol Bagh, walking distance to the Jhandewalan Mandir, the DDA office complex, and the New Delhi Railway Station. The Blue Line runs overground here, which means your morning has a view.\n\nThe area has the best of old Delhi compressed into a few blocks: legacy printing presses, fabric wholesalers, paratha shops that have run for sixty years, and a row of small cafés that members rotate through for their afternoon meetings.",
 
     gallery: [
       "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1400&q=85&fit=crop",
@@ -138,11 +166,18 @@ export const LOCATIONS = [
   {
     id:    "noida",
     label: "Noida",
-    tag:   "Tech Corridor",
+    area:  "Sector 142",
     img:   HERO_NOIDA,
 
+    // Client copy (Oct 2026), verbatim.
     desc:
-      "The Berry at its most expansive — 700 seats today with a clear path to 2,000. One hundred metres from Sector 142 Metro Station, with DG power backup throughout. The meeting infrastructure runs from formal meeting rooms to casual lounges to a dedicated conference room. Alongside flexible seats, dedicated desks, private cabins, and virtual office space, this is The Berry's most complete expression of what a workspace can be.",
+      "Set inside Sector 142's fast-growing business corridor, this centre sits among some of Noida's newer corporate campuses and tech offices, built for teams who need scale close by.",
+
+    whatsInside:
+      "Noida, Sector 142 offers the widest range of any address: flexible open seating and dedicated desks at ₹5,500 a month, private cabins at ₹7,500 per seat, and day passes at ₹500 a day. A virtual office covers registration and correspondence, and the meeting room setup runs from an eight-seater at ₹899 an hour to a nine-seater at ₹999, up to a twenty-four person boardroom at ₹2,499. The centre also runs its own DG power backup, casual lounges, and flexi seat bundles starting at ₹3,499.",
+
+    whoItsFor:
+      "Noida, Sector 142 currently hosts our largest teams and widest range of formats, from a single flexible seat to a full private cabin.",
 
     address: {
       line1:   "Vinpar Softech Building, Plot No 15",
@@ -153,27 +188,28 @@ export const LOCATIONS = [
     },
 
     phone:    "+91 81784 49718",
-    email:    "hello@theberrycoworks.com",
-    hours:    "Mon–Sat · 8 AM – 9 PM · 24/7 for members",
-    metro:    "Sector 142 (Aqua Line) · 100 metres from the station",
-    parking:  "On-site basement parking · 60 cars",
-    capacity: "700 seats today · growing to 2,000",
+    email:    "contact@theberrycoworks.com",
+    hours:    "Mon to Sat, 8 AM to 8 PM.",
+    metro:    "Sector 142 (Aqua Line), 100 metres from the station",
+    parking:  "On-site basement parking for 60 cars",
+    capacity: "700 seats today, growing to 2,000",
 
     coords: { lat: 28.4997063, lng: 77.4152959 },
 
+    highlightTabs: ["Expressway", "Floor Plate", "Meeting Rooms", "Metro", "Team Zones"],
     highlights: [
-      "Directly on the Noida-Greater Noida Expressway — the city's tech artery",
-      "The Berry's largest floor-plate — 700 seats with a clear path to 2,000",
+      "Directly on the Noida-Greater Noida Expressway",
+      "The Berry's largest floor-plate: 700 seats today, path to 2,000",
       "Formal meeting rooms, casual lounges, and a dedicated conference room",
       "One hundred metres from Sector 142 Metro on the Aqua Line",
-      "Built for product teams — quiet zones, war rooms, and demo spaces",
-      "Full DG power backup, fibre redundancy, and zero downtime since opening",
-      "Roof garden with shaded outdoor seating and weekly Friday socials",
-      "Easy taxi pickup, low traffic mornings, and ample visitor parking",
+      "Built for product teams: quiet zones, war rooms, and demo spaces",
+      "Full DG power backup, fibre redundancy, zero downtime since opening",
+      "Roof garden with shaded outdoor seating and Friday socials",
+      "Easy taxi pickup, low traffic mornings, ample visitor parking",
     ],
 
     neighbourhood:
-      "Sector 142 sits on the Noida-Greater Noida Expressway — the corridor that defines Noida's tech economy. Paytm, HCL, Genpact, and half the country's product-engineering teams are within fifteen minutes of this address. The Sector 142 metro on the Aqua Line connects directly to Botanical Garden and the Blue Line interchange, putting central Delhi forty-five minutes away.\n\nThe Expressway location is the strategic pick: less traffic than the older Noida sectors, faster commute from Greater Noida and South Delhi, and you're surrounded by the kind of neighbours your team probably wants to interview at next.\n\nFor companies hiring engineers across NCR, this location is gold. Members tell us they close offers faster from Sector 142 because their candidates' commutes shrink by half.",
+      "Sector 142 sits on the Noida-Greater Noida Expressway, the corridor that defines Noida's tech economy. Paytm, HCL, Genpact, and half the country's product-engineering teams are within fifteen minutes of this address. The Sector 142 metro on the Aqua Line connects directly to Botanical Garden and the Blue Line interchange, putting central Delhi forty-five minutes away.\n\nThe Expressway location is the strategic pick: less traffic than the older Noida sectors, faster commute from Greater Noida and South Delhi, and you're surrounded by the kind of neighbours your team probably wants to interview at next.\n\nFor companies hiring engineers across NCR, this location is gold. Members tell us they close offers faster from Sector 142 because their candidates' commutes shrink by half.",
 
     gallery: [
       "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1400&q=85&fit=crop",
@@ -195,7 +231,7 @@ export function getLocationById(id) {
 
 // Returns the Google Maps URL for a location (used for "Open in Google Maps" links).
 // Uses explicit `mapsUrl` field if set, otherwise builds one from coords.
-// Returns null if neither is available — callers should handle that.
+// Returns null if neither is available; callers should handle that.
 export function getMapsUrl(location) {
   if (!location) return null;
   if (location.mapsUrl) return location.mapsUrl;
@@ -206,8 +242,59 @@ export function getMapsUrl(location) {
 }
 
 // Returns the embeddable Google Maps URL (for an <iframe>) built from coords.
-// Returns null when coords are missing — callers should render a fallback.
+// Returns null when coords are missing; callers should render a fallback.
 export function getMapsEmbedUrl(location) {
-  if (!location?.coords?.lat || !location?.coords?.lng) return null;
-  return `https://maps.google.com/maps?q=${location.coords.lat},${location.coords.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+  if (!location) return null;
+  // If a real embed URL is supplied (Google Business Profile → Share → Embed a
+  // map → copy the iframe src), use it verbatim; that shows the exact listing.
+  if (location.mapsEmbedUrl) return location.mapsEmbedUrl;
+  // Otherwise query by business name + area so Google surfaces the actual Berry
+  // listing (labelled pin / profile) instead of a blank coordinate marker.
+  const query = ["The Berry Coworks", location.area, location.address?.city]
+    .filter(Boolean)
+    .join(", ");
+  if (query.trim()) {
+    return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
+  }
+  if (location.coords?.lat && location.coords?.lng) {
+    return `https://maps.google.com/maps?q=${location.coords.lat},${location.coords.lng}&z=15&output=embed`;
+  }
+  return null;
 }
+
+// ── Single map showing all three locations (homepage "Find Us") ──────────
+// Searching the brand name puts every Berry listing on one map, and because
+// the pins are the real Google Business Profiles, tapping one opens that
+// location's profile (photos, reviews, directions).
+//
+// CAVEAT: which listings Google returns for a search embed is Google's call,
+// not ours. If a location does not pin (Noida has been intermittent), the
+// dependable fix is a curated map: in Google My Maps add the three locations,
+// then Share > Embed a map, and paste that iframe `src` below. When set, it
+// overrides the search entirely and the three pins are guaranteed.
+const ALL_LOCATIONS_EMBED_URL = null;
+
+export function getAllLocationsMapEmbedUrl() {
+  if (ALL_LOCATIONS_EMBED_URL) return ALL_LOCATIONS_EMBED_URL;
+  // Centre roughly between the three so all of Delhi NCR is in frame.
+  return "https://maps.google.com/maps?q=The+Berry+Coworks&ll=28.5915,77.2796&z=10&output=embed";
+}
+
+// ── Announced-but-not-open location ─────────────────────────────────────
+// Rendered as a fourth, non-clickable card on the homepage "Find Us" grid.
+//
+// Deliberately NOT part of LOCATIONS: that array drives generateStaticParams
+// (which would create a /locations/noida-62 route), the footer links, the
+// contact form's location picker and the map. None of those should list a
+// space that has not opened. When it does open, move this object into
+// LOCATIONS with the full address/coords/gallery fields and delete it here.
+export const UPCOMING_LOCATION = {
+  id:    "noida-62",
+  label: "Noida",
+  area:  "Sector 62",
+  badge: "Coming Soon",
+  desc:  "Our next centre is taking shape in Noida, Sector 62. More on this soon.",
+  // Placeholder: reuses a workspace interior already used elsewhere in the
+  // project, so it is a known-good shot. Swap for the real Sector 62 space.
+  img:   "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1600&q=85&fit=crop",
+};

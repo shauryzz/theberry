@@ -41,7 +41,7 @@ export default function WorkspaceTypes() {
           <motion.div variants={fadeUp} className="flex items-center gap-3 mb-3 sm:mb-4">
             <span className="w-8 h-px bg-[#FF6700]" />
             <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Workspace Types
+              Pick your setup
             </p>
           </motion.div>
           <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] tracking-tighter leading-[0.95] text-[#0a0a0a] overflow-hidden pb-[0.05em] max-w-[20ch]'>
@@ -53,7 +53,7 @@ export default function WorkspaceTypes() {
             variants={fadeUp}
             className="mt-5 sm:mt-6 font-['NeueMontreal'] text-base text-[#0a0a0a]/60 max-w-[54ch] leading-relaxed"
           >
-            From a single hot desk to a fully branded private suite — pick the plan that fits how you work today, and scale the moment your team outgrows it.
+            From a single flexible seat to a fully branded managed office. Pick the plan that fits how you work today, and scale the moment your team outgrows it.
           </motion.p>
         </div>
 
@@ -122,7 +122,7 @@ export default function WorkspaceTypes() {
                       </div>
                       <span className="w-10 h-10 rounded-full border border-[#0a0a0a]/15 flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF6700] group-hover:border-[#FF6700] transition-colors duration-300">
                         <LuArrowUpRight
-                          className="w-4 h-4 text-[#0a0a0a]/70 group-hover:text-[#0a0a0a] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                          className="w-4 h-4 text-[#0a0a0a]/70 group-hover:text-[#0a0a0a] transition-all duration-300 group-hover:rotate-45"
                           strokeWidth={1.75}
                         />
                       </span>
@@ -144,7 +144,7 @@ export default function WorkspaceTypes() {
             className="group font-['NeueMontreal'] text-xs tracking-[0.25em] uppercase text-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300 inline-flex items-center gap-2"
           >
             See Full Pricing
-            <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-45" />
           </Link>
         </motion.div>
       </motion.div>

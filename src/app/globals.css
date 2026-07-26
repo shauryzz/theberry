@@ -21,8 +21,8 @@ body {
 /* ── Font aliasing ──
    The site was prototyped against two licensed fonts referenced in
    components as font-["Founders_Grotesk"] and font-['NeueMontreal'].
-   We now load Bricolage Grotesque (display) and Inter (body) via
-   next/font/google in layout.js, exposed as CSS variables.
+   We now load Manrope (display) and Inter (body) via next/font/google
+   in layout.js, exposed as CSS variables.
 
    Rather than touch every component, we intercept those legacy names
    here via attribute selectors. Any element whose className contains
@@ -31,7 +31,7 @@ body {
    directly, you can delete these two blocks. */
 
 [class*="Founders_Grotesk"] {
-  font-family: var(--font-display), system-ui, sans-serif !important;
+  font-family: var(--font-display), system-ui, -apple-system, sans-serif !important;
 }
 
 [class*="NeueMontreal"] {
@@ -78,12 +78,15 @@ body {
   will-change: transform, width, height;
 }
 
-/* Hover state — expands into a ring around the interactive target */
+/* Hover state — intentionally identical to the resting state.
+   The cursor stays a static solid orange dot on links/buttons instead of
+   expanding into the old transparent ring. CustomCursor.jsx still toggles
+   the .hovered class, but it no longer changes the appearance. */
 #custom-cursor.hovered {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 103, 0, 0.15);
-  border: 1.5px solid #FF6700;
+  width: 10px;
+  height: 10px;
+  background: #FF6700;
+  border: none;
 }
 
 /* Touch devices: hide entirely (JS also bails, but belt + braces) */

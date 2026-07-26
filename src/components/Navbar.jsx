@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { LuArrowUpRight } from "react-icons/lu";
+import { LuArrowUpRight, LuPhone } from "react-icons/lu";
 import { NAV_LINKS } from "../data/nav";
 import { SITE, SOCIALS } from "../data/site";
 import { BOOKING, whatsappLink } from "../data/booking";
@@ -39,12 +39,16 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const hasDarkHero = pathname === "/" || /^\/locations\/[^/]+$/.test(pathname);
+  // Only the homepage still opens on a dark hero. The location detail pages
+  // were changed to a light (cream) hero to match Solutions / For Enterprises,
+  // so they must use the light navbar from the top — otherwise the white nav
+  // text sits invisibly on cream until you scroll.
+  const hasDarkHero = pathname === "/";
   const onLight = open || (hasDarkHero ? scrolled : true);
 
   // Logo file is the brand mark with its own colors (dark text + orange dot).
   // It's designed to work on both light and dark backgrounds — no filter needed.
-  const logoSrc = "/images/final_logo_berry.webp";
+  const logoSrc = "/images/final_logo_berry.png";
 
   const isActive = (href) => pathname === href;
 
@@ -81,18 +85,16 @@ export default function Navbar() {
             {NAV_LINKS.slice(SPLIT_IDX).map((l) => (
               <DesktopNavLink key={l.title} link={l} active={isActive(l.href)} onLight={onLight} />
             ))}
-            <a
-              href={BOOKING.tour}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/contact"
               className={`ml-3 inline-flex items-center gap-2 px-5 py-2 text-[13px] rounded-full transition-all duration-300 font-['NeueMontreal'] ${
                 onLight
                   ? "bg-[#0a0a0a] text-[#fafaf7] hover:bg-[#FF6700] hover:text-[#0a0a0a]"
                   : "bg-white/95 text-[#0a0a0a] hover:bg-[#FF6700]"
               }`}>
-              Book a Tour
+              Get in Touch
               <span className="w-1.5 h-1.5 rounded-full bg-[#FF6700]" />
-            </a>
+            </Link>
           </div>
 
           {/* ── Mobile bar ───────────────────────────────────────────── */}
@@ -107,14 +109,23 @@ export default function Navbar() {
                 priority
               />
             </Link>
-            <button onClick={() => setOpen(!open)} className="flex flex-col gap-[5px] p-1.5" aria-label="Toggle menu">
-              <motion.span animate={open ? { rotate: 45, y: 6.5 }   : { rotate: 0, y: 0 }} transition={{ duration: 0.3 }}
-                className={`block w-5 h-[1.5px] origin-center ${onLight ? "bg-[#0a0a0a]" : "bg-white"}`} />
-              <motion.span animate={open ? { opacity: 0 }            : { opacity: 1 }}     transition={{ duration: 0.2 }}
-                className={`block w-5 h-[1.5px] ${onLight ? "bg-[#0a0a0a]" : "bg-white"}`} />
-              <motion.span animate={open ? { rotate: -45, y: -6.5 }  : { rotate: 0, y: 0 }} transition={{ duration: 0.3 }}
-                className={`block w-5 h-[1.5px] origin-center ${onLight ? "bg-[#0a0a0a]" : "bg-white"}`} />
-            </button>
+            <div className="flex items-center gap-2.5">
+              <a
+                href={SITE.phoneHref}
+                aria-label={`Call ${SITE.phone}`}
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#FF6700] text-[#0a0a0a] active:scale-95 transition-transform"
+              >
+                <LuPhone className="w-4 h-4" strokeWidth={2} />
+              </a>
+              <button onClick={() => setOpen(!open)} className="flex flex-col gap-[5px] p-1.5" aria-label="Toggle menu">
+                <motion.span animate={open ? { rotate: 45, y: 6.5 }   : { rotate: 0, y: 0 }} transition={{ duration: 0.3 }}
+                  className={`block w-5 h-[1.5px] origin-center ${onLight ? "bg-[#0a0a0a]" : "bg-white"}`} />
+                <motion.span animate={open ? { opacity: 0 }            : { opacity: 1 }}     transition={{ duration: 0.2 }}
+                  className={`block w-5 h-[1.5px] ${onLight ? "bg-[#0a0a0a]" : "bg-white"}`} />
+                <motion.span animate={open ? { rotate: -45, y: -6.5 }  : { rotate: 0, y: 0 }} transition={{ duration: 0.3 }}
+                  className={`block w-5 h-[1.5px] origin-center ${onLight ? "bg-[#0a0a0a]" : "bg-white"}`} />
+              </button>
+            </div>
           </div>
         </nav>
       </header>
@@ -184,7 +195,7 @@ export default function Navbar() {
                         className={`w-5 h-5 transition-all duration-300 flex-shrink-0 ${
                           active
                             ? "text-[#FF6700]"
-                            : "text-[#0a0a0a]/30 group-hover:text-[#FF6700] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                            : "text-[#0a0a0a]/30 group-hover:text-[#FF6700] group-hover:rotate-45"
                         }`}
                         strokeWidth={1.75}
                       />
@@ -205,20 +216,20 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center justify-center gap-2 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide"
+                  className="group inline-flex items-center justify-center gap-2 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide"
                 >
                   Book a Tour
-                  <LuArrowUpRight className="w-3.5 h-3.5" strokeWidth={2} />
+                  <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={2} />
                 </a>
                 <a
                   href={whatsappLink()}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center justify-center gap-2 py-3.5 border border-[#0a0a0a]/25 text-[#0a0a0a]/85 rounded-full text-sm font-['NeueMontreal'] tracking-wide"
+                  className="group inline-flex items-center justify-center gap-2 py-3.5 border border-[#0a0a0a]/25 text-[#0a0a0a]/85 rounded-full text-sm font-['NeueMontreal'] tracking-wide"
                 >
                   WhatsApp
-                  <LuArrowUpRight className="w-3.5 h-3.5" strokeWidth={2} />
+                  <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={2} />
                 </a>
               </div>
 

@@ -1,50 +1,87 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   LuArrowUpRight,
   LuMail,
   LuPhone,
   LuMessageCircle,
   LuClock,
-  LuMapPin,
   LuCheck,
   LuLoader,
 } from "react-icons/lu";
 import { SITE } from "../data/site";
-import { LOCATIONS, getMapsUrl } from "../data/locations";
-import { BOOKING, whatsappLink } from "../data/booking";
+import { LOCATIONS } from "../data/locations";
+import { whatsappLink } from "../data/booking";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
-const lineUp  = {
+const lineUp = {
   hidden: { y: "105%" },
   show:   { y: "0%", transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } },
 };
-const fadeUp  = {
+const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   show:   { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 };
 
+// ONE heading scale, identical to Solutions / For Enterprises. No eyebrows.
+const HEADING_CLS =
+  "font-['Founders_Grotesk'] font-bold uppercase tracking-tighter leading-[0.95] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[4.6vw] overflow-hidden pb-[0.05em]";
+
+// Hero image band (PLACEHOLDER). Swap for a real Berry photo when supplied.
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1920&q=85&fit=crop";
+
+// Interests aligned to the products that actually route here as enquiries.
+// Removed "Flexible Seat" (no longer a product) and renamed "Private Cabin" to
+// "Private Office" per the client ruling that they are one product. Managed
+// Office is valid again now that the For Enterprises page exists.
 const INTERESTS = [
-  "Hot Desk",
+  "Private Office",
   "Dedicated Desk",
-  "Private Cabin",
-  "Custom Suite",
+  "Managed Office",
+  "Virtual Office",
+  "Events",
   "Just exploring",
 ];
+
+/* Single-line section heading, last word orange, dark option. */
+function Heading({ lead, accent, dark = false }) {
+  return (
+    <h2 className={`${HEADING_CLS} ${dark ? "text-[#fafaf7]" : "text-[#0a0a0a]"}`}>
+      <motion.span variants={lineUp} className="block">
+        {lead} <span className="text-[#FF6700]">{accent}</span>
+      </motion.span>
+    </h2>
+  );
+}
+
+/* Pill CTA with the orange sweep from below, the site's standard button. */
+function SweepCTA({ children, href, external = false, dark = false }) {
+  const cls = `group/cta relative inline-flex items-center gap-2 overflow-hidden rounded-full border px-6 py-3 transition-colors duration-300 ${
+    dark ? "border-[#fafaf7]/25 hover:border-[#FF6700]" : "border-[#0a0a0a]/20 hover:border-[#FF6700]"
+  }`;
+  const inner = (
+    <>
+      <span aria-hidden="true" className="absolute inset-0 bg-[#FF6700] translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+      <span className={`relative font-['NeueMontreal'] text-[11px] sm:text-xs tracking-[0.18em] uppercase ${dark ? "text-[#fafaf7] group-hover/cta:text-[#0a0a0a]" : "text-[#0a0a0a]"}`}>
+        {children}
+      </span>
+      <LuArrowUpRight className={`relative w-3.5 h-3.5 transition-transform duration-300 group-hover/cta:rotate-45 ${dark ? "text-[#fafaf7] group-hover/cta:text-[#0a0a0a]" : "text-[#0a0a0a]"}`} />
+    </>
+  );
+  return external
+    ? <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+    : <Link href={href} className={cls}>{inner}</Link>;
+}
 
 export default function ContactContent() {
   const locationOptions = ["Any", ...LOCATIONS.map((l) => l.label)];
 
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    interest: "",
-    location: "",
-    message: "",
+    name: "", email: "", phone: "", interest: "", location: "", message: "",
   });
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [errors, setErrors] = useState({});
@@ -66,86 +103,74 @@ export default function ContactContent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
     setStatus("submitting");
-
-    // TODO (Batch 6): Replace this stub with a real /api/contact POST to Resend.
-    // For now: simulate latency, log payload, show success state.
+    // TODO: replace this stub with a real /api/contact POST.
     // eslint-disable-next-line no-console
     console.log("[contact submission]", form);
     await new Promise((r) => setTimeout(r, 1200));
-
     setStatus("success");
   };
 
   return (
-    <main className="relative w-full bg-[#fafaf7] text-[#0a0a0a] overflow-hidden">
-
-      {/* ═══════════════════════ HERO ═══════════════════════ */}
-      <section className="relative pt-32 sm:pt-40 md:pt-48 pb-12 sm:pb-16 md:pb-20 px-5 sm:px-10 md:px-20">
-        <motion.div initial="hidden" animate="show" variants={stagger}>
-          <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
-            <span className="w-10 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Contact
-            </p>
-          </motion.div>
-
-          <h1 className='font-["Founders_Grotesk"] font-bold uppercase leading-[0.9] tracking-tighter text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[6.5vw]'>
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block">Let&apos;s</motion.span>
-            </span>
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block text-[#FF6700]">talk.</motion.span>
-            </span>
-          </h1>
-
+    <>
+      {/* ── HERO - clean cream, same open as Solutions / For Enterprises ── */}
+      <section className="px-5 sm:px-10 md:px-20 pt-32 sm:pt-40 md:pt-48 pb-12 sm:pb-16">
+        <motion.div initial="hidden" animate="show" variants={stagger} className="max-w-5xl">
+          <Heading lead="Let's" accent="talk." />
           <motion.p
             variants={fadeUp}
-            className="font-['NeueMontreal'] text-[#0a0a0a]/65 text-base sm:text-lg leading-relaxed mt-8 sm:mt-10 max-w-[58ch]"
+            className="mt-8 sm:mt-10 font-['NeueMontreal'] text-base sm:text-lg md:text-xl text-[#0a0a0a]/65 leading-relaxed max-w-[58ch]"
           >
-            For tours and standard bookings, the app handles it in a minute. For custom suites, partnerships, press, or anything that needs a human — use the form below. We reply within 24 hours, every day except Sunday.
+            For tours and standard bookings, the app handles it in a minute. For managed offices, partnerships, press, or anything that needs a human, use the form below. We reply within 24 hours, every day except Sunday.
           </motion.p>
         </motion.div>
       </section>
 
-      {/* ═══════════════════════ FORM + SIDEBAR ═══════════════════════ */}
-      <section className="px-5 sm:px-10 md:px-20 pb-20 sm:pb-28 md:pb-32 border-b border-[#0a0a0a]/10">
+      {/* Full-bleed image band, same treatment as the Solutions / For
+          Enterprises heroes: wide and shallow, a scale-in on entry, sitting
+          below the copy so text is never set over the photo. PLACEHOLDER
+          image; swap for a real Berry photo when supplied. */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full h-[34vh] sm:h-[42vh] md:h-[52vh] min-h-[260px] max-h-[560px] overflow-hidden bg-[#0a0a0a]/5"
+      >
+        <motion.img
+          src={HERO_IMAGE}
+          alt=""
+          aria-hidden="true"
+          initial={{ scale: 1.08 }}
+          whileInView={{ scale: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </motion.div>
+
+      {/* ── FORM + SIDEBAR ────────────────────────────────────────────── */}
+      <section id="contact-form" className="px-5 sm:px-10 md:px-20 py-16 sm:py-24 md:py-28 border-t border-[#0a0a0a]/10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
 
           {/* ─── LEFT: FORM ─── */}
           <div className="lg:col-span-7">
-            <motion.div
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-80px" }}
-              variants={stagger}
-            >
-              <motion.p variants={fadeUp} className="text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/40 font-['NeueMontreal'] mb-3">
-                Drop us a line
-              </motion.p>
-              <motion.h2 variants={fadeUp} className="font-['Founders_Grotesk'] font-bold uppercase text-3xl sm:text-4xl md:text-5xl leading-[0.95] tracking-tight mb-10 sm:mb-14">
-                Tell us what you&apos;re after.
-              </motion.h2>
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}>
+              <motion.div variants={fadeUp} className="mb-10 sm:mb-14">
+                <Heading lead="Tell us what you're" accent="after." />
+              </motion.div>
 
-              {/* Note: form is a plain <form>, NOT motion.form.
-                  The parent motion.div above handles section entry animation.
-                  Using motion.form here previously broke "Send another message"
-                  reset because the parent's whileInView={once:true} had already
-                  fired, so a re-mounted child stayed stuck in "hidden" state. */}
+              {/* Plain <form>, not motion.form - a re-mounted motion child would
+                  stay stuck "hidden" after the parent's once:true fired. */}
               {status === "success" ? (
                 <SuccessState onReset={() => { setForm({ name: "", email: "", phone: "", interest: "", location: "", message: "" }); setStatus("idle"); }} />
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-7 sm:space-y-8" noValidate>
-
                   <Field
-                    label="Name"
-                    required
-                    error={errors.name}
+                    label="Name" required error={errors.name}
                     input={
                       <input
-                        type="text"
-                        value={form.name}
+                        type="text" value={form.name}
                         onChange={(e) => updateField("name", e.target.value)}
                         className="w-full bg-transparent border-b border-[#0a0a0a]/20 focus:border-[#FF6700] py-3 text-base sm:text-lg font-['NeueMontreal'] text-[#0a0a0a] placeholder:text-[#0a0a0a]/30 outline-none transition-colors"
                         placeholder="Your full name"
@@ -155,13 +180,10 @@ export default function ContactContent() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 sm:gap-8">
                     <Field
-                      label="Email"
-                      required
-                      error={errors.email}
+                      label="Email" required error={errors.email}
                       input={
                         <input
-                          type="email"
-                          value={form.email}
+                          type="email" value={form.email}
                           onChange={(e) => updateField("email", e.target.value)}
                           className="w-full bg-transparent border-b border-[#0a0a0a]/20 focus:border-[#FF6700] py-3 text-base sm:text-lg font-['NeueMontreal'] text-[#0a0a0a] placeholder:text-[#0a0a0a]/30 outline-none transition-colors"
                           placeholder="you@company.com"
@@ -169,12 +191,10 @@ export default function ContactContent() {
                       }
                     />
                     <Field
-                      label="Phone"
-                      helper="Optional"
+                      label="Phone" helper="Optional"
                       input={
                         <input
-                          type="tel"
-                          value={form.phone}
+                          type="tel" value={form.phone}
                           onChange={(e) => updateField("phone", e.target.value)}
                           className="w-full bg-transparent border-b border-[#0a0a0a]/20 focus:border-[#FF6700] py-3 text-base sm:text-lg font-['NeueMontreal'] text-[#0a0a0a] placeholder:text-[#0a0a0a]/30 outline-none transition-colors"
                           placeholder="+91 98765 43210"
@@ -183,23 +203,11 @@ export default function ContactContent() {
                     />
                   </div>
 
-                  <PillField
-                    label="I'm interested in"
-                    options={INTERESTS}
-                    value={form.interest}
-                    onChange={(v) => updateField("interest", v)}
-                  />
-
-                  <PillField
-                    label="Preferred location"
-                    options={locationOptions}
-                    value={form.location}
-                    onChange={(v) => updateField("location", v)}
-                  />
+                  <PillField label="I'm interested in" options={INTERESTS} value={form.interest} onChange={(v) => updateField("interest", v)} />
+                  <PillField label="Preferred location" options={locationOptions} value={form.location} onChange={(v) => updateField("location", v)} />
 
                   <Field
-                    label="Message"
-                    helper="Optional, but the more we know the better we can help"
+                    label="Message" helper="Optional, but the more we know the better we can help"
                     input={
                       <textarea
                         value={form.message}
@@ -211,22 +219,16 @@ export default function ContactContent() {
                     }
                   />
 
-                  <div className="pt-4">
+                  <div className="pt-2">
                     <button
                       type="submit"
                       disabled={status === "submitting"}
                       className="group inline-flex items-center gap-2 px-8 py-4 bg-[#0a0a0a] text-[#fafaf7] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {status === "submitting" ? (
-                        <>
-                          <LuLoader className="w-4 h-4 animate-spin" strokeWidth={2} />
-                          Sending…
-                        </>
+                        <><LuLoader className="w-4 h-4 animate-spin" strokeWidth={2} /> Sending…</>
                       ) : (
-                        <>
-                          Send message
-                          <LuArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
-                        </>
+                        <>Send message <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" strokeWidth={2} /></>
                       )}
                     </button>
                     <p className="mt-4 text-xs text-[#0a0a0a]/40 font-['NeueMontreal']">
@@ -241,226 +243,147 @@ export default function ContactContent() {
 
           {/* ─── RIGHT: DIRECT CONTACT + HOURS ─── */}
           <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-[#0a0a0a]/10">
-            <motion.div
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-80px" }}
-              variants={stagger}
-              className="space-y-10 sm:space-y-12"
-            >
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="space-y-10 sm:space-y-12">
+
               <motion.div variants={fadeUp}>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/40 font-['NeueMontreal'] mb-5">
-                  Reach Us Directly
-                </p>
-                <div className="space-y-1">
-                  <ContactLink icon={LuMail}          label="Email"    value={SITE.email}    href={`mailto:${SITE.email}`} />
-                  <ContactLink icon={LuPhone}         label="Call"     value={SITE.phone}    href={SITE.phoneHref} />
-                  <ContactLink icon={LuMessageCircle} label="WhatsApp" value={SITE.whatsapp} href={whatsappLink()} external />
+                <p className="font-['Founders_Grotesk'] italic text-lg text-[#0a0a0a]/45 mb-5">Reach us directly</p>
+                <div className="space-y-3">
+                  <ContactRow icon={LuMail}          label="Email"    value={SITE.email}    href={`mailto:${SITE.email}`} />
+                  <ContactRow icon={LuPhone}         label="Call"     value={SITE.phone}    href={SITE.phoneHref} />
+                  <ContactRow icon={LuMessageCircle} label="WhatsApp" value={SITE.whatsapp} href={whatsappLink()} external />
                 </div>
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/40 font-['NeueMontreal'] mb-5">
-                  Hours
-                </p>
-                <div className="flex items-start gap-3 font-['NeueMontreal'] text-[#0a0a0a]/75 text-sm sm:text-base leading-relaxed">
-                  <LuClock className="w-4 h-4 text-[#FF6700] mt-1 flex-shrink-0" strokeWidth={2} />
-                  <div>
-                    <p>{SITE.hours}</p>
+                <p className="font-['Founders_Grotesk'] italic text-lg text-[#0a0a0a]/45 mb-5">Hours</p>
+                <div className="flex items-start gap-4 p-4 rounded-2xl border border-[#0a0a0a]/10 bg-white">
+                  <div className="w-11 h-11 rounded-xl bg-[#0a0a0a]/[0.04] flex items-center justify-center flex-shrink-0">
+                    <LuClock className="w-[18px] h-[18px] text-[#0a0a0a]/50" strokeWidth={2} />
+                  </div>
+                  <div className="font-['NeueMontreal'] text-sm sm:text-base leading-relaxed">
+                    <p className="font-medium text-[#0a0a0a]">{SITE.hours}</p>
                     <p className="text-[#0a0a0a]/45 text-xs mt-1.5">Closed on Sundays for the team to reset.</p>
                   </div>
                 </div>
               </motion.div>
 
-              <motion.div variants={fadeUp} className="p-6 sm:p-7 rounded-2xl border border-[#0a0a0a]/10 bg-[#0a0a0a]/[0.02]">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-[#FF6700] font-['NeueMontreal'] mb-3">
-                  Want to Skip the Form?
-                </p>
-                <h3 className="font-['Founders_Grotesk'] font-bold text-xl sm:text-2xl leading-tight mb-3">
-                  Book a Tour in 60 Seconds.
-                </h3>
-                <p className="font-['NeueMontreal'] text-[#0a0a0a]/60 text-sm leading-relaxed mb-5">
-                  Pick a location, pick a time. We&apos;ll have coffee ready.
-                </p>
-                <a
-                  href={BOOKING.tour}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 text-sm font-['NeueMontreal'] text-[#0a0a0a] hover:text-[#FF6700] transition-colors"
-                >
-                  <span className="underline underline-offset-4">Open the booking app</span>
-                  <LuArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
-                </a>
+              {/* Dark card - the sidebar's contrast pop, an alternative path.
+                  Tours are handled through this form, not a booking app, so
+                  this points at the things that ARE self-serve: day passes and
+                  meeting rooms, booked over on the Solutions page. */}
+              <motion.div variants={fadeUp} className="relative overflow-hidden p-6 sm:p-7 rounded-2xl bg-[#0a0a0a] text-[#fafaf7] shadow-[0_24px_60px_-28px_rgba(10,10,10,0.5)]">
+                <div aria-hidden="true" className="absolute inset-0 opacity-[0.16] pointer-events-none" style={{ backgroundImage: "radial-gradient(#fafaf7 1.5px,transparent 1.5px)", backgroundSize: "24px 24px" }} />
+                <div className="relative">
+                  <p className="font-['Founders_Grotesk'] italic text-base text-[#FF6700] mb-3">Skip the form</p>
+                  <h3 className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight text-xl sm:text-2xl leading-tight mb-3 text-[#fafaf7]">
+                    Just need a desk or a room?
+                  </h3>
+                  <p className="font-['NeueMontreal'] text-[#fafaf7]/55 text-sm leading-relaxed mb-6">
+                    Day passes and meeting rooms are self-serve. No enquiry, no waiting on us.
+                  </p>
+                  <SweepCTA href="/solutions" dark>See your options</SweepCTA>
+                </div>
               </motion.div>
+
             </motion.div>
           </aside>
         </div>
       </section>
 
-      {/* ═══════════════════════ LOCATIONS STRIP ═══════════════════════ */}
-      <section className="px-5 sm:px-10 md:px-20 py-16 sm:py-24 md:py-32 border-b border-[#0a0a0a]/10">
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-        >
-          <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
-            <span className="w-10 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Or Come Visit
-            </p>
+      {/* ── OR COME VISIT - lean address cards (no live map iframes) ────── */}
+      <section className="px-5 sm:px-10 md:px-20 py-16 sm:py-24 md:py-28 border-t border-[#0a0a0a]/10">
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}>
+          <motion.div variants={fadeUp} className="mb-12 sm:mb-16 max-w-3xl">
+            <Heading lead="Or come" accent="visit." />
+            <motion.p variants={fadeUp} className="mt-6 font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/60 leading-relaxed max-w-[56ch]">
+              Three addresses across Delhi NCR, no appointment needed. Open a space to see the full tour, hours, and directions.
+            </motion.p>
           </motion.div>
 
-          <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] leading-[0.95] tracking-tighter max-w-[20ch] mb-12 sm:mb-16'>
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block">Three doors.</motion.span>
-            </span>
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block">All open.</motion.span>
-            </span>
-          </h2>
-
-          <motion.div
-            variants={stagger}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"
-          >
-            {LOCATIONS.map((loc) => {
-              const mapsUrl = getMapsUrl(loc);
-              return (
-                <motion.div
-                  key={loc.id}
-                  variants={fadeUp}
-                  className="group flex flex-col p-6 sm:p-7 rounded-2xl border border-[#0a0a0a]/10 bg-[#0a0a0a]/[0.02] hover:border-[#FF6700]/40 hover:bg-[#0a0a0a]/[0.04] transition-colors duration-300"
-                >
-                  <div className="flex items-start gap-2 mb-4">
-                    <LuMapPin className="w-4 h-4 text-[#FF6700] mt-1 flex-shrink-0" strokeWidth={2} />
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/40 font-['NeueMontreal']">
-                        {loc.tag || "Workspace"}
-                      </p>
-                      <h3 className="mt-1 font-['Founders_Grotesk'] font-bold text-2xl leading-tight break-words">
-                        {loc.label}
-                      </h3>
-                    </div>
-                  </div>
-
-                  <p className="font-['NeueMontreal'] text-[#0a0a0a]/65 text-sm leading-relaxed flex-1">
-                    {typeof loc.address === "string" ? loc.address : loc.address?.full}
-                  </p>
-
-                  <div className="mt-6 pt-5 border-t border-[#0a0a0a]/10 flex flex-col gap-3 font-['NeueMontreal'] text-sm">
-                    {mapsUrl && (
-                      <a
-                        href={mapsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/link inline-flex items-center gap-1.5 text-[#0a0a0a] hover:text-[#FF6700] transition-colors"
-                      >
-                        <span className="underline underline-offset-4">Open in Google Maps</span>
-                        <LuArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" strokeWidth={2} />
-                      </a>
-                    )}
-                    <Link
-                      href={`/locations/${loc.id}`}
-                      className="group/link inline-flex items-center gap-1.5 text-[#0a0a0a]/60 hover:text-[#0a0a0a] transition-colors"
-                    >
-                      <span className="underline underline-offset-4">See the space</span>
-                      <LuArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" strokeWidth={2} />
-                    </Link>
-                  </div>
-                </motion.div>
-              );
-            })}
+          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            {LOCATIONS.map((loc) => (
+              <LocationCard key={loc.id} loc={loc} />
+            ))}
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ═══════════════════════ CLOSING CTA ═══════════════════════ */}
-      <section className="relative px-5 sm:px-10 md:px-20 py-20 sm:py-28 md:py-36 text-center overflow-hidden">
+      {/* ── CLOSING CTA - centered, matching Solutions / About ─────────── */}
+      <section className="relative px-5 sm:px-10 md:px-20 py-20 sm:py-28 md:py-32 overflow-hidden border-t border-[#0a0a0a]/10">
         <div
-          className="absolute inset-0 opacity-[0.035] pointer-events-none"
-          style={{ backgroundImage: "radial-gradient(#0a0a0a 1px,transparent 1px)", backgroundSize: "30px 30px" }}
+          aria-hidden="true"
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{ backgroundImage: "radial-gradient(#0a0a0a 1px,transparent 1px)", backgroundSize: "32px 32px" }}
         />
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-          className="relative"
-        >
-          <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 mb-6">
-            <span className="w-10 h-px bg-[#FF6700]" />
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#FF6700] font-['NeueMontreal']">
-              Open for Visits
-            </p>
-            <span className="w-10 h-px bg-[#FF6700]" />
-          </motion.div>
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="relative max-w-4xl mx-auto text-center">
+          <Heading lead="The best decisions are made" accent="in person." />
 
-          <h2 className='font-["Founders_Grotesk"] font-bold uppercase text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] leading-[0.95] tracking-tighter max-w-[20ch] mx-auto'>
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block">The best decisions</motion.span>
-            </span>
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block">are made <span className="text-[#FF6700]">in person.</span></motion.span>
-            </span>
-          </h2>
-
-          <motion.p
-            variants={fadeUp}
-            className="mt-8 sm:mt-10 font-['NeueMontreal'] text-[#0a0a0a]/55 text-sm sm:text-base leading-relaxed max-w-[44ch] mx-auto"
-          >
+          <motion.p variants={fadeUp} className="mt-8 sm:mt-10 font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/60 leading-relaxed max-w-[44ch] mx-auto">
             {SITE.hours}
           </motion.p>
 
           <motion.div variants={fadeUp} className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-3 sm:gap-4">
-            <a
-              href={BOOKING.tour}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 px-7 sm:px-8 py-3.5 sm:py-4 bg-[#0a0a0a] text-[#fafaf7] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300"
-            >
-              Book your visit
-              <LuArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
-            </a>
-            <a
-              href={whatsappLink()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 px-7 sm:px-8 py-3.5 sm:py-4 border border-[#0a0a0a]/25 text-[#0a0a0a]/85 rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#fafaf7] hover:border-[#0a0a0a] transition-all duration-300"
-            >
-              WhatsApp Us
-              <LuArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
-            </a>
+            <SweepCTA href="/locations">See our spaces</SweepCTA>
+            <SweepCTA href={whatsappLink()} external>WhatsApp us</SweepCTA>
           </motion.div>
         </motion.div>
       </section>
-    </main>
+    </>
   );
 }
 
 // ─── Sub-components ────────────────────────────────────────────────────────
 
+function LocationCard({ loc }) {
+  return (
+    <Link
+      href={`/locations/${loc.id}`}
+      className="group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-[#0a0a0a]/10 hover:border-[#FF6700]/40 hover:shadow-[0_28px_60px_-30px_rgba(10,10,10,0.28)] transition-all duration-500"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <img
+          src={loc.img}
+          alt={`The Berry Coworks, ${loc.label}`}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+        />
+        <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 via-transparent to-transparent" />
+        <span className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-[#fafaf7]/95 backdrop-blur-sm font-['Founders_Grotesk'] italic text-xs text-[#0a0a0a] shadow-[0_6px_18px_-8px_rgba(10,10,10,0.5)]">
+          {loc.area}
+        </span>
+        {/* orange rule sweeps in along the image base on hover */}
+        <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[3px] bg-[#FF6700] scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+      </div>
+
+      <div className="flex flex-col flex-1 p-6 sm:p-7">
+        <h3 className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight text-2xl sm:text-3xl text-[#0a0a0a]">
+          {loc.label}
+        </h3>
+        <p className="mt-3 font-['NeueMontreal'] text-sm text-[#0a0a0a]/60 leading-relaxed">
+          {loc.address.line1}, {loc.address.line2}
+        </p>
+        <div className="flex-1" />
+        <span className="mt-6 inline-flex items-center gap-1.5 font-['NeueMontreal'] text-sm text-[#0a0a0a] group-hover:text-[#FF6700] transition-colors">
+          <span className="underline underline-offset-4">See the space</span>
+          <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={2} />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 function Field({ label, helper, required, error, input }) {
   return (
     <div>
-      <div className="flex items-baseline justify-between mb-2">
-        <label className="text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/55 font-['NeueMontreal']">
+      <div className="flex items-baseline justify-between mb-2.5">
+        <label className="font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#0a0a0a]/55">
           {label}
-          {required && <span className="text-[#FF6700] ml-1">*</span>}
+          {required && <span className="not-italic text-[#FF6700] ml-1">*</span>}
         </label>
-        {helper && (
-          <span className="text-[10px] text-[#0a0a0a]/35 font-['NeueMontreal']">
-            {helper}
-          </span>
-        )}
+        {helper && <span className="font-['NeueMontreal'] text-[11px] text-[#0a0a0a]/35">{helper}</span>}
       </div>
       {input}
-      {error && (
-        <p className="mt-2 text-xs text-[#CC5200] font-['NeueMontreal']">
-          {error}
-        </p>
-      )}
+      {error && <p className="mt-2 font-['NeueMontreal'] text-xs text-[#CC5200]">{error}</p>}
     </div>
   );
 }
@@ -468,9 +391,7 @@ function Field({ label, helper, required, error, input }) {
 function PillField({ label, options, value, onChange }) {
   return (
     <div>
-      <label className="block text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/55 font-['NeueMontreal'] mb-3.5">
-        {label}
-      </label>
+      <label className="block font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#0a0a0a]/55 mb-3.5">{label}</label>
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const active = value === opt;
@@ -494,27 +415,22 @@ function PillField({ label, options, value, onChange }) {
   );
 }
 
-function ContactLink({ icon: Icon, label, value, href, external }) {
+function ContactRow({ icon: Icon, label, value, href, external }) {
   return (
     <a
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="group flex items-center justify-between gap-4 py-3 border-b border-[#0a0a0a]/10 last:border-b-0 hover:border-[#FF6700]/40 transition-colors"
+      className="group relative flex items-center gap-4 p-4 rounded-2xl border border-[#0a0a0a]/10 bg-white overflow-hidden hover:border-[#FF6700]/45 hover:shadow-[0_18px_40px_-24px_rgba(10,10,10,0.22)] transition-all duration-400"
     >
-      <div className="flex items-center gap-4 min-w-0">
-        <div className="w-9 h-9 rounded-full bg-[#0a0a0a]/[0.04] border border-[#0a0a0a]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF6700] group-hover:border-[#FF6700] transition-colors">
-          <Icon className="w-4 h-4 text-[#0a0a0a]/75 group-hover:text-[#0a0a0a]" strokeWidth={2} />
-        </div>
-        <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/40 font-['NeueMontreal']">
-            {label}
-          </p>
-          <p className="font-['NeueMontreal'] text-[#0a0a0a] text-sm sm:text-base truncate">
-            {value}
-          </p>
-        </div>
+      <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-[#FF6700] scale-y-0 origin-top group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+      <div className="w-11 h-11 rounded-xl bg-[#0a0a0a]/[0.04] flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF6700]/12 transition-colors duration-300">
+        <Icon className="w-[18px] h-[18px] text-[#0a0a0a]/55 group-hover:text-[#FF6700] transition-colors duration-300" strokeWidth={2} />
       </div>
-      <LuArrowUpRight className="w-4 h-4 text-[#0a0a0a]/30 group-hover:text-[#FF6700] transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 flex-shrink-0" strokeWidth={2} />
+      <div className="min-w-0 flex-1">
+        <p className="font-['Founders_Grotesk'] italic text-sm text-[#0a0a0a]/45">{label}</p>
+        <p className="font-['NeueMontreal'] text-[#0a0a0a] text-sm sm:text-[15px] font-medium truncate">{value}</p>
+      </div>
+      <LuArrowUpRight className="w-4 h-4 text-[#0a0a0a]/30 group-hover:text-[#FF6700] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex-shrink-0" strokeWidth={2.5} />
     </a>
   );
 }
@@ -525,8 +441,9 @@ function SuccessState({ onReset }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="p-8 sm:p-10 rounded-2xl border border-[#FF6700]/30 bg-[#FF6700]/[0.06]"
+      className="relative overflow-hidden p-8 sm:p-10 rounded-2xl border border-[#0a0a0a]/10 bg-white"
     >
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-[#FF6700]" />
       <div className="w-12 h-12 rounded-full bg-[#FF6700] flex items-center justify-center mb-6">
         <LuCheck className="w-6 h-6 text-[#0a0a0a]" strokeWidth={2.5} />
       </div>

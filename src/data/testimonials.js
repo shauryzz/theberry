@@ -37,16 +37,16 @@ export const TESTIMONIALS = [
     name: "Aarav Mehta",
     role: "Founder, Lumen Studios",
     locationId: "connaught",
-    locationLabel: "Connaught Place",
+    locationLabel: "Barakhamba",
   },
   {
     id: "t05",
     quote:
-      "We host client meetings at the CP location and have closed two deals here on the strength of the space alone. It looks every bit as premium as our clients expect.",
+      "We host client meetings at the Barakhamba location and have closed two deals here on the strength of the space alone. It looks every bit as premium as our clients expect.",
     name: "Neha Aggarwal",
     role: "Director, Halcyon Advisory",
     locationId: "connaught",
-    locationLabel: "Connaught Place",
+    locationLabel: "Barakhamba",
   },
   {
     id: "t06",
@@ -73,7 +73,7 @@ export const TESTIMONIALS = [
     name: "Karan Bhatia",
     role: "Independent Consultant",
     locationId: "connaught",
-    locationLabel: "Connaught Place",
+    locationLabel: "Barakhamba",
   },
   {
     id: "t09",
@@ -96,11 +96,11 @@ export const TESTIMONIALS = [
   {
     id: "t11",
     quote:
-      "Took a tour on a whim, signed the same week. The CP location feels less like an office and more like a thoughtfully designed home. My output has measurably improved.",
+      "Took a tour on a whim, signed the same week. The Barakhamba location feels less like an office and more like a thoughtfully designed home. My output has measurably improved.",
     name: "Tanvi Iyer",
     role: "Creative Director, Maya & Bow",
     locationId: "connaught",
-    locationLabel: "Connaught Place",
+    locationLabel: "Barakhamba",
   },
   {
     id: "t12",
@@ -118,7 +118,7 @@ export const TESTIMONIALS = [
     name: "Meera Pillai",
     role: "Managing Partner, Lakeway Law",
     locationId: "connaught",
-    locationLabel: "Connaught Place",
+    locationLabel: "Barakhamba",
   },
   {
     id: "t14",
@@ -145,7 +145,7 @@ export const TESTIMONIALS = [
     name: "Devansh Kapoor",
     role: "Founder, Rangaman Studios",
     locationId: "connaught",
-    locationLabel: "Connaught Place",
+    locationLabel: "Barakhamba",
   },
   {
     id: "t17",
@@ -172,7 +172,7 @@ export const TESTIMONIALS = [
     name: "Kabir Chopra",
     role: "Partner, Indigo Capital",
     locationId: "connaught",
-    locationLabel: "Connaught Place",
+    locationLabel: "Barakhamba",
   },
   {
     id: "t20",
