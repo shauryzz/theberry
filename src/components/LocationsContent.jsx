@@ -30,7 +30,7 @@ const fmt = {
 
 // Hero image band, same treatment as Solutions / For Enterprises.
 const LOCATIONS_HERO_IMAGE =
-  "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1800&q=85&fit=crop";
+  "/images/coworking-people.webp";
 
 export default function LocationsContent() {
   return (
@@ -71,6 +71,7 @@ export default function LocationsContent() {
         className="relative w-full h-[34vh] sm:h-[42vh] md:h-[52vh] min-h-[260px] max-h-[560px] overflow-hidden bg-[#0a0a0a]/5"
       >
         <motion.img
+          decoding="async"
           src={LOCATIONS_HERO_IMAGE}
           alt=""
           aria-hidden="true"
@@ -134,7 +135,7 @@ export default function LocationsContent() {
                     0{i + 1}
                   </span>
                   <div className="relative overflow-hidden rounded-2xl aspect-[16/11] shadow-[0_30px_70px_-40px_rgba(10,10,10,0.35)]">
-                    <img
+                    <img decoding="async" loading="lazy"
                       src={loc.img}
                       alt={loc.label}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
@@ -160,7 +161,7 @@ export default function LocationsContent() {
 
                   {loc.whoItsFor && (
                     <motion.div variants={fadeUp} className="mt-6 pl-4 border-l-2 border-[#FF6700]/60">
-                      <p className="font-['Founders_Grotesk'] italic text-xs text-[#0a0a0a]/40 mb-1.5">Who it&apos;s for</p>
+                      <p className="font-['Founders_Grotesk'] text-xs text-[#0a0a0a]/40 mb-1.5">Who it&apos;s for</p>
                       <p className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/80 leading-relaxed max-w-[44ch] line-clamp-2">
                         {loc.whoItsFor}
                       </p>
@@ -208,7 +209,7 @@ export default function LocationsContent() {
           locations above it. */}
       {UPCOMING_LOCATION && (
         <section className="relative w-full bg-[#0a0a0a] overflow-hidden">
-          <img
+          <img decoding="async" loading="lazy"
             src={UPCOMING_LOCATION.img}
             alt=""
             aria-hidden="true"

@@ -17,9 +17,9 @@
 // feedback. Voice unchanged; every line now says something specific.
 // ─────────────────────────────────────────────────────────────────────────
 
-const HERO_CONNAUGHT   = "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1600&q=85&fit=crop";
-const HERO_JHANDEWALAN = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85&fit=crop";
-const HERO_NOIDA       = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=85&fit=crop";
+const HERO_CONNAUGHT   = "/images/barakhamba-hero.webp";
+const HERO_JHANDEWALAN = "/images/jhandewalan-hero.webp";
+const HERO_NOIDA       = "/images/noida-reception.webp";
 
 export const LOCATIONS = [
   // ───────────────────────────────────────────────────────────────────────
@@ -27,7 +27,7 @@ export const LOCATIONS = [
   // 100 seats · Connaught Place address · steps from Barakhamba Metro
   // ───────────────────────────────────────────────────────────────────────
   {
-    id:    "connaught",
+    id:    "barakhamba",
     label: "Barakhamba",
     area:  "Barakhamba Road",
     img:   HERO_CONNAUGHT,
@@ -52,7 +52,7 @@ export const LOCATIONS = [
       full:    "102, FF, 27 New Delhi House, Barakhamba Rd, Connaught Lane, Barakhamba, New Delhi, Delhi 110001",
     },
 
-    phone:    "+91 81784 49718",
+    phone:    "011-40002726",
     email:    "contact@theberrycoworks.com",
     // Client correction (Oct 2026): Mon–Sat, 8 AM to 8 PM (was 9 PM).
     hours:    "Mon to Sat, 8 AM to 8 PM.",
@@ -84,14 +84,21 @@ export const LOCATIONS = [
       "Barakhamba Road is the eastern radial of Connaught Place, the road every Delhi boardroom faces. The Lalit, The Park, and a dozen embassies are on this street. The Statesman House, FICCI, and the offices of half the country's law firms are at this address.\n\nWalk five minutes in any direction and you'll find what your day needs. Lunch at Saravana Bhavan or Wenger's at the Inner Circle. Coffee at the Indian Coffee House. A meeting in the lobby of The Imperial. Late-night drinks in Khan Market.\n\nFor members, the location pays its own rent. Clients meet you here because they'd come here anyway. Pitches feel different when you can walk a prospective partner from your desk to lunch at The Claridges in under ten minutes.",
 
     gallery: [
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1542740348-39501cd6e2b4?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=1600&q=85&fit=crop",
+      "/images/barakhamba-lounge.webp",
+      "/images/barakhamba-cabin.webp",
+      "/images/barakhamba-fnb.webp",
+      "/images/barakhamba-meeting-room.webp",
+      "/images/barakhamba-services.webp",
+      "/images/barakhamba-cabin-2.webp",
+      "/images/barakhamba-lounge-2.webp",
+      "/images/barakhamba-fnb-2.webp",
+      "/images/barakhamba-library.webp",
+      "/images/barakhamba-workstation.webp",
+      "/images/print-scan.webp",
+      "/images/lounge-green.webp",
+      "/images/hallway-art.webp",
+      "/images/meeting-room-glass.webp",
+      "/images/glass-shelves.webp",
     ],
   },
 
@@ -104,6 +111,7 @@ export const LOCATIONS = [
     label: "Jhandewalan",
     area:  "Jhandewalan Extension",
     img:   HERO_JHANDEWALAN,
+    heroDim: true,   // hero photo is overexposed; apply extra correction in LocationDetail
 
     // Client copy (Oct 2026), verbatim.
     desc:
@@ -123,7 +131,7 @@ export const LOCATIONS = [
       full:    "1-E/3, First Floor, Block E 1, Jhandewalan Extension, Jhandewalan, New Delhi, Delhi 110055",
     },
 
-    phone:    "+91 81784 49718",
+    phone:    "011-40002726",
     email:    "contact@theberrycoworks.com",
     hours:    "Mon to Sat, 8 AM to 8 PM.",
     metro:    "Jhandewalan (Blue Line), 10 metres from the station",
@@ -148,14 +156,21 @@ export const LOCATIONS = [
       "Jhandewalan Extension is Delhi's quiet creative hub. Wide streets, reasonable rents, and half the buildings hold a design studio, an ad agency, or a film editor on the second floor.\n\nYou're ten minutes from Connaught Place, fifteen from Karol Bagh, walking distance to the Jhandewalan Mandir, the DDA office complex, and the New Delhi Railway Station. The Blue Line runs overground here, which means your morning has a view.\n\nThe area has the best of old Delhi compressed into a few blocks: legacy printing presses, fabric wholesalers, paratha shops that have run for sixty years, and a row of small cafés that members rotate through for their afternoon meetings.",
 
     gallery: [
-      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1542353436-312f0e1f67ff?w=1600&q=85&fit=crop",
+      "/images/jhandewalan-private-cabin.webp",
+      "/images/jhandewalan-cabin.webp",
+      "/images/jhandewalan-meeting-room.webp",
+      "/images/jhandewalan-library.webp",
+      "/images/jhandewalan-team.webp",
+      "/images/jhandewalan-desks.webp",
+      "/images/jhandewalan-lounge.webp",
+      "/images/jw.webp",
+      "/images/jw1.webp",
+      "/images/jw3.webp",
+      "/images/mural-desk.webp",
+      "/images/mural-workstations.webp",
+      "/images/pod-green.webp",
+      "/images/lounge-ottoman.webp",
+      "/images/booth-green.webp",
     ],
   },
 
@@ -164,7 +179,7 @@ export const LOCATIONS = [
   // 700 seats today (path to 2,000) · 100m from Sector 142 Metro · DG backup
   // ───────────────────────────────────────────────────────────────────────
   {
-    id:    "noida",
+    id:    "noida-sector-142",
     label: "Noida",
     area:  "Sector 142",
     img:   HERO_NOIDA,
@@ -187,7 +202,7 @@ export const LOCATIONS = [
       full:    "Vinpar Softech Building, Plot No 15, Sector 142, Noida, Uttar Pradesh 201304",
     },
 
-    phone:    "+91 81784 49718",
+    phone:    "011-40002726",
     email:    "contact@theberrycoworks.com",
     hours:    "Mon to Sat, 8 AM to 8 PM.",
     metro:    "Sector 142 (Aqua Line), 100 metres from the station",
@@ -212,14 +227,21 @@ export const LOCATIONS = [
       "Sector 142 sits on the Noida-Greater Noida Expressway, the corridor that defines Noida's tech economy. Paytm, HCL, Genpact, and half the country's product-engineering teams are within fifteen minutes of this address. The Sector 142 metro on the Aqua Line connects directly to Botanical Garden and the Blue Line interchange, putting central Delhi forty-five minutes away.\n\nThe Expressway location is the strategic pick: less traffic than the older Noida sectors, faster commute from Greater Noida and South Delhi, and you're surrounded by the kind of neighbours your team probably wants to interview at next.\n\nFor companies hiring engineers across NCR, this location is gold. Members tell us they close offers faster from Sector 142 because their candidates' commutes shrink by half.",
 
     gallery: [
-      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1604328471151-b52226907017?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1505409859467-3a796fd5798e?w=1000&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1601412436009-d964bd02edbc?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=1400&q=85&fit=crop",
-      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1600&q=85&fit=crop",
+      "/images/noida-private-cabin.webp",
+      "/images/noida-lounge.webp",
+      "/images/noida-fnb.webp",
+      "/images/noida-desks.webp",
+      "/images/noida-games.webp",
+      "/images/noida-entrance.webp",
+      "/images/noida-signage.webp",
+      "/images/noida-window-seats.webp",
+      "/images/noida-nook.webp",
+      "/images/noida-building.webp",
+      "/images/boardroom-long.webp",
+      "/images/desks-rows.webp",
+      "/images/meeting-mural.webp",
+      "/images/booth-social.webp",
+      "/images/cafe-busy.webp",
     ],
   },
 ];
@@ -284,17 +306,17 @@ export function getAllLocationsMapEmbedUrl() {
 // Rendered as a fourth, non-clickable card on the homepage "Find Us" grid.
 //
 // Deliberately NOT part of LOCATIONS: that array drives generateStaticParams
-// (which would create a /locations/noida-62 route), the footer links, the
+// (which would create a /locations/noida-63 route), the footer links, the
 // contact form's location picker and the map. None of those should list a
 // space that has not opened. When it does open, move this object into
 // LOCATIONS with the full address/coords/gallery fields and delete it here.
 export const UPCOMING_LOCATION = {
-  id:    "noida-62",
+  id:    "noida-sector-63",
   label: "Noida",
-  area:  "Sector 62",
+  area:  "Sector 63",
   badge: "Coming Soon",
-  desc:  "Our next centre is taking shape in Noida, Sector 62. More on this soon.",
+  desc:  "Our next centre is taking shape in Noida, Sector 63. More on this soon.",
   // Placeholder: reuses a workspace interior already used elsewhere in the
-  // project, so it is a known-good shot. Swap for the real Sector 62 space.
-  img:   "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1600&q=85&fit=crop",
+  // project, so it is a known-good shot. Swap for the real Sector 63 space.
+  img:   "/images/sector63-hero.webp",
 };

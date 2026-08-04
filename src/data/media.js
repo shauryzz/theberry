@@ -11,7 +11,7 @@
 
 export const MEDIA = {
   // Homepage <About /> hero — parallax background image
-  homeAboutHero:     "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1800&q=90&fit=crop",
+  homeAboutHero:     "/images/noida-reception.webp",
 
   // Homepage <About /> hero — small photos SCATTERED across the headline
   // (editorial collage treatment). They are positioned absolutely and sit
@@ -19,41 +19,26 @@ export const MEDIA = {
   // placement: [0] left, [1] top-right, [2] lower-right.
   // Swap these for real Berry photos when the client supplies them.
   aboutInlineShots: [
-    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=85&fit=crop",
-    "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500&q=85&fit=crop",
-    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=500&q=85&fit=crop",
+    "/images/people-cafe.webp",
+    "/images/jhandewalan-library.webp",
+    "/images/working-laptop.webp",
   ],
 
   // /about — origin-story full-bleed image
-  aboutOriginStory:  "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1800&q=90&fit=crop",
+  aboutOriginStory:  "/images/lounge-2.webp",
 
   // Homepage <PullQuote /> — featured-quote side image. Bright, natural-light
   // workspace placeholder; swap for the client's real photo when it arrives.
-  pullQuoteImage:    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=85&fit=crop",
+  pullQuoteImage:    "/images/cafe-plants.webp",
 
   // /amenities — full-bleed "Morning light / Evening calm" break
-  amenitiesShowcase: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=2000&q=85&fit=crop",
+  amenitiesShowcase: "/images/glass-shelves.webp",
 
   // Homepage <TrustedBy /> — scrolling brand-logo strip (real local images in
   // public/images/). If the files aren't .png, fix the extensions here only.
   // App mockup hero (inside <AppShowcase />). Interior coworking placeholder —
   // swap for a real in-space photo any time; nothing else needs to change.
-  appHero:           "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800&q=85&fit=crop",
-
-  brandStrip: [
-    "/images/brands1.webp",
-    "/images/brands2.webp",
-    "/images/brands3.webp",
-  ],
-
-  // Homepage <TrustedBy /> — two pre-composed logo strips (1020×100 each) that
-  // scroll in opposite directions. Filenames contain spaces on disk, so they're
-  // URL-encoded here (%20). If you rename the files to trusted-by-1.png /
-  // trusted-by-2.png (recommended), update these two paths to match.
-  brandStripRows: [
-    "/images/trusted%20by%201.png",
-    "/images/trusted%20by%202.png",
-  ],
+  appHero:           "/images/noida-reception.webp",
 
   // Homepage <TrustedBy /> — individual member logos. Each renders in a uniform
   // chip in the scrolling marquee, so mixed backgrounds/sizes look consistent.

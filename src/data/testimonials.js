@@ -27,7 +27,7 @@ export const TESTIMONIALS = [
       "24/7 access matters more than I realized. We often work odd hours and The Berry's the only space in Noida that genuinely respects that without making it feel transactional.",
     name: "Ishita Sharma",
     role: "Co-founder, Verdant Living",
-    locationId: "noida",
+    locationId: "noida-sector-142",
     locationLabel: "Noida",
   },
   {
@@ -36,7 +36,7 @@ export const TESTIMONIALS = [
       "Moved my startup to The Berry three months ago. The natural light is a game-changer for our design team. Best business decision we made this year.",
     name: "Aarav Mehta",
     role: "Founder, Lumen Studios",
-    locationId: "connaught",
+    locationId: "barakhamba",
     locationLabel: "Barakhamba",
   },
   {
@@ -45,7 +45,7 @@ export const TESTIMONIALS = [
       "We host client meetings at the Barakhamba location and have closed two deals here on the strength of the space alone. It looks every bit as premium as our clients expect.",
     name: "Neha Aggarwal",
     role: "Director, Halcyon Advisory",
-    locationId: "connaught",
+    locationId: "barakhamba",
     locationLabel: "Barakhamba",
   },
   {
@@ -54,7 +54,7 @@ export const TESTIMONIALS = [
       "I was paying twice this much at a flexi-space in Gurgaon for half the experience. The Berry Noida has set a new bar for what coworking should be in Delhi NCR.",
     name: "Vikram Joshi",
     role: "Founder, Sandfield Capital",
-    locationId: "noida",
+    locationId: "noida-sector-142",
     locationLabel: "Noida",
   },
   {
@@ -72,7 +72,7 @@ export const TESTIMONIALS = [
       "The F&B counter is criminally underrated. Genuinely good coffee, and you don't have to leave the building for a proper meal. Easily saves me an hour off my workday.",
     name: "Karan Bhatia",
     role: "Independent Consultant",
-    locationId: "connaught",
+    locationId: "barakhamba",
     locationLabel: "Barakhamba",
   },
   {
@@ -81,7 +81,7 @@ export const TESTIMONIALS = [
       "Phone booths that are actually soundproof. Sounds basic, but it's the one thing every other coworking space gets wrong. I take six calls a day from here without thinking about it.",
     name: "Aditi Verma",
     role: "VP Sales, Brightframe",
-    locationId: "noida",
+    locationId: "noida-sector-142",
     locationLabel: "Noida",
   },
   {
@@ -99,7 +99,7 @@ export const TESTIMONIALS = [
       "Took a tour on a whim, signed the same week. The Barakhamba location feels less like an office and more like a thoughtfully designed home. My output has measurably improved.",
     name: "Tanvi Iyer",
     role: "Creative Director, Maya & Bow",
-    locationId: "connaught",
+    locationId: "barakhamba",
     locationLabel: "Barakhamba",
   },
   {
@@ -108,7 +108,7 @@ export const TESTIMONIALS = [
       "Our private cabin at Noida feels properly ours. The team had it personalized with our brand within a day of moving in. Felt like moving into a finished apartment.",
     name: "Rahul Khanna",
     role: "Co-founder, Pivotcraft",
-    locationId: "noida",
+    locationId: "noida-sector-142",
     locationLabel: "Noida",
   },
   {
@@ -117,7 +117,7 @@ export const TESTIMONIALS = [
       "I was nervous about the move from a private office, but the cabins here give us privacy without isolation. The community kicks in exactly when we want it to.",
     name: "Meera Pillai",
     role: "Managing Partner, Lakeway Law",
-    locationId: "connaught",
+    locationId: "barakhamba",
     locationLabel: "Barakhamba",
   },
   {
@@ -135,7 +135,7 @@ export const TESTIMONIALS = [
       "The meeting rooms are bookable in two taps from the app. No awkward back-and-forth with reception, no double bookings. It's the closest thing to a real office I've seen.",
     name: "Sneha Bansal",
     role: "Head of Ops, Quillberry",
-    locationId: "noida",
+    locationId: "noida-sector-142",
     locationLabel: "Noida",
   },
   {
@@ -144,7 +144,7 @@ export const TESTIMONIALS = [
       "I'd been burned by three coworking spaces before this. The Berry's the first one where the photos on the website match what you actually walk into. Refreshing.",
     name: "Devansh Kapoor",
     role: "Founder, Rangaman Studios",
-    locationId: "connaught",
+    locationId: "barakhamba",
     locationLabel: "Barakhamba",
   },
   {
@@ -162,7 +162,7 @@ export const TESTIMONIALS = [
       "I work from the lounge in the morning and the cabin in the afternoon. Having two genuinely different vibes inside one membership is what I didn't know I needed.",
     name: "Pooja Nair",
     role: "Strategy Consultant",
-    locationId: "noida",
+    locationId: "noida-sector-142",
     locationLabel: "Noida",
   },
   {
@@ -171,7 +171,7 @@ export const TESTIMONIALS = [
       "The staff anticipate things. New AC filter the morning summer hit. Backup chargers at the F&B counter. It feels like someone's actually thinking about the place daily.",
     name: "Kabir Chopra",
     role: "Partner, Indigo Capital",
-    locationId: "connaught",
+    locationId: "barakhamba",
     locationLabel: "Barakhamba",
   },
   {

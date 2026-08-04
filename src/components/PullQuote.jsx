@@ -46,7 +46,7 @@ export default function PullQuote() {
         variants={imageIn}
         className="relative h-72 sm:h-96 md:h-auto md:min-h-[600px] overflow-hidden bg-[#0a0a0a]"
       >
-        <img
+        <img decoding="async" loading="lazy"
           src={MEDIA.pullQuoteImage}
           alt="Inside a Berry Coworks workspace"
           className="absolute inset-0 w-full h-full object-cover"

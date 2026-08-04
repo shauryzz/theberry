@@ -3,21 +3,22 @@ import { motion } from "framer-motion";
 import { USPS } from "../data/content";
 
 /* ------------------------------------------------------------------ *
- * Marquee — light grey feature strip with ink keywords.
- * Warm light-grey background, bold ink uppercase keywords, small orange
+ * Marquee — warm beige feature strip with ink keywords.
+ * Warm beige background, bold ink uppercase keywords, small orange
  * dot separators. Single row, seamless -50% loop (two identical copies).
  * No edge fades — the band runs full-bleed edge to edge.
  * Separators are rendered here; the data (USPS) holds plain phrases only.
  *
  * COLOUR RATIONALE: the hero above ends in a near-black gradient
  * (#0a0a0a/95) and the About panel below is now WHITE with rounded top
- * corners that overlap this strip. The grey is deliberately a shade
- * darker than that white so the strip stays a distinct band and the
- * rounded corners still read. Keep these two values different.
+ * corners that overlap this strip. The beige is deliberately warmer and a
+ * shade off the cream (#fafaf7) around it so the strip stays a distinct
+ * band and the rounded corners still read. Keep it clearly warm (never a
+ * cool/blue-leaning neutral) and distinct from #fafaf7.
  * ------------------------------------------------------------------ */
 export default function Marquee() {
   return (
-    <div className="relative w-full overflow-hidden bg-[#EDEDE7]">
+    <div className="relative w-full overflow-hidden bg-[#F0EBE3]">
       <div className="overflow-hidden whitespace-nowrap">
         <motion.div
           className="inline-flex items-center"

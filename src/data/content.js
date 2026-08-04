@@ -34,31 +34,31 @@ export const USPS = [
 export const PERKS = [
   {
     title: "A packed calendar of community events",
-    img:   "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=900&q=85&fit=crop",
+    img:   "/images/people-booth.webp",
   },
   {
     title: "Warm beverages on the house",
-    img:   "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=900&q=85&fit=crop",
+    img:   "/images/pantry-coffee.webp",
   },
   {
     title: "Phone booths and meeting rooms whenever you need to step away and focus",
-    img:   "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&q=85&fit=crop",
+    img:   "/images/phone-booths.webp",
   },
   {
     title: "Internet you can count on",
-    img:   "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=85&fit=crop",
+    img:   "/images/working-laptop.webp",
   },
   {
     title: "A floor full of people worth getting to know",
-    img:   "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=900&q=85&fit=crop",
+    img:   "/images/team-working.webp",
   },
 ];
 
 // ── Stats (About.jsx). CountUp parses the digits + suffix in `value`. ──
 export const STATS = [
   { value: "2300+", label: "Seat Capacity", sub: "to grow into"                 },
-  { value: "800+",  label: "Members",       sub: "who make the space come alive" },
-  { value: "5+",    label: "Years",         sub: "of trusted workspace expertise" },
+  { value: "5800+", label: "Members",       sub: "who make the space come alive" },
+  { value: "6+",    label: "Years",         sub: "of trusted workspace expertise" },
 ];
 
 // ── "More Ways to Work" offer menu, homepage About (About.jsx).
@@ -68,19 +68,19 @@ export const FLEX_OPTIONS = [
     icon: LuCalendarDays,
     name: "Day Pass",
     desc: "A desk for the day. Walk in, work, leave. No membership, no lock-in.",
-    img:  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&q=85&fit=crop",
+    img:  "/images/open-seating.webp",
   },
   {
     icon: LuUsers,
     name: "Meeting Room",
     desc: "A fully equipped room, bookable by the hour. Screen-share ready.",
-    img:  "https://images.unsplash.com/photo-1577412647305-991150c7d163?w=900&q=85&fit=crop",
+    img:  "/images/meeting-window.webp",
   },
   {
     icon: LuMapPin,
     name: "Virtual Office",
     desc: "A registered business address and mail handling, without renting a seat.",
-    img:  "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=900&q=85&fit=crop",
+    img:  "/images/berry-lounge.webp",
   },
 ];
 
@@ -94,37 +94,37 @@ export const SHARED_STANDARDS = [
   {
     label: "Natural Light",
     desc: "Floor-to-ceiling glass at every desk. Bright through the day.",
-    img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=85&fit=crop",
+    img: "/images/window-nook.webp",
   },
   {
     label: "Ergonomic Furniture",
     desc: "Adjustable chairs and sit-stand desks at every seat.",
-    img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=900&q=85&fit=crop",
+    img: "/images/dedicated-desks.webp",
   },
   {
     label: "High-Speed WiFi",
     desc: "Gigabit fibre with a backup line. Calls and uploads stay up.",
-    img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=85&fit=crop",
+    img: "/images/working-laptop.webp",
   },
   {
     label: "F&B Counter",
     desc: "Fresh coffee, tea, and quick bites on tap.",
-    img: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=900&q=85&fit=crop",
+    img: "/images/barakhamba-fnb.webp",
   },
   {
     label: "Phone Booths",
     desc: "Soundproof pods for the calls that need quiet.",
-    img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&q=85&fit=crop",
+    img: "/images/pod-green.webp",
   },
   {
     label: "Meeting Rooms",
     desc: "Screens and whiteboards, ready for stand-ups or pitches.",
-    img: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=900&q=85&fit=crop",
+    img: "/images/meeting-green.webp",
   },
   {
     label: "Print and Scan",
     desc: "On-site printing, scanning, and copying. No errands.",
-    img: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&q=85&fit=crop",
+    img: "/images/print-scan.webp",
   },
 ];
 
@@ -182,24 +182,24 @@ export const JOURNEY_OUTRO = "And for the years to come...";
 // no single location, so those captions are atmospheric and easy to change.
 // Swap all of these for real photography when it arrives.
 export const JOURNEY_SHOTS = {
-  "2020": { src: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1100&q=85&fit=crop", caption: "Barakhamba" },
-  "2021": { src: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=1100&q=85&fit=crop", caption: "Jhandewalan" },
-  "2022": { src: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1100&q=85&fit=crop", caption: "Jhandewalan" },
-  "2023": { src: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1100&q=85&fit=crop", caption: "Both addresses" },
-  "2024": { src: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1100&q=85&fit=crop", caption: "Mapping what's next" },
-  "2025": { src: "https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1100&q=85&fit=crop", caption: "Noida · Sector 142" },
-  "2026": { src: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1100&q=85&fit=crop", caption: "On the way" },
+  "2020": { src: "/images/barakhamba-lounge.webp", caption: "Barakhamba" },
+  "2021": { src: "/images/jhandewalan-desks.webp", caption: "Jhandewalan" },
+  "2022": { src: "/images/jhandewalan-library.webp", caption: "Jhandewalan" },
+  "2023": { src: "/images/lounge-2.webp", caption: "Both addresses" },
+  "2024": { src: "/images/coworking-people.webp", caption: "Mapping what's next" },
+  "2025": { src: "/images/noida-fnb.webp", caption: "Noida · Sector 142" },
+  "2026": { src: "/images/yellow-lounge.webp", caption: "On the way" },
 };
 
 // Placeholder collage/moodboard images for the story section. Swap for real
 // founder + space photography. Deliberately a mix of orientations so the
 // scattered layout reads like a moodboard (see the client's references).
 export const ABOUT_COLLAGE = [
-  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&q=85&fit=crop",
-  "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=900&q=85&fit=crop",
-  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=85&fit=crop",
-  "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=900&q=85&fit=crop",
-  "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&q=85&fit=crop",
+  "/images/detail-round-table.webp",
+  "/images/detail-carpe-diem.webp",
+  "/images/glass-shelves-2.webp",
+  "/images/people-cafe.webp",
+  "/images/booth-mural.webp",
 ];
 
 // ── The Berry app, feature list + quick-action tiles (AppShowcase.jsx) ──

@@ -222,7 +222,7 @@ export default function EnterprisesContent() {
           className="grid lg:grid-cols-2"
         >
           <motion.div variants={fadeUp} className="relative min-h-[280px] sm:min-h-[380px] lg:min-h-[640px] overflow-hidden">
-            <img
+            <img decoding="async"
               src={MANAGED_OFFICE.image}
               alt=""
               aria-hidden="true"
@@ -314,7 +314,7 @@ export default function EnterprisesContent() {
                   transition-[flex] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)]
                 "
               >
-                <img
+                <img decoding="async"
                   src={g.src}
                   alt={g.alt}
                   loading="lazy"

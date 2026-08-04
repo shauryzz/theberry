@@ -32,7 +32,7 @@ const HEADING_CLS =
 
 // Hero image band (PLACEHOLDER). Swap for a real Berry photo when supplied.
 const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1920&q=85&fit=crop";
+  "/images/contact-hero.webp";
 
 // Interests aligned to the products that actually route here as enquiries.
 // Removed "Flexible Seat" (no longer a product) and renamed "Private Cabin" to
@@ -145,7 +145,7 @@ export default function ContactContent() {
           whileInView={{ scale: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-[center_80%]"
         />
       </motion.div>
 
@@ -246,7 +246,7 @@ export default function ContactContent() {
             <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="space-y-10 sm:space-y-12">
 
               <motion.div variants={fadeUp}>
-                <p className="font-['Founders_Grotesk'] italic text-lg text-[#0a0a0a]/45 mb-5">Reach us directly</p>
+                <p className="font-['Founders_Grotesk'] text-lg text-[#0a0a0a]/45 mb-5">Reach us directly</p>
                 <div className="space-y-3">
                   <ContactRow icon={LuMail}          label="Email"    value={SITE.email}    href={`mailto:${SITE.email}`} />
                   <ContactRow icon={LuPhone}         label="Call"     value={SITE.phone}    href={SITE.phoneHref} />
@@ -255,7 +255,7 @@ export default function ContactContent() {
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <p className="font-['Founders_Grotesk'] italic text-lg text-[#0a0a0a]/45 mb-5">Hours</p>
+                <p className="font-['Founders_Grotesk'] text-lg text-[#0a0a0a]/45 mb-5">Hours</p>
                 <div className="flex items-start gap-4 p-4 rounded-2xl border border-[#0a0a0a]/10 bg-white">
                   <div className="w-11 h-11 rounded-xl bg-[#0a0a0a]/[0.04] flex items-center justify-center flex-shrink-0">
                     <LuClock className="w-[18px] h-[18px] text-[#0a0a0a]/50" strokeWidth={2} />
@@ -274,7 +274,7 @@ export default function ContactContent() {
               <motion.div variants={fadeUp} className="relative overflow-hidden p-6 sm:p-7 rounded-2xl bg-[#0a0a0a] text-[#fafaf7] shadow-[0_24px_60px_-28px_rgba(10,10,10,0.5)]">
                 <div aria-hidden="true" className="absolute inset-0 opacity-[0.16] pointer-events-none" style={{ backgroundImage: "radial-gradient(#fafaf7 1.5px,transparent 1.5px)", backgroundSize: "24px 24px" }} />
                 <div className="relative">
-                  <p className="font-['Founders_Grotesk'] italic text-base text-[#FF6700] mb-3">Skip the form</p>
+                  <p className="font-['Founders_Grotesk'] text-base text-[#FF6700] mb-3">Skip the form</p>
                   <h3 className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight text-xl sm:text-2xl leading-tight mb-3 text-[#fafaf7]">
                     Just need a desk or a room?
                   </h3>
@@ -341,14 +341,14 @@ function LocationCard({ loc }) {
       className="group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-[#0a0a0a]/10 hover:border-[#FF6700]/40 hover:shadow-[0_28px_60px_-30px_rgba(10,10,10,0.28)] transition-all duration-500"
     >
       <div className="relative aspect-[4/3] overflow-hidden">
-        <img
+        <img decoding="async"
           src={loc.img}
           alt={`The Berry Coworks, ${loc.label}`}
           loading="lazy"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
         />
         <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 via-transparent to-transparent" />
-        <span className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-[#fafaf7]/95 backdrop-blur-sm font-['Founders_Grotesk'] italic text-xs text-[#0a0a0a] shadow-[0_6px_18px_-8px_rgba(10,10,10,0.5)]">
+        <span className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-[#fafaf7] font-['Founders_Grotesk'] text-xs text-[#0a0a0a] shadow-[0_6px_18px_-8px_rgba(10,10,10,0.5)]">
           {loc.area}
         </span>
         {/* orange rule sweeps in along the image base on hover */}
@@ -376,7 +376,7 @@ function Field({ label, helper, required, error, input }) {
   return (
     <div>
       <div className="flex items-baseline justify-between mb-2.5">
-        <label className="font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#0a0a0a]/55">
+        <label className="font-['Founders_Grotesk'] text-sm sm:text-base text-[#0a0a0a]/55">
           {label}
           {required && <span className="not-italic text-[#FF6700] ml-1">*</span>}
         </label>
@@ -391,7 +391,7 @@ function Field({ label, helper, required, error, input }) {
 function PillField({ label, options, value, onChange }) {
   return (
     <div>
-      <label className="block font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#0a0a0a]/55 mb-3.5">{label}</label>
+      <label className="block font-['Founders_Grotesk'] text-sm sm:text-base text-[#0a0a0a]/55 mb-3.5">{label}</label>
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const active = value === opt;
@@ -427,7 +427,7 @@ function ContactRow({ icon: Icon, label, value, href, external }) {
         <Icon className="w-[18px] h-[18px] text-[#0a0a0a]/55 group-hover:text-[#FF6700] transition-colors duration-300" strokeWidth={2} />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-['Founders_Grotesk'] italic text-sm text-[#0a0a0a]/45">{label}</p>
+        <p className="font-['Founders_Grotesk'] text-sm text-[#0a0a0a]/45">{label}</p>
         <p className="font-['NeueMontreal'] text-[#0a0a0a] text-sm sm:text-[15px] font-medium truncate">{value}</p>
       </div>
       <LuArrowUpRight className="w-4 h-4 text-[#0a0a0a]/30 group-hover:text-[#FF6700] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex-shrink-0" strokeWidth={2.5} />

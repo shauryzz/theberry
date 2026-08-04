@@ -7,6 +7,7 @@ import { PERKS, STATS, FLEX_OPTIONS } from "../data/content";
 import { BOOKING } from "../data/booking";
 import { MEDIA } from "../data/media";
 import CountUp from "./CountUp";
+import DayPassPickerModal from "./DayPassPickerModal";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 const lineUp = {
@@ -75,6 +76,7 @@ export default function About() {
   // becomes active, which drives the sticky image on the right.
   const flexRefs = useRef([]);
   const [activeFlex, setActiveFlex] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -139,7 +141,7 @@ export default function About() {
                 key={i}
                 className={`absolute overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] ${box}`}
               >
-                <img
+                <img decoding="async"
                   src={MEDIA.aboutInlineShots[i]}
                   alt=""
                   loading="lazy"
@@ -149,14 +151,15 @@ export default function About() {
             ))}
           </div>
 
-          {/* Site display face, not a serif. Italics carry the editorial
-              feel the reference has, without introducing a new typeface. */}
+          {/* Uppercase display heading — matches the site-wide h-heading
+              style (font-bold uppercase, tighter tracking, orange accent),
+              e.g. the "However you like to work" h3 below. */}
           <motion.h2
             variants={fadeUp}
-            className="relative z-10 font-['Founders_Grotesk'] font-medium text-[#0a0a0a] leading-[1.15] tracking-tight text-[8.5vw] sm:text-[7vw] md:text-[6vw] lg:text-[4.8vw] max-w-[15ch] sm:max-w-none lg:max-w-4xl mx-auto"
+            className="relative z-10 font-['Founders_Grotesk'] font-bold uppercase text-[#0a0a0a] leading-[0.95] tracking-tighter text-[8.5vw] sm:text-[7vw] md:text-[6vw] lg:text-[4.8vw] max-w-[15ch] sm:max-w-none lg:max-w-4xl mx-auto"
           >
-            A space <em className="italic">that gets the</em> balance{" "}
-            <em className="italic text-[#FF6700]">right.</em>
+            A space that gets the balance{" "}
+            <span className="text-[#FF6700]">right.</span>
           </motion.h2>
 
           <motion.p
@@ -197,7 +200,7 @@ export default function About() {
             </p>
 
             {s.sub && (
-              <p className="mt-3 font-['Founders_Grotesk'] italic text-base sm:text-lg text-[#0a0a0a]/60 leading-snug max-w-[24ch] mx-auto">
+              <p className="mt-3 font-['Founders_Grotesk'] text-base sm:text-lg text-[#0a0a0a]/60 leading-snug max-w-[24ch] mx-auto">
                 {s.sub}
               </p>
             )}
@@ -222,7 +225,7 @@ export default function About() {
         >
           <h3 className='font-["Founders_Grotesk"] font-bold uppercase tracking-tighter leading-[0.95] text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] overflow-hidden pb-[0.05em]'>
             <motion.span variants={lineUp} className="block">
-              Working from The Berry Coworks gets <span className="text-[#FF6700]">you.</span>
+              Working from The Berry Coworks gets <span className="text-[#FF6700]">you:</span>
             </motion.span>
           </h3>
         </motion.div>
@@ -259,7 +262,7 @@ export default function About() {
 
                   {/* Image */}
                   <div className="mt-6 sm:mt-8 relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#0a0a0a]/5">
-                    <img
+                    <img decoding="async"
                       src={perk.img}
                       alt=""
                       aria-hidden="true"
@@ -362,21 +365,36 @@ export default function About() {
                     {/* Pill CTA — the orange fill sweeps up from below on
                         hover and the arrow kicks to 45deg. Text and icon sit
                         on a relative layer so the sweep passes behind them. */}
-                    <a
-                      href={BOOKING.tour}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/cta relative flex-shrink-0 inline-flex items-center gap-2 mt-1.5 overflow-hidden rounded-full border border-[#0a0a0a]/20 px-5 py-2.5 hover:border-[#FF6700] transition-colors duration-300"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0 bg-[#FF6700] translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                      />
-                      <span className="relative font-['NeueMontreal'] text-[11px] tracking-[0.18em] uppercase text-[#0a0a0a]">
-                        Book Now
-                      </span>
-                      <LuArrowUpRight className="relative w-3.5 h-3.5 text-[#0a0a0a] transition-transform duration-300 group-hover/cta:rotate-45" />
-                    </a>
+                    {(() => {
+                      const cls =
+                        "group/cta relative flex-shrink-0 inline-flex items-center gap-2 mt-1.5 overflow-hidden rounded-full border border-[#0a0a0a]/20 px-5 py-2.5 hover:border-[#FF6700] transition-colors duration-300";
+                      const inner = (
+                        <>
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-0 bg-[#FF6700] translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                          />
+                          <span className="relative font-['NeueMontreal'] text-[11px] tracking-[0.18em] uppercase text-[#0a0a0a]">
+                            Book Now
+                          </span>
+                          <LuArrowUpRight className="relative w-3.5 h-3.5 text-[#0a0a0a] transition-transform duration-300 group-hover/cta:rotate-45" />
+                        </>
+                      );
+                      // Day Pass -> DeskOS bundle picker; Meeting Room -> DeskOS link; else -> /contact
+                      if (name === "Day Pass") {
+                        return (
+                          <button type="button" onClick={() => setPickerOpen(true)} className={cls}>
+                            {inner}
+                          </button>
+                        );
+                      }
+                      const href = name === "Meeting Room" ? BOOKING.meetingRoom.all : BOOKING.tour;
+                      return (
+                        <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+                          {inner}
+                        </a>
+                      );
+                    })()}
                   </div>
 
                   <p className="mt-3 sm:mt-4 font-['NeueMontreal'] text-sm sm:text-base text-[#0a0a0a]/65 leading-relaxed max-w-[46ch]">
@@ -385,7 +403,7 @@ export default function About() {
 
                   {/* Mobile: the image sits inline, since there is no sticky column */}
                   <div className="lg:hidden mt-6 relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#0a0a0a]/5">
-                    <img
+                    <img decoding="async"
                       src={img}
                       alt=""
                       aria-hidden="true"
@@ -403,7 +421,7 @@ export default function About() {
           <div className="hidden lg:block">
             <div className="sticky top-28 relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#0a0a0a]/5">
               {FLEX_OPTIONS.map(({ name, img }, i) => (
-                <img
+                <img decoding="async"
                   key={name}
                   src={img}
                   alt=""
@@ -442,6 +460,8 @@ export default function About() {
           </motion.div>
         </motion.div>
       </div>
+
+      <DayPassPickerModal isOpen={pickerOpen} onClose={() => setPickerOpen(false)} />
     </div>
   );
 }

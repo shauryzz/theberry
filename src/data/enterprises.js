@@ -41,7 +41,7 @@ export const ENTERPRISE_INTRO = {
 
 // Hero image band, matching the treatment on the Solutions page.
 export const ENTERPRISE_HERO_IMAGE =
-  "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1800&q=85&fit=crop";
+  "/images/boardroom-long.webp";
 
 // ── Managed offices, the dark showcase the client asked to keep ───────────
 export const MANAGED_OFFICE = {
@@ -50,7 +50,7 @@ export const MANAGED_OFFICE = {
   body:
     "Our team designs, builds and runs a workspace built around your requirements, so you can focus on the work. Available at Noida.",
   image:
-    "https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?w=1400&q=85&fit=crop",
+    "/images/noida-private-cabin.webp",
   points: [
     {
       title: "End-to-end setup",
@@ -86,10 +86,10 @@ export const SHAPED_AROUND = {
 // you explore rather than another block of text. No captions, because any
 // wording here would be invented rather than the client's.
 export const SPACE_GALLERY = [
-  { src: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1000&q=85&fit=crop", alt: "Furnished private suite" },
-  { src: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=1000&q=85&fit=crop", alt: "Open team floor"         },
-  { src: "https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1000&q=85&fit=crop", alt: "Conference room"         },
-  { src: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1000&q=85&fit=crop", alt: "Branded office floor"    },
+  { src: "/images/jhandewalan-private-cabin.webp", alt: "Furnished private suite" },
+  { src: "/images/desks-rows.webp", alt: "Open team floor"         },
+  { src: "/images/meeting-mural.webp", alt: "Conference room"         },
+  { src: "/images/lounge-ottoman.webp", alt: "Branded office floor"    },
 ];
 
 // Heading for the five step block. The steps themselves come from PROCESS

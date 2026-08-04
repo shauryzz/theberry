@@ -45,7 +45,7 @@ function Heading({ lead, accent, sub, className = "" }) {
       {sub && (
         <motion.p
           variants={fadeUp}
-          className="mt-4 font-['Founders_Grotesk'] italic text-lg sm:text-xl md:text-2xl text-[#0a0a0a]/45"
+          className="mt-4 font-['Founders_Grotesk'] text-lg sm:text-xl md:text-2xl text-[#0a0a0a]/45"
         >
           {sub}
         </motion.p>
@@ -95,7 +95,7 @@ function PricedProduct({ plan, flip = false }) {
       className={`grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${flip ? "lg:[&>*:first-child]:order-2" : ""}`}
     >
       <motion.div variants={fadeUp} className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#0a0a0a]/5">
-        <img src={plan.image} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        <img decoding="async" src={plan.image} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
       </motion.div>
 
       <div>
@@ -103,7 +103,7 @@ function PricedProduct({ plan, flip = false }) {
           {plan.name}
         </motion.h3>
 
-        <motion.p variants={fadeUp} className="mt-3 font-['Founders_Grotesk'] italic text-base sm:text-lg text-[#0a0a0a]/45">
+        <motion.p variants={fadeUp} className="mt-3 font-['Founders_Grotesk'] text-base sm:text-lg text-[#0a0a0a]/45">
           {plan.alias}
         </motion.p>
 
@@ -116,8 +116,11 @@ function PricedProduct({ plan, flip = false }) {
             <div key={r.id} className="flex items-baseline justify-between gap-4 py-4 border-b border-[#0a0a0a]/12">
               <span className="font-['NeueMontreal'] text-sm sm:text-base text-[#0a0a0a]/70">{r.label}</span>
               <span className="flex items-baseline gap-2">
+                {plan.pricePrefix && (
+                  <span className="font-['Founders_Grotesk'] text-xs sm:text-sm text-[#0a0a0a]/45">{plan.pricePrefix}</span>
+                )}
                 <span className="font-['Founders_Grotesk'] font-bold text-2xl sm:text-3xl tracking-tight text-[#FF6700]">{inr(r.price)}</span>
-                <span className="font-['Founders_Grotesk'] italic text-xs sm:text-sm text-[#0a0a0a]/45">{plan.priceUnit}</span>
+                <span className="font-['Founders_Grotesk'] text-xs sm:text-sm text-[#0a0a0a]/45">{plan.priceUnit}</span>
               </span>
             </div>
           ))}
@@ -136,8 +139,8 @@ function BookableCard({ item, onPickerOpen }) {
   return (
     <motion.article variants={fadeUp} className="group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-[#0a0a0a]/10 hover:border-[#FF6700]/40 hover:shadow-[0_24px_60px_-24px_rgba(10,10,10,0.18)] transition-all duration-500">
       <div className="relative aspect-[16/10] overflow-hidden">
-        <img src={item.image} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]" />
-        <span className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-[#fafaf7]/95 backdrop-blur-sm font-['Founders_Grotesk'] italic text-xs text-[#0a0a0a] shadow-[0_6px_18px_-8px_rgba(10,10,10,0.5)]">
+        <img decoding="async" src={item.image} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]" />
+        <span className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-[#fafaf7] font-['Founders_Grotesk'] text-xs text-[#0a0a0a] shadow-[0_6px_18px_-8px_rgba(10,10,10,0.5)]">
           {item.availableNote}
         </span>
       </div>
@@ -146,7 +149,7 @@ function BookableCard({ item, onPickerOpen }) {
         <h3 className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight text-2xl sm:text-3xl text-[#0a0a0a]">
           {item.name}
         </h3>
-        <p className="mt-2 font-['Founders_Grotesk'] italic text-sm text-[#0a0a0a]/45">{item.alias}</p>
+        <p className="mt-2 font-['Founders_Grotesk'] text-sm text-[#0a0a0a]/45">{item.alias}</p>
         <p className="mt-4 font-['NeueMontreal'] text-sm sm:text-base text-[#0a0a0a]/65 leading-relaxed">{item.desc}</p>
 
         <div className="flex-1" />
@@ -193,7 +196,7 @@ export default function SolutionsContent() {
 
           <motion.p
             variants={fadeUp}
-            className="mt-10 sm:mt-12 font-['Founders_Grotesk'] italic text-lg sm:text-xl md:text-2xl leading-snug text-[#0a0a0a]/70 max-w-[52ch]"
+            className="mt-10 sm:mt-12 font-['Founders_Grotesk'] text-lg sm:text-xl md:text-2xl leading-snug text-[#0a0a0a]/70 max-w-[52ch]"
           >
             {SOLUTIONS_HERO.intro}
           </motion.p>
@@ -264,7 +267,7 @@ export default function SolutionsContent() {
           {ADDITIONAL_SOLUTIONS.map((item) => (
             <motion.article key={item.id} variants={fadeUp} className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-[#0a0a0a]/10 hover:border-[#FF6700]/40 hover:shadow-[0_24px_60px_-24px_rgba(10,10,10,0.18)] transition-all duration-500">
               <div className="relative aspect-[16/10] overflow-hidden">
-                <img src={item.image} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]" />
+                <img decoding="async" src={item.image} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]" />
               </div>
               <div className="flex flex-col flex-1 p-6 sm:p-7">
                 <h3 className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight text-2xl text-[#0a0a0a]">{item.name}</h3>
@@ -304,7 +307,7 @@ export default function SolutionsContent() {
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           {SPACE_INCLUDES.map((g) => (
             <motion.div key={g.group} variants={fadeUp} className="border-t border-[#0a0a0a]/15 pt-6">
-              <p className="font-['Founders_Grotesk'] italic text-base md:text-lg text-[#0a0a0a]/45 mb-5">{g.group}</p>
+              <p className="font-['Founders_Grotesk'] text-base md:text-lg text-[#0a0a0a]/45 mb-5">{g.group}</p>
               <ul className="flex flex-col gap-3">
                 {g.items.map((i) => (
                   <li key={i} className="flex items-start gap-2.5 font-['NeueMontreal'] text-sm text-[#0a0a0a]/75 leading-relaxed">

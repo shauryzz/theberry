@@ -32,7 +32,7 @@ export const SOLUTIONS_HERO = {
     "We build spaces around how your team actually works, not a fixed idea of what a workspace should look like. That means room to move faster some weeks, slower others, and a setup that keeps up either way.",
   // Hero image. Sits BESIDE the copy, never behind it — text over a photo is
   // what hurt legibility previously. Swap for a real Berry shot when supplied.
-  image: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1400&q=85&fit=crop",
+  image: "/images/cafe-plants.webp",
 };
 
 // ── Section sub-labels, verbatim from the client's document ───────────────
@@ -57,7 +57,7 @@ export const COWORKING_EXTRAS = [
     availableNote: "Jhandewalan and Noida",
     action: "picker",
     ctaLabel: "See day passes",
-    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=85&fit=crop",
+    image: "/images/open-seating.webp",
   },
   {
     id: "meeting-rooms",
@@ -68,7 +68,7 @@ export const COWORKING_EXTRAS = [
     availableNote: "All three locations",
     action: "link",
     ctaLabel: "Book a room",
-    image: "https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1200&q=85&fit=crop",
+    image: "/images/meeting-window.webp",
   },
 ];
 
@@ -81,7 +81,7 @@ export const ADDITIONAL_SOLUTIONS = [
       "Host your next event at The Berry Coworks. Whether it's a workshop, a brand activation, a team celebration or a panel talk, we have a space equipped to make it memorable. Pick from a mix of room sizes and layouts, and lean on our team for the on-ground support that keeps the day running the way you planned it.",
     href: "/contact",
     ctaLabel: "Enquire",
-    image: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=900&q=85&fit=crop",
+    image: "/images/booth-social.webp",
   },
   {
     id: "virtual-office",
@@ -90,7 +90,7 @@ export const ADDITIONAL_SOLUTIONS = [
       "A professional business address for company registration and correspondence, handled by our team, so your business has a presence at a prime location even while you work from wherever suits you.",
     href: "/contact",
     ctaLabel: "Get an address",
-    image: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=900&q=85&fit=crop",
+    image: "/images/barakhamba-hero.webp",
   },
   {
     id: "advertising",
@@ -99,7 +99,7 @@ export const ADDITIONAL_SOLUTIONS = [
       "Put your brand in front of a community of engaged professionals across every centre, through the everyday spaces our members pass through. Talk to us about current formats and availability.",
     href: "/contact",
     ctaLabel: "Talk to us",
-    image: "https://images.unsplash.com/photo-1523251343397-9225e4cb6319?w=900&q=85&fit=crop",
+    image: "/images/lounge-berry.webp",
   },
 ];
 

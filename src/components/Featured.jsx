@@ -23,7 +23,7 @@ function LocationCard({ loc }) {
     <motion.div variants={cardUp}>
       <Link href={`/locations/${loc.id}`} className="group relative block cursor-pointer">
         <div className="relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:h-[440px] lg:h-[480px] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_-20px_rgba(10,10,10,0.3)]">
-          <img
+          <img decoding="async"
             src={loc.img}
             alt={loc.label}
             className="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
@@ -31,17 +31,18 @@ function LocationCard({ loc }) {
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/45 to-transparent" />
 
           <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 md:p-7 flex flex-col gap-2.5">
-            {/* Italic, cream — deliberately not the orange tracked caps used
-                before, so it reads as a quiet locator rather than a label. */}
-            {loc.area && (
-              <span className="font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#fafaf7]/65">
-                {loc.area}
-              </span>
-            )}
-
             <h3 className='font-["Founders_Grotesk"] font-bold text-white text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[0.95] uppercase'>
               {loc.label}
             </h3>
+
+            {/* Area sits BELOW the bold name as a quiet locator (client
+                request). Straight, not italic; cream, kept muted so it reads
+                as a sub-label rather than competing with the description. */}
+            {loc.area && (
+              <span className="-mt-1 font-['Founders_Grotesk'] text-sm sm:text-base text-[#fafaf7]/65">
+                {loc.area}
+              </span>
+            )}
 
             <p className="font-['NeueMontreal'] text-white/75 text-xs sm:text-sm leading-relaxed line-clamp-2">
               {loc.desc}
@@ -70,7 +71,7 @@ function ComingSoonCard({ loc }) {
     <motion.div variants={cardUp}>
       <div className="relative block cursor-default select-none">
         <div className="relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:h-[440px] lg:h-[480px]">
-          <img
+          <img decoding="async"
             src={loc.img}
             alt=""
             aria-hidden="true"
@@ -85,19 +86,21 @@ function ComingSoonCard({ loc }) {
               Cream, not orange: orange signals "interactive" everywhere else
               (CTAs, Explore, links) and this card is deliberately not
               clickable, so it should not promise an action it cannot do. */}
-          <span className="absolute top-4 left-4 sm:top-5 sm:left-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fafaf7]/95 backdrop-blur-sm text-[#0a0a0a] font-['Founders_Grotesk'] italic text-xs sm:text-sm shadow-[0_6px_18px_-8px_rgba(10,10,10,0.6)]">
+          <span className="absolute top-4 left-4 sm:top-5 sm:left-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fafaf7] text-[#0a0a0a] font-['Founders_Grotesk'] text-xs sm:text-sm shadow-[0_6px_18px_-8px_rgba(10,10,10,0.6)]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#FF6700]" aria-hidden="true" />
             {loc.badge}
           </span>
 
           <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 md:p-7 flex flex-col gap-2.5">
-            <span className="font-['Founders_Grotesk'] italic text-sm sm:text-base text-[#fafaf7]/55">
-              {loc.area}
-            </span>
-
             <h3 className='font-["Founders_Grotesk"] font-bold text-white/85 text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[0.95] uppercase'>
               {loc.label}
             </h3>
+
+            {/* Area below the bold name, straight (not italic) — matches
+                LocationCard for consistency across the grid. */}
+            <span className="-mt-1 font-['Founders_Grotesk'] text-sm sm:text-base text-[#fafaf7]/55">
+              {loc.area}
+            </span>
 
             <p className="font-['NeueMontreal'] text-white/60 text-xs sm:text-sm leading-relaxed">
               {loc.desc}

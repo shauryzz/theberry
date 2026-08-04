@@ -11,8 +11,8 @@ export const SITE = {
   // Contact — confirmed from brand deck (June 2026)
   email:        "contact@theberrycoworks.com",        // Confirmed by client (Oct 2026)
   emailHref:    "mailto:contact@theberrycoworks.com",
-  phone:        "+91 81784 49718",
-  phoneHref:    "tel:+918178449718",
+  phone:        "011-40002726",
+  phoneHref:    "tel:011-40002726",
   whatsapp:     "+91 72908 11818",
   whatsappHref: "https://wa.me/917290811818",
 

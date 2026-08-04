@@ -20,7 +20,7 @@ export default function LandingPage() {
   return (
     <section className="relative w-full min-h-[100svh] overflow-hidden bg-[#0a0a0a]">
 
-      <img
+      <img decoding="async" fetchPriority="high"
         src="/images/landing-hero.jpeg"
         alt="The Berry Coworks workspace interior"
         className="absolute inset-0 w-full h-full object-cover object-center"

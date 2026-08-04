@@ -21,7 +21,7 @@ const locs = LOCATIONS.map((l) => ({
    caps, matching the tag convention now used across the site. */
 function ColHeading({ children }) {
   return (
-    <p className="font-['Founders_Grotesk'] italic text-sm md:text-base text-[#0a0a0a]/45 mb-4 md:mb-5">
+    <p className="font-['Founders_Grotesk'] text-sm md:text-base text-[#0a0a0a]/45 mb-4 md:mb-5">
       {children}
     </p>
   );
@@ -65,7 +65,7 @@ export default function Footer() {
             />
           </Link>
 
-          <p className="mt-6 font-['Founders_Grotesk'] italic text-2xl md:text-3xl leading-snug text-[#0a0a0a]/75 max-w-[22ch]">
+          <p className="mt-6 font-['Founders_Grotesk'] text-2xl md:text-3xl leading-snug text-[#0a0a0a]/75 max-w-[22ch]">
             {SITE.belief}
           </p>
 
@@ -129,7 +129,7 @@ export default function Footer() {
                   uses, so both stay in sync from one place. */}
               <FooterLink href={whatsappLink()} external>
                 {SITE.whatsapp}
-                <span className="ml-2 font-['Founders_Grotesk'] italic text-[#0a0a0a]/40">WhatsApp</span>
+                <span className="ml-2 font-['Founders_Grotesk'] text-[#0a0a0a]/40">WhatsApp</span>
               </FooterLink>
               <FooterLink href={SITE.phoneHref} external>{SITE.phone}</FooterLink>
             </div>

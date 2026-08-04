@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   LuArrowUpRight,
   LuMapPin,
   LuClock,
+  LuX,
+  LuChevronLeft,
+  LuChevronRight,
 } from "react-icons/lu";
 import { PLANS } from "../data/plans";
 import { LOCATIONS, getMapsUrl } from "../data/locations";
@@ -39,10 +42,7 @@ const fmt = {
 
 const galleryOf = (location) => {
   const g = location.gallery || [];
-  if (g.length >= 8) return g.slice(0, 8);
-  const out = [...g];
-  while (out.length < 8) out.push(location.img);
-  return out;
+  return g.length ? g.slice(0, 15) : [location.img];
 };
 const highlightsOf = (location) =>
   location.highlights?.length
@@ -144,7 +144,7 @@ function WhyThisSpace({ location, highlights, gallery }) {
             {/* All images stacked and preloaded; only the active one is opaque.
                 No network request happens on tab change. */}
             {items.map((_, i) => (
-              <img
+              <img decoding="async"
                 key={i}
                 src={photoFor(i)}
                 alt={i === active ? `${location.label}: ${items[i]}` : ""}
@@ -202,12 +202,81 @@ function WhyThisSpace({ location, highlights, gallery }) {
   );
 }
 
+/* Full-size photo viewer for the Walk Through gallery. Click a tile to open;
+   arrows/keys to move between shots; Esc or backdrop-click to close. */
+function Lightbox({ images, index, label, onClose, onNav }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowRight") onNav((index + 1) % images.length);
+      else if (e.key === "ArrowLeft") onNav((index - 1 + images.length) % images.length);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [index, images.length, onClose, onNav]);
+
+  const go = (dir) => (e) => { e.stopPropagation(); onNav((index + dir + images.length) % images.length); };
+  const btn = "z-10 w-11 h-11 flex items-center justify-center rounded-full bg-[#fafaf7]/10 text-[#fafaf7] hover:bg-[#fafaf7]/20 transition-colors";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${label} gallery`}
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-[#0a0a0a]/92 backdrop-blur-sm p-4 sm:p-10"
+    >
+      <button onClick={(e) => { e.stopPropagation(); onClose(); }} aria-label="Close" className={`absolute top-4 right-4 sm:top-6 sm:right-6 ${btn}`}>
+        <LuX className="w-5 h-5" />
+      </button>
+
+      {images.length > 1 && (
+        <>
+          <button onClick={go(-1)} aria-label="Previous" className={`absolute left-3 sm:left-6 ${btn}`}><LuChevronLeft className="w-6 h-6" /></button>
+          <button onClick={go(1)} aria-label="Next" className={`absolute right-3 sm:right-6 ${btn}`}><LuChevronRight className="w-6 h-6" /></button>
+        </>
+      )}
+
+      <motion.img
+        key={index}
+        src={images[index]}
+        alt={`${label} photo ${index + 1}`}
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        draggable="false"
+        className="max-w-full max-h-full object-contain rounded-xl shadow-2xl select-none"
+      />
+
+      {images.length > 1 && (
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[#fafaf7]/70 text-xs font-['NeueMontreal'] tracking-wide">
+          {index + 1} / {images.length}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
 export default function LocationDetail({ location }) {
   const others        = LOCATIONS.filter((l) => l.id !== location.id);
   const locationIndex = LOCATIONS.findIndex((l) => l.id === location.id);
   const gallery       = galleryOf(location);
   const highlights    = highlightsOf(location);
   const mapsUrl       = getMapsUrl(location);
+
+  // Click-to-enlarge for the Walk Through gallery. lightbox = index or null.
+  const walk = gallery.slice(5, 15);
+  const [lightbox, setLightbox] = useState(null);
 
   return (
     <>
@@ -245,8 +314,21 @@ export default function LocationDetail({ location }) {
           whileInView={{ scale: 1 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 w-full h-full object-cover"
+          className={`absolute inset-0 w-full h-full object-cover ${
+            location.heroDim
+              ? "brightness-[0.72] contrast-[1.28] saturate-[1.08]"
+              : "brightness-[0.97] contrast-[1.03]"
+          }`}
         />
+        {/* Knock down the blown-out centre of overexposed hero photos so the
+            signage reads. Radial scrim: darkest where the highlight clips. */}
+        {location.heroDim && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: "radial-gradient(ellipse 55% 60% at 52% 45%, rgba(10,10,10,0.42) 0%, rgba(10,10,10,0.16) 45%, transparent 78%)" }}
+          />
+        )}
       </motion.div>
 
       {/* ── 2. META STRIP ─────────────────────────────────────────────── */}
@@ -300,7 +382,7 @@ export default function LocationDetail({ location }) {
                 variants={fadeUp}
                 className="lg:col-span-5 lg:border-l lg:border-[#0a0a0a]/10 lg:pl-16"
               >
-                <p className="font-['Founders_Grotesk'] italic text-lg sm:text-xl text-[#0a0a0a]/45 mb-4">
+                <p className="font-['Founders_Grotesk'] text-lg sm:text-xl text-[#0a0a0a]/45 mb-4">
                   Who it&apos;s for
                 </p>
                 <p className="font-['NeueMontreal'] text-lg sm:text-xl text-[#0a0a0a]/85 leading-relaxed">
@@ -359,41 +441,35 @@ export default function LocationDetail({ location }) {
             </h2>
           </div>
 
+          {/* Distinct from "Why this space" above (which uses the first 5) —
+              this pulls the REST of the gallery, so no photo repeats on the
+              page. Grid + transform-only hover (no flex/layout animation), so
+              it stays smooth. */}
           <motion.div
             variants={fadeUp}
-            className="
-              flex gap-3
-              overflow-x-auto snap-x snap-mandatory -mx-5 px-5 pb-2
-              [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-              sm:overflow-visible sm:mx-0 sm:px-0 sm:pb-0
-              sm:h-[440px] md:h-[520px]
-            "
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
           >
-            {gallery.slice(0, 6).map((src, i) => (
+            {walk.map((src, i) => (
               <div
                 key={i}
-                className="
-                  group relative shrink-0 snap-center w-[80%] h-72
-                  rounded-2xl overflow-hidden bg-[#0a0a0a]/5
-                  sm:w-auto sm:h-auto sm:shrink sm:flex-1 sm:hover:flex-[2.6]
-                  transition-[flex] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)]
-                "
+                onClick={() => setLightbox(i)}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${location.label} photo ${i + 1} full size`}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLightbox(i); } }}
+                className="group relative overflow-hidden rounded-2xl bg-[#0a0a0a]/5 aspect-[4/3] cursor-zoom-in [content-visibility:auto] [contain-intrinsic-size:auto_320px]"
               >
                 <img
+                  decoding="async"
+                  loading="lazy"
                   src={src}
                   alt={`${location.label} interior ${i + 1}`}
-                  loading="lazy"
                   onError={(e) => { if (e.currentTarget.src !== location.img) e.currentTarget.src = location.img; }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                {/* Dim non-hovered panels only where hover exists (not on touch). */}
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-0 sm:bg-[#0a0a0a]/30 sm:group-hover:bg-[#0a0a0a]/0 transition-colors duration-700"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
                 />
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 bottom-0 h-[3px] bg-[#FF6700] scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  className="absolute inset-x-0 bottom-0 h-[3px] bg-[#FF6700] scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 />
               </div>
             ))}
@@ -457,11 +533,18 @@ export default function LocationDetail({ location }) {
                   <div className="flex-1" />
                   <div className="mt-8 pt-6 border-t border-[#0a0a0a]/10">
                     {price !== null && price !== undefined ? (
-                      <div className="flex items-baseline gap-1.5 mb-5">
-                        <span className='font-["Founders_Grotesk"] font-bold text-4xl md:text-5xl tracking-tighter text-[#0a0a0a]'>
-                          ₹{price.toLocaleString("en-IN")}
-                        </span>
-                        <span className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/45">/ mo</span>
+                      <div className="mb-5">
+                        {plan.pricePrefix && (
+                          <span className="block font-['Founders_Grotesk'] text-sm text-[#0a0a0a]/45 mb-0.5">
+                            {plan.pricePrefix}
+                          </span>
+                        )}
+                        <div className="flex items-baseline gap-1.5">
+                          <span className='font-["Founders_Grotesk"] font-bold text-4xl md:text-5xl tracking-tighter text-[#0a0a0a]'>
+                            ₹{price.toLocaleString("en-IN")}
+                          </span>
+                          <span className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/45">{plan.priceUnit}</span>
+                        </div>
                       </div>
                     ) : (
                       <div className="mb-5">
@@ -501,7 +584,7 @@ export default function LocationDetail({ location }) {
                 >
                   {renderCard(visible[0], 0)}
                   <motion.div variants={fadeUp} className="lg:pl-6">
-                    <p className="font-['Founders_Grotesk'] italic text-lg sm:text-xl text-[#fafaf7]/45 mb-4">
+                    <p className="font-['Founders_Grotesk'] text-lg sm:text-xl text-[#fafaf7]/45 mb-4">
                       One home for your team here
                     </p>
                     <p className="font-['NeueMontreal'] text-base sm:text-lg text-[#fafaf7]/70 leading-relaxed max-w-[46ch] mb-8">
@@ -603,7 +686,7 @@ export default function LocationDetail({ location }) {
             {/* Right: a location photo standing in for the map visual —
                 deliberately NOT an interactive embed. */}
             <motion.div variants={fadeUp} className="relative min-h-[280px] lg:min-h-full overflow-hidden order-first lg:order-last">
-              <img
+              <img decoding="async"
                 src={gallery[0] || location.img}
                 alt={`${location.label} location`}
                 loading="lazy"
@@ -633,7 +716,7 @@ export default function LocationDetail({ location }) {
               <motion.div key={other.id} variants={cardUp}>
                 <Link href={`/locations/${other.id}`} className="group block">
                   <div className="relative overflow-hidden rounded-2xl aspect-[16/10]">
-                    <img
+                    <img decoding="async"
                       src={other.img}
                       alt={other.label}
                       loading="lazy"
@@ -716,6 +799,19 @@ export default function LocationDetail({ location }) {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* Full-size gallery viewer */}
+      <AnimatePresence>
+        {lightbox !== null && (
+          <Lightbox
+            images={walk}
+            index={lightbox}
+            label={location.label}
+            onClose={() => setLightbox(null)}
+            onNav={setLightbox}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

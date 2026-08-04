@@ -171,7 +171,7 @@ export default function AppShowcase() {
                 <div className="flex-1 overflow-hidden flex flex-col">
                   {/* HERO */}
                   <div className="relative h-[150px] sm:h-[165px] lg:h-[185px] shrink-0">
-                    <img src={MEDIA.appHero} alt="" className="absolute inset-0 w-full h-full object-cover" draggable="false" />
+                    <img decoding="async" loading="lazy" src={MEDIA.appHero} alt="" className="absolute inset-0 w-full h-full object-cover" draggable="false" />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/5 to-black/70" />
                     <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/35 backdrop-blur-sm text-white text-[9px] font-medium">

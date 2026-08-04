@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { LuArrowUpRight, LuPhone } from "react-icons/lu";
 import { NAV_LINKS } from "../data/nav";
 import { SITE, SOCIALS } from "../data/site";
@@ -18,6 +18,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen]         = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const prefersReduced          = useReducedMotion();
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40);
@@ -130,129 +131,144 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/* ── Mobile menu overlay ────────────────────────────────────────── */}
+      {/* ── Mobile menu — a frosted-glass panel that drops out of the pill.
+             Same material as the desktop navbar (translucent cream, blur,
+             hairline border, soft shadow), floating over a blurred page with
+             margins so it reads as glass rather than a flat cover. ── */}
       <AnimatePresence>
         {open && (
           <motion.div
             key="mob"
-            initial={{ opacity: 0, y: "-100%" }}
-            animate={{ opacity: 1, y: "0%", transition: { duration: 0.55, ease: [0.76, 0, 0.24, 1] } }}
-            exit={{ opacity: 0, y: "-100%", transition: { duration: 0.4, ease: [0.76, 0, 0.24, 1] } }}
-            className="fixed inset-0 z-[99] bg-[#fafaf7] flex flex-col overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[99] flex items-start px-4 pt-[4.9rem] pb-4"
           >
+            {/* Backdrop — dims + blurs the page so the panel floats */}
             <div
-              className="absolute inset-0 opacity-[0.04] pointer-events-none"
-              style={{
-                backgroundImage: "radial-gradient(#0a0a0a 1px,transparent 1px)",
-                backgroundSize: "30px 30px",
-              }}
+              onClick={() => setOpen(false)}
+              aria-hidden="true"
+              className="absolute inset-0 bg-[#0a0a0a]/25 backdrop-blur-md"
             />
 
-            <div className="h-20 flex-shrink-0" />
-
+            {/* The glass panel */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 0.2 } }}
-              className="relative px-6 mt-2 flex items-center gap-3"
+              initial={prefersReduced ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={prefersReduced ? { duration: 0.2 } : { duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              style={{ transformOrigin: "top center" }}
+              className="relative z-10 w-full max-h-full overflow-y-auto flex flex-col rounded-[28px] border border-white/50 bg-[#fafaf7]/80 backdrop-blur-2xl shadow-[0_30px_80px_-24px_rgba(10,10,10,0.45)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              <span className="w-8 h-px bg-[#FF6700]" />
-              <p className="text-[10px] tracking-[0.4em] uppercase text-[#FF6700] font-['NeueMontreal']">
-                Navigate
-              </p>
-            </motion.div>
-
-            <nav className="relative flex-1 px-6 mt-6 sm:mt-8 flex flex-col justify-center">
-              {NAV_LINKS.map((l, i) => {
-                const active = isActive(l.href);
-                return (
-                  <motion.div
-                    key={l.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{
-                      opacity: 1, y: 0,
-                      transition: { delay: 0.2 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-                    }}
-                  >
-                    <Link
-                      href={l.href}
-                      onClick={() => setOpen(false)}
-                      className="group flex items-center gap-4 sm:gap-5 py-3.5 sm:py-4 border-b border-[#0a0a0a]/10"
+              {/* Links — soft glass tiles. The current page sits in a filled
+                  tile with an orange dot ("you are here"); the rest light up a
+                  tile on hover/focus. */}
+              <div className="p-3 sm:p-4 flex flex-col gap-1.5">
+                {NAV_LINKS.map((l, i) => {
+                  const active = isActive(l.href);
+                  return (
+                    <motion.div
+                      key={l.title}
+                      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={prefersReduced ? { duration: 0 } : { delay: 0.1 + i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <span className={`font-['Founders_Grotesk'] text-[11px] tracking-[0.3em] transition-colors flex-shrink-0 ${
-                        active ? "text-[#FF6700]" : "text-[#0a0a0a]/35 group-hover:text-[#FF6700]"
-                      }`}>
-                        0{i + 1}
-                      </span>
-                      <span
-                        className={`flex-1 font-['Founders_Grotesk'] font-bold uppercase tracking-tight leading-[1] transition-colors ${
-                          active ? "text-[#FF6700]" : "text-[#0a0a0a] group-hover:text-[#FF6700]"
-                        }`}
-                        style={{ fontSize: "clamp(1.875rem, 8.5vw, 3rem)" }}
-                      >
-                        {l.title}
-                      </span>
-                      <LuArrowUpRight
-                        className={`w-5 h-5 transition-all duration-300 flex-shrink-0 ${
+                      <Link
+                        href={l.href}
+                        onClick={() => setOpen(false)}
+                        className={`group relative flex items-center justify-between gap-4 rounded-2xl px-4 py-4 outline-none transition-colors duration-300 ${
                           active
-                            ? "text-[#FF6700]"
-                            : "text-[#0a0a0a]/30 group-hover:text-[#FF6700] group-hover:rotate-45"
+                            ? "bg-white/70 shadow-[0_8px_24px_-14px_rgba(10,10,10,0.4)]"
+                            : "hover:bg-white/55 focus-visible:bg-white/55"
                         }`}
-                        strokeWidth={1.75}
-                      />
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </nav>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0, transition: { delay: 0.55, duration: 0.5 } }}
-              className="relative px-6 pb-7 pt-6 border-t border-[#0a0a0a]/10 flex flex-col gap-5"
-            >
-              <div className="grid grid-cols-2 gap-3">
-                <a
-                  href={BOOKING.tour}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setOpen(false)}
-                  className="group inline-flex items-center justify-center gap-2 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide"
-                >
-                  Book a Tour
-                  <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={2} />
-                </a>
-                <a
-                  href={whatsappLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setOpen(false)}
-                  className="group inline-flex items-center justify-center gap-2 py-3.5 border border-[#0a0a0a]/25 text-[#0a0a0a]/85 rounded-full text-sm font-['NeueMontreal'] tracking-wide"
-                >
-                  WhatsApp
-                  <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={2} />
-                </a>
+                      >
+                        <span className="flex items-center gap-3 min-w-0">
+                          <span
+                            aria-hidden="true"
+                            className={`w-2 h-2 rounded-full bg-[#FF6700] flex-shrink-0 transition-all duration-300 ${
+                              active
+                                ? "opacity-100 scale-100"
+                                : "opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-visible:scale-100"
+                            }`}
+                          />
+                          <span
+                            className={`font-['Founders_Grotesk'] font-bold uppercase tracking-tight leading-none truncate transition-colors duration-300 text-[1.6rem] sm:text-[1.8rem] ${
+                              active
+                                ? "text-[#FF6700]"
+                                : "text-[#0a0a0a] group-hover:text-[#FF6700] group-focus-visible:text-[#FF6700]"
+                            }`}
+                          >
+                            {l.title}
+                          </span>
+                        </span>
+                        <LuArrowUpRight
+                          className={`w-5 h-5 flex-shrink-0 transition-all duration-300 ${
+                            active
+                              ? "text-[#FF6700]"
+                              : "text-[#0a0a0a]/30 group-hover:text-[#FF6700] group-hover:rotate-45 group-focus-visible:text-[#FF6700] group-focus-visible:rotate-45"
+                          }`}
+                          strokeWidth={2}
+                        />
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </div>
 
-              <a
-                href={`mailto:${SITE.email}`}
-                className="text-xs sm:text-sm font-['NeueMontreal'] text-[#0a0a0a]/70 hover:text-[#0a0a0a] transition-colors tracking-wide"
+              {/* Footer, inside the glass */}
+              <motion.div
+                initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={prefersReduced ? { duration: 0 } : { delay: 0.36, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="p-3 sm:p-4 pt-0"
               >
-                {SITE.email}
-              </a>
+                <div className="border-t border-[#0a0a0a]/10 pt-4 flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <a
+                      href={BOOKING.tour}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setOpen(false)}
+                      className="group/cta inline-flex items-center justify-center gap-2 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-2xl text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300"
+                    >
+                      Book a Tour
+                      <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/cta:rotate-45" strokeWidth={2} />
+                    </a>
+                    <a
+                      href={whatsappLink()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setOpen(false)}
+                      className="group/cta inline-flex items-center justify-center gap-2 py-3.5 bg-white/50 border border-[#0a0a0a]/15 text-[#0a0a0a]/85 rounded-2xl text-sm font-['NeueMontreal'] tracking-wide hover:border-[#FF6700] hover:bg-white/80 transition-colors duration-300"
+                    >
+                      WhatsApp
+                      <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/cta:rotate-45" strokeWidth={2} />
+                    </a>
+                  </div>
 
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
-                {SOCIALS.map((s) => (
-                  <a
-                    key={s.name}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[10px] tracking-[0.25em] uppercase text-[#0a0a0a]/45 hover:text-[#FF6700] transition-colors font-['NeueMontreal']"
-                  >
-                    {s.name}
-                  </a>
-                ))}
-              </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <a
+                      href={`mailto:${SITE.email}`}
+                      className="min-w-0 truncate font-['NeueMontreal'] text-xs sm:text-sm text-[#0a0a0a]/60 hover:text-[#0a0a0a] transition-colors"
+                    >
+                      {SITE.email}
+                    </a>
+                    <div className="flex items-center gap-4 flex-shrink-0">
+                      {SOCIALS.map((s) => (
+                        <a
+                          key={s.name}
+                          href={s.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-['NeueMontreal'] text-xs sm:text-sm text-[#0a0a0a]/50 hover:text-[#FF6700] transition-colors"
+                        >
+                          {s.name}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}

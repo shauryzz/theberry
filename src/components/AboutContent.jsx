@@ -34,7 +34,7 @@ const HEADING_CLS =
 
 // Placeholder founders photo. Swap for the real shot of Parul & Vishesh.
 const FOUNDERS_PHOTO =
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1400&q=85&fit=crop";
+  "/images/founders.webp";
 
 // ── Board furniture ──────────────────────────────────────────────────────
 // Small presentational pieces that make the Story read as a hand-pinned board
@@ -88,7 +88,7 @@ function Polaroid({ src, alt = "", caption, w, rotate = 0, tape = "tl", classNam
         </>
       )}
       <div className={`relative overflow-hidden bg-[#0a0a0a]/5 ${imgClass}`}>
-        <img
+        <img decoding="async"
           src={src}
           alt={alt}
           loading="lazy"
@@ -96,7 +96,7 @@ function Polaroid({ src, alt = "", caption, w, rotate = 0, tape = "tl", classNam
         />
       </div>
       {caption && (
-        <figcaption className="absolute bottom-2 left-0 right-0 text-center font-['Founders_Grotesk'] italic text-[13px] leading-none text-[#0a0a0a]/55">
+        <figcaption className="absolute bottom-2 left-0 right-0 text-center font-['Founders_Grotesk'] text-[13px] leading-none text-[#0a0a0a]/55">
           {caption}
         </figcaption>
       )}
@@ -153,7 +153,10 @@ function RingDoodle({ className = "", w = 150, rotate = -6 }) {
 // row to row so the column feels hand-arranged rather than stamped.
 function JourneyRow({ item, index, isLast, reduce }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-35% 0px -35% 0px" });
+  // Reveal as the row scrolls up into view (reliable on mobile, where rows are
+  // tall). The old "-35%/-35%" centre band only fired once a row was centred —
+  // impossible for rows taller than 30% of a phone screen, so nothing animated.
+  const inView = useInView(ref, { once: true, margin: "-20% 0px -20% 0px" });
   const active = inView || reduce;
   const shot = JOURNEY_SHOTS[item.year];
   const even = index % 2 === 0;
@@ -274,7 +277,7 @@ export default function AboutContent() {
           <motion.p
             variants={fadeUp}
             style={{ rotate: "-2deg" }}
-            className="relative inline-block bg-white px-4 py-1.5 rounded-[2px] shadow-[0_10px_28px_-18px_rgba(10,10,10,0.6)] font-['Founders_Grotesk'] italic text-lg sm:text-xl text-[#0a0a0a]/70"
+            className="relative inline-block bg-white px-4 py-1.5 rounded-[2px] shadow-[0_10px_28px_-18px_rgba(10,10,10,0.6)] font-['Founders_Grotesk'] text-lg sm:text-xl text-[#0a0a0a]/70"
           >
             <Tape className="-top-2 left-1/2 -translate-x-1/2" rotate={-5} w={70} />
             How it started
@@ -335,14 +338,14 @@ export default function AboutContent() {
           <ArrowDoodle className="left-[52%] top-[250px]" w={140} rotate={18} />
           <motion.span
             variants={fadeUp}
-            className="absolute z-30 font-['Founders_Grotesk'] italic text-[#0a0a0a]/45 text-lg"
+            className="absolute z-30 font-['Founders_Grotesk'] text-[#0a0a0a]/45 text-lg"
             style={{ top: 250, left: "12%", rotate: "-4deg" }}
           >
             two designers.
           </motion.span>
           <motion.span
             variants={fadeUp}
-            className="absolute z-30 font-['Founders_Grotesk'] italic text-[#0a0a0a]/40 text-base"
+            className="absolute z-30 font-['Founders_Grotesk'] text-[#0a0a0a]/40 text-base"
             style={{ top: 940, left: "70%", rotate: "3deg" }}
           >
             grown together.
@@ -438,13 +441,13 @@ export default function AboutContent() {
             >
               <Tape className="-top-2.5 left-1/2 -translate-x-1/2" rotate={-5} w={96} />
               <div className="relative overflow-hidden aspect-[4/5] bg-[#0a0a0a]/5">
-                <img
+                <img decoding="async" loading="lazy"
                   src={FOUNDERS_PHOTO}
                   alt="Parul Jain and Vishesh Kalkhandey, founders of The Berry Coworks"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
-              <figcaption className="absolute bottom-3 left-0 right-0 text-center font-['Founders_Grotesk'] italic text-[15px] text-[#0a0a0a]/55">
+              <figcaption className="absolute bottom-3 left-0 right-0 text-center font-['Founders_Grotesk'] text-[15px] text-[#0a0a0a]/55">
                 {ABOUT_STORY.signoff}
               </figcaption>
             </figure>
@@ -459,7 +462,15 @@ export default function AboutContent() {
             <motion.p variants={fadeUp} className="font-['NeueMontreal'] text-lg sm:text-xl text-[#0a0a0a]/75 leading-relaxed mb-6">
               {ABOUT_STORY.metaphor}
             </motion.p>
-            <motion.p variants={fadeUp} className="font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/60 leading-relaxed">
+            {/* Closing beat — deliberately set apart from the metaphor above.
+                Orange left rule + italic display face is the site's "pulled
+                out statement" idiom, so on mobile (where the photo no longer
+                anchors the block) this reads as an intentional coda, not a
+                second section bleeding in. */}
+            <motion.p
+              variants={fadeUp}
+              className="mt-8 sm:mt-10 pl-5 sm:pl-6 border-l-2 border-[#FF6700] font-['Founders_Grotesk'] text-lg sm:text-xl md:text-2xl text-[#0a0a0a]/70 leading-relaxed"
+            >
               {ABOUT_STORY.closing}
             </motion.p>
           </div>
@@ -505,8 +516,13 @@ export default function AboutContent() {
             ))}
           </div>
 
-          {/* open-ended continuation */}
-          <div className="relative grid grid-cols-[2.25rem_1fr] md:grid-cols-[3rem_1fr] gap-5 md:gap-10 -mt-6">
+          {/* open-ended continuation.
+              The negative top margin tightens the gap under the last row on
+              DESKTOP, where the last polaroid sits off to the right and this
+              line slides up into empty space beside it. On MOBILE the polaroid
+              is stacked full-width directly above, so a negative margin drags
+              this line up into the photo's caption lip — hence mt-0 there. */}
+          <div className="relative grid grid-cols-[2.25rem_1fr] md:grid-cols-[3rem_1fr] gap-5 md:gap-10 mt-2 md:-mt-6">
             <div className="relative">
               <span aria-hidden="true" className="absolute left-1/2 -translate-x-1/2 top-0 h-12 border-l border-dashed border-[#0a0a0a]/25" />
               <span aria-hidden="true" className="absolute left-1/2 -translate-x-1/2 top-12 w-2.5 h-2.5 rounded-full bg-[#FF6700]" />
@@ -516,7 +532,7 @@ export default function AboutContent() {
               whileInView="show"
               viewport={{ once: true, margin: "-60px" }}
               variants={fadeUp}
-              className="pt-8 font-['Founders_Grotesk'] italic text-xl sm:text-2xl md:text-3xl text-[#0a0a0a]/45"
+              className="pt-8 font-['Founders_Grotesk'] text-xl sm:text-2xl md:text-3xl text-[#0a0a0a]/45"
             >
               {JOURNEY_OUTRO}
             </motion.p>

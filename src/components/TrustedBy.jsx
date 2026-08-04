@@ -37,7 +37,7 @@ function LogoRow({ logos, direction = "left", duration = 40 }) {
                 key={i}
                 className="mx-3 sm:mx-4 flex items-center justify-center shrink-0 rounded-2xl bg-white border border-[#0a0a0a]/[0.06] shadow-[0_10px_30px_-18px_rgba(10,10,10,0.25)] h-24 sm:h-28 md:h-32 w-44 sm:w-52 md:w-60 px-6 sm:px-8"
               >
-                <img
+                <img decoding="async"
                   src={logo.src}
                   alt={logo.alt}
                   draggable="false"
@@ -81,15 +81,6 @@ export default function TrustedBy() {
         variants={stagger}
         className="relative z-10 px-5 sm:px-10 md:px-20 text-center mb-12 sm:mb-16 md:mb-20"
       >
-        {/* Not the tracked-caps eyebrow used elsewhere: a plain italic line in
-            the display face, echoing the italics in the About panel and stats. */}
-        <motion.p
-          variants={fadeUp}
-          className="font-['Founders_Grotesk'] italic text-lg sm:text-xl md:text-2xl text-[#0a0a0a]/40 mb-4 sm:mb-5"
-        >
-          In good company
-        </motion.p>
-
         <h2 className='font-["Founders_Grotesk"] font-bold uppercase tracking-tighter leading-[0.95] text-[#0a0a0a] text-[11vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw]'>
           <span className="block overflow-hidden pb-[0.05em]">
             <motion.span variants={lineUp} className="block">

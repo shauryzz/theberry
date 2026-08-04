@@ -37,25 +37,25 @@ export const BOOKING = {
   // getPlanBookingUrl(). This is the intended behaviour, not missing data.
   plans: {
     "flexible-seat": {
-      connaught:   null,   // Not offered at Barakhamba
+      barakhamba:   null,   // Not offered at Barakhamba
       jhandewalan: null,   // Enquiry-only
-      noida:       null,   // Enquiry-only
+      "noida-sector-142":       null,   // Enquiry-only
     },
     "dedicated-desk": {
-      connaught:   null,   // Enquiry-only
+      barakhamba:   null,   // Enquiry-only
       jhandewalan: null,   // Enquiry-only
-      noida:       null,   // Enquiry-only
+      "noida-sector-142":       null,   // Enquiry-only
     },
     "private-cabin": {
-      connaught:   null,   // Enquiry-only
+      barakhamba:   null,   // Enquiry-only
       jhandewalan: null,   // Enquiry-only
-      noida:       null,   // Enquiry-only
+      "noida-sector-142":       null,   // Enquiry-only
     },
     "managed-office": {
       // Enterprise, Noida-only. Enquiry-only → routes to /contact.
-      connaught:   null,
+      barakhamba:   null,
       jhandewalan: null,
-      noida:       null,
+      "noida-sector-142":       null,
     },
   },
 
@@ -73,9 +73,9 @@ export const BOOKING = {
 
   // ── Virtual Office — enquiry-only, routes to /contact ───────────────────
   virtualOffice: {
-    connaught:   null,   // Enquiry-only
+    barakhamba:   null,   // Enquiry-only
     jhandewalan: null,   // Enquiry-only
-    noida:       null,   // Enquiry-only
+    "noida-sector-142":       null,   // Enquiry-only
   },
 
   // ── Day Pass bundles — real URLs from client, one entry per bundle ──────
@@ -85,7 +85,7 @@ export const BOOKING = {
   // "Monthly" is used for both Jhandewalan's "30 DAYS PLAN" and Noida's
   // "MONTH PLAN" — same product, normalized label so the modal reads clean.
   dayPassBundles: {
-    connaught: [],  // Not offered at Barakhamba
+    barakhamba: [],  // Not offered at Barakhamba
     jhandewalan: [
       { id: "single",   label: "Day Pass",       sub: "1 visit",    url: `${DESKOS}/day-pass/81/90` },
       { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: `${DESKOS}/day-pass/81/92` },
@@ -93,7 +93,7 @@ export const BOOKING = {
       { id: "monthly",  label: "Monthly Pass",   sub: "30 days",    url: `${DESKOS}/day-pass/81/91` },
       { id: "visits45", label: "45-Visit Pack",  sub: "45 visits",  url: `${DESKOS}/day-pass/81/94` },
     ],
-    noida: [
+    "noida-sector-142": [
       { id: "single",   label: "Day Pass",       sub: "1 visit",    url: `${DESKOS}/day-pass/80/85` },
       { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: `${DESKOS}/day-pass/80/87` },
       { id: "visits15", label: "15-Visit Pack",  sub: "15 visits",  url: `${DESKOS}/day-pass/80/88` },
