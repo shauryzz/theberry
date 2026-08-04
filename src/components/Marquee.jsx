@@ -10,15 +10,22 @@ import { USPS } from "../data/content";
  * Separators are rendered here; the data (USPS) holds plain phrases only.
  *
  * COLOUR RATIONALE: the hero above ends in a near-black gradient
- * (#0a0a0a/95) and the About panel below is now WHITE with rounded top
- * corners that overlap this strip. The beige is deliberately warmer and a
- * shade off the cream (#fafaf7) around it so the strip stays a distinct
- * band and the rounded corners still read. Keep it clearly warm (never a
- * cool/blue-leaning neutral) and distinct from #fafaf7.
+ * (#0a0a0a/95) and the About panel below is WHITE with rounded top corners
+ * that overlap this strip. The band therefore has to be clearly darker than
+ * white, or the rounded corners stop reading as an edge.
+ *
+ * The previous #F0EBE3 was warm on paper but only ~4% off white, and sat
+ * between a white panel and a warm cream (#fafaf7). At that lightness the
+ * eye takes the surrounding warmth as the baseline and reads the strip as
+ * a cool grey. Fixed by going ~8% darker and holding the warm bias: the
+ * hue is unchanged, only the depth. Keep any replacement in this range —
+ * R > G > B, roughly #E0–#EA lightness. Do NOT lighten it back toward
+ * white, and do not tint it orange: the orange is reserved for the dot
+ * separators and accents, and a filled orange band would fight the CTA.
  * ------------------------------------------------------------------ */
 export default function Marquee() {
   return (
-    <div className="relative w-full overflow-hidden bg-[#F0EBE3]">
+    <div className="relative w-full overflow-hidden bg-[#E7DDCC]">
       <div className="overflow-hidden whitespace-nowrap">
         <motion.div
           className="inline-flex items-center"

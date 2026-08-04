@@ -19,15 +19,33 @@ const fadeUp = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 };
 
-/* Photos arranged in the OUTER MARGINS either side of the headline, not over
-   it — the text column is capped (lg:max-w-4xl) so these sit clear of it and
-   nothing gets covered. Percentage offsets keep the collage scaling with the
-   container. Shown only at `lg` and up: below that the margins are too narrow
-   to hold a photo without it crossing the type, so they are hidden outright. */
+/* Two treatments of the same three photos.
+
+   `box` — lg and up: absolutely positioned in the OUTER MARGINS either side of
+   the headline, not over it. The text column is capped (lg:max-w-4xl) so these
+   sit clear of it and nothing gets covered. Percentage offsets keep the
+   collage scaling with the container.
+
+   `mobile` — below lg the margins are too narrow to hold a photo without it
+   crossing the type, so the collage is laid out in normal flow instead: a
+   single overlapping row under the paragraph. Same shapes and rotations, so
+   it still reads as the same collage rather than a separate gallery. */
 const ABOUT_SHOTS = [
-  { i: 0, box: "left-0 top-[34%] w-[13%] aspect-square rounded-full -rotate-6" },
-  { i: 1, box: "right-0 top-[3%] w-[14%] aspect-[5/4] rounded-[1.6rem] rotate-[4deg]" },
-  { i: 2, box: "right-[1%] bottom-[8%] w-[12%] aspect-[4/3] rounded-[1.4rem] -rotate-3" },
+  {
+    i: 0,
+    box: "left-0 top-[34%] w-[13%] aspect-square rounded-full -rotate-6",
+    mobile: "w-[30%] aspect-square rounded-full -rotate-6",
+  },
+  {
+    i: 1,
+    box: "right-0 top-[3%] w-[14%] aspect-[5/4] rounded-[1.6rem] rotate-[4deg]",
+    mobile: "w-[36%] aspect-[5/4] rounded-[1.25rem] rotate-[4deg] -mt-4",
+  },
+  {
+    i: 2,
+    box: "right-[1%] bottom-[8%] w-[12%] aspect-[4/3] rounded-[1.4rem] -rotate-3",
+    mobile: "w-[32%] aspect-[4/3] rounded-[1.1rem] -rotate-3 mt-5",
+  },
 ];
 
 export default function About() {
@@ -134,7 +152,8 @@ export default function About() {
           variants={stagger}
           className="relative max-w-7xl mx-auto text-center"
         >
-          {/* Photo collage — desktop only, sits in the side margins. */}
+          {/* Photo collage — lg and up, sits in the side margins.
+              Mobile gets the same photos in flow, below the paragraph. */}
           <div className="hidden lg:block pointer-events-none absolute inset-0 z-20" aria-hidden="true">
             {ABOUT_SHOTS.map(({ i, box }) => (
               <span
@@ -168,6 +187,30 @@ export default function About() {
           >
             The Berry Coworks blends the comfort of working from home with the energy of a shared workplace, giving you room for focus and company in the same day, in a space you&apos;ll genuinely want to work from.
           </motion.p>
+
+          {/* Same three photos, in flow — below lg only, where the absolute
+              collage above is hidden. Slight negative gap lets the shapes
+              overlap a touch so it stays a collage, not a filmstrip. */}
+          <motion.div
+            variants={fadeUp}
+            aria-hidden="true"
+            className="lg:hidden mt-10 sm:mt-12 flex items-center justify-center gap-2 sm:gap-4"
+          >
+            {ABOUT_SHOTS.map(({ i, mobile }) => (
+              <span
+                key={i}
+                className={`block flex-shrink-0 overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] ${mobile}`}
+              >
+                <img
+                  decoding="async"
+                  src={MEDIA.aboutInlineShots[i]}
+                  alt=""
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
+              </span>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
 
