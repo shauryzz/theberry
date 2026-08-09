@@ -7,11 +7,12 @@ import {
   LuArrowUpRight,
   LuMail,
   LuPhone,
-  LuMessageCircle,
+  LuCopy,
   LuClock,
   LuCheck,
   LuLoader,
 } from "react-icons/lu";
+import { FaWhatsapp } from "react-icons/fa6";
 import { SITE } from "../data/site";
 import { LOCATIONS } from "../data/locations";
 import { whatsappLink } from "../data/booking";
@@ -248,9 +249,8 @@ export default function ContactContent() {
               <motion.div variants={fadeUp}>
                 <p className="font-['Founders_Grotesk'] text-lg text-[#0a0a0a]/45 mb-5">Reach us directly</p>
                 <div className="space-y-3">
-                  <ContactRow icon={LuMail}          label="Email"    value={SITE.email}    href={`mailto:${SITE.email}`} />
-                  <ContactRow icon={LuPhone}         label="Call"     value={SITE.phone}    href={SITE.phoneHref} />
-                  <ContactRow icon={LuMessageCircle} label="WhatsApp" value={SITE.whatsapp} href={whatsappLink()} external />
+                  <ContactRow icon={LuMail} label="Email" value={SITE.email} href={`mailto:${SITE.email}`} />
+                  <ContactPhoneRow />
                 </div>
               </motion.div>
 
@@ -272,7 +272,14 @@ export default function ContactContent() {
                   this points at the things that ARE self-serve: day passes and
                   meeting rooms, booked over on the Solutions page. */}
               <motion.div variants={fadeUp} className="relative overflow-hidden p-6 sm:p-7 rounded-2xl bg-[#0a0a0a] text-[#fafaf7] shadow-[0_24px_60px_-28px_rgba(10,10,10,0.5)]">
-                <div aria-hidden="true" className="absolute inset-0 opacity-[0.16] pointer-events-none" style={{ backgroundImage: "radial-gradient(#fafaf7 1.5px,transparent 1.5px)", backgroundSize: "24px 24px" }} />
+                {/* Dot pattern. Client note (Aug 2026): reduce the transparency,
+                    it looks out of place. At 0.16 the grid read as a washed-out
+                    artifact rather than a designed texture, so it is now more
+                    solid, not fainter. Original geometry kept (1.5px dots on a
+                    24px grid) because finer, sparser dots undercut the same
+                    thing the opacity lift is fixing.
+                    TUNE THIS ONE VALUE: 0.24 is quieter, 0.38 is bolder. */}
+                <div aria-hidden="true" className="absolute inset-0 opacity-[0.30] pointer-events-none" style={{ backgroundImage: "radial-gradient(#fafaf7 1.5px,transparent 1.5px)", backgroundSize: "24px 24px" }} />
                 <div className="relative">
                   <p className="font-['Founders_Grotesk'] text-base text-[#FF6700] mb-3">Skip the form</p>
                   <h3 className="font-['Founders_Grotesk'] font-bold uppercase tracking-tight text-xl sm:text-2xl leading-tight mb-3 text-[#fafaf7]">
@@ -432,6 +439,84 @@ function ContactRow({ icon: Icon, label, value, href, external }) {
       </div>
       <LuArrowUpRight className="w-4 h-4 text-[#0a0a0a]/30 group-hover:text-[#FF6700] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex-shrink-0" strokeWidth={2.5} />
     </a>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Calling and WhatsApp both land on the same number (IVR on the call side,
+   MSG91 on the message side), so it is stated ONCE and the two channels
+   become actions on it. Listing it twice under separate labels read as a
+   mistake to anyone glancing at the column.
+
+   This cannot reuse ContactRow: that makes the whole card a single <a>, and
+   this card holds three targets. Nested anchors are invalid HTML, so the
+   container is a plain <div> and each action carries its own link.
+
+   The copy button is here for desktop, where tel: does nothing useful and
+   the visitor is reading the number in order to type it into a phone. It
+   copies SITE.phone (the spaced display form) rather than the raw digits,
+   because that is what a person expects to see land in their clipboard.
+   ────────────────────────────────────────────────────────────────────────── */
+function ContactPhoneRow() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(SITE.phone);
+    } catch {
+      return;   // Clipboard blocked (insecure origin / permission). Fail quietly.
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  return (
+    <div className="group relative flex flex-wrap items-center gap-x-4 gap-y-3 p-4 rounded-2xl border border-[#0a0a0a]/10 bg-white overflow-hidden hover:border-[#FF6700]/45 hover:shadow-[0_18px_40px_-24px_rgba(10,10,10,0.22)] transition-all duration-400">
+      <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-[#FF6700] scale-y-0 origin-top group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+
+      <div className="w-11 h-11 rounded-xl bg-[#0a0a0a]/[0.04] flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF6700]/12 transition-colors duration-300">
+        <LuPhone className="w-[18px] h-[18px] text-[#0a0a0a]/55 group-hover:text-[#FF6700] transition-colors duration-300" strokeWidth={2} />
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <p className="font-['Founders_Grotesk'] text-sm text-[#0a0a0a]/45">Call or WhatsApp</p>
+        <a
+          href={SITE.phoneHref}
+          className="inline-block font-['NeueMontreal'] text-[#0a0a0a] text-sm sm:text-[15px] font-medium hover:text-[#FF6700] transition-colors duration-300"
+        >
+          {SITE.phone}
+        </a>
+      </div>
+
+      <div className="flex items-center gap-2 ml-auto flex-shrink-0">
+        <button
+          type="button"
+          onClick={handleCopy}
+          aria-label={copied ? "Number copied" : "Copy number"}
+          className="w-9 h-9 rounded-full border border-[#0a0a0a]/12 flex items-center justify-center text-[#0a0a0a]/45 hover:text-[#FF6700] hover:border-[#FF6700]/45 transition-colors duration-300"
+        >
+          {copied
+            ? <LuCheck className="w-4 h-4" strokeWidth={2.5} />
+            : <LuCopy  className="w-4 h-4" strokeWidth={2} />}
+        </button>
+
+        {/* Sweep pill, per the site CTA pattern. Scoped group/cta so it does
+            not fire on the card's own group hover. Label text stays ink on
+            both cream and orange, so no colour swap is needed mid-sweep. */}
+        <a
+          href={whatsappLink()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group/cta relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-[#0a0a0a]/15 px-4 py-2 text-[#0a0a0a] hover:border-[#FF6700] transition-colors duration-300"
+        >
+          <span aria-hidden="true" className="absolute inset-0 bg-[#FF6700] translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+          <FaWhatsapp className="relative w-4 h-4" />
+          <span className="relative font-['NeueMontreal'] text-[13px] font-medium whitespace-nowrap">WhatsApp</span>
+        </a>
+      </div>
+
+      <span aria-live="polite" className="sr-only">{copied ? "Number copied to clipboard" : ""}</span>
+    </div>
   );
 }
 

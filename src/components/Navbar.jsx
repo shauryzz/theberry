@@ -224,16 +224,14 @@ export default function Navbar() {
               >
                 <div className="border-t border-[#0a0a0a]/10 pt-4 flex flex-col gap-4">
                   <div className="grid grid-cols-2 gap-2.5">
-                    <a
+                    <Link
                       href={BOOKING.tour}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       onClick={() => setOpen(false)}
                       className="group/cta inline-flex items-center justify-center gap-2 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-2xl text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300"
                     >
                       Book a Tour
                       <LuArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/cta:rotate-45" strokeWidth={2} />
-                    </a>
+                    </Link>
                     <a
                       href={whatsappLink()}
                       target="_blank"

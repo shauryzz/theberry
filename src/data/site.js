@@ -11,10 +11,27 @@ export const SITE = {
   // Contact — confirmed from brand deck (June 2026)
   email:        "contact@theberrycoworks.com",        // Confirmed by client (Oct 2026)
   emailHref:    "mailto:contact@theberrycoworks.com",
-  phone:        "011-40002726",
-  phoneHref:    "tel:011-40002726",
-  whatsapp:     "+91 72908 11818",
-  whatsappHref: "https://wa.me/917290811818",
+
+  // ── ONE NUMBER, TWO CHANNELS (client change, Aug 2026) ─────────────────
+  // Calls and WhatsApp now both land on +91 11 4000 2726. Calling hits an
+  // IVR; messaging routes through MSG91 as the WhatsApp BSP.
+  //
+  // This is the SAME number that was already here as "011-40002726" —
+  // 011 is the Delhi STD code, so 011-40002726 === +91 11 40002726. Only
+  // the WhatsApp value actually changed; the old WhatsApp number
+  // (+91 72908 11818) is retired.
+  //
+  // Display format is now international on both, because the number is
+  // WhatsApp-facing and 011- prefixed local notation reads wrong next to a
+  // wa.me link. Revert both display strings to "011-40002726" if the client
+  // prefers the local form.
+  //
+  // phoneHref uses +91 rather than 011 so it dials correctly from a phone
+  // that is not roaming on an Indian network.
+  phone:        "+91 11 4000 2726",
+  phoneHref:    "tel:+911140002726",
+  whatsapp:     "+91 11 4000 2726",
+  whatsappHref: "https://wa.me/911140002726",
 
   // Hours (general; per-location hours live in locations.js).
   // Standardised to 8 AM to match locations.js. Update this one value if the
@@ -28,6 +45,13 @@ export const SITE = {
   belief: "Together we strive for better.",
 
   addressLine: "Barakhamba, Jhandewalan, Noida",
+
+  // ── CANONICAL URL ──────────────────────────────────────────────────────
+  // Read by layout.js (metadataBase, for Open Graph), sitemap.js and
+  // robots.js. Lives here so the domain is stated ONCE — the same value in
+  // three files is how the WhatsApp number nearly shipped half-updated.
+  // No trailing slash: Next appends paths to it.
+  url: "https://theberrycoworks.com",
 };
 
 // Client listed only Instagram and LinkedIn (Oct 2026). Facebook and Twitter

@@ -51,15 +51,13 @@ export default function LandingPage() {
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3 sm:gap-4">
-            <a
+            <Link
               href={BOOKING.tour}
-              target="_blank"
-              rel="noopener noreferrer"
               className="group inline-flex items-center gap-2.5 bg-[#FF6700] text-white hover:bg-[#0a0a0a] hover:text-[#FF6700] px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-['NeueMontreal'] transition-colors duration-300"
             >
               <span>Plan Your Visit</span>
               <span className="w-2 h-2 rounded-full bg-white group-hover:bg-[#FF6700] transition-colors duration-300" />
-            </a>
+            </Link>
             <Link
               href="/contact"
               className="group inline-flex items-center gap-2.5 border border-white/40 text-white hover:bg-white hover:text-[#0a0a0a] hover:border-white px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-['NeueMontreal'] transition-colors duration-300"

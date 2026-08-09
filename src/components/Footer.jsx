@@ -27,8 +27,12 @@ function ColHeading({ children }) {
   );
 }
 
-/* Footer link with an underline that wipes in from the left on hover. */
+/* Footer link with an underline that wipes in from the left on hover.
+   tel: and mailto: are detected rather than passed as `external`, because
+   target="_blank" on those schemes opens a dead blank tab on desktop before
+   the handler fires. */
 function FooterLink({ href, children, external = false }) {
+  const isScheme = /^(tel:|mailto:)/.test(href);
   const cls =
     "group/l relative inline-block w-fit max-w-full break-words font-['NeueMontreal'] text-sm md:text-[15px] text-[#0a0a0a]/70 hover:text-[#0a0a0a] transition-colors duration-300";
   const inner = (
@@ -37,6 +41,9 @@ function FooterLink({ href, children, external = false }) {
       <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-[#0a0a0a] transition-all duration-300 group-hover/l:w-full" />
     </>
   );
+  if (isScheme) {
+    return <a href={href} className={cls}>{inner}</a>;
+  }
   return external ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
   ) : (
@@ -123,15 +130,16 @@ export default function Footer() {
           <div className="flex flex-col">
             <ColHeading>Get in touch</ColHeading>
             <div className="flex flex-col gap-2.5">
-              <FooterLink href={SITE.emailHref} external>{SITE.email}</FooterLink>
-              {/* This number is the WhatsApp line, so it opens a pre-filled
-                  chat rather than dialling. Same helper the floating button
-                  uses, so both stay in sync from one place. */}
-              <FooterLink href={whatsappLink()} external>
-                {SITE.whatsapp}
-                <span className="ml-2 font-['Founders_Grotesk'] text-[#0a0a0a]/40">WhatsApp</span>
-              </FooterLink>
-              <FooterLink href={SITE.phoneHref} external>{SITE.phone}</FooterLink>
+              <FooterLink href={SITE.emailHref}>{SITE.email}</FooterLink>
+              {/* One number, two channels. The number dials; WhatsApp is a
+                  separate link beside it rather than a second listing of the
+                  same digits. Same helper the floating button uses, so both
+                  stay in sync from one place. */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <FooterLink href={SITE.phoneHref}>{SITE.phone}</FooterLink>
+                <span aria-hidden="true" className="text-[#0a0a0a]/25 text-sm select-none">·</span>
+                <FooterLink href={whatsappLink()} external>WhatsApp</FooterLink>
+              </div>
             </div>
           </div>
 
@@ -151,12 +159,21 @@ export default function Footer() {
         <p className="text-[11px] text-[#0a0a0a]/40">
           © {SITE.copyrightYear} {SITE.name}. All rights reserved.
         </p>
-        <Link
-          href="/legal/privacy"
-          className="text-[11px] text-[#0a0a0a]/50 hover:text-[#FF6700] transition-colors duration-300"
-        >
-          Privacy Policy
-        </Link>
+        <div className="flex items-center gap-4 sm:gap-5">
+          <Link
+            href="/legal/privacy"
+            className="text-[11px] text-[#0a0a0a]/50 hover:text-[#FF6700] transition-colors duration-300"
+          >
+            Privacy Policy
+          </Link>
+          <span aria-hidden="true" className="w-px h-3 bg-[#0a0a0a]/15" />
+          <Link
+            href="/legal/terms"
+            className="text-[11px] text-[#0a0a0a]/50 hover:text-[#FF6700] transition-colors duration-300"
+          >
+            Terms of Service
+          </Link>
+        </div>
       </div>
     </footer>
   );

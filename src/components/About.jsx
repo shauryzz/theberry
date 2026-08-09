@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { LuArrowUpRight } from "react-icons/lu";
 import { PERKS, STATS, FLEX_OPTIONS } from "../data/content";
-import { BOOKING } from "../data/booking";
+import { BOOKING, isExternalBooking } from "../data/booking";
 import { MEDIA } from "../data/media";
 import CountUp from "./CountUp";
 import DayPassPickerModal from "./DayPassPickerModal";
@@ -431,11 +431,23 @@ export default function About() {
                           </button>
                         );
                       }
+                      // Meeting Room -> DeskOS (external, new tab).
+                      // Everything else -> BOOKING.tour, which is /contact, an
+                      // INTERNAL route. It used to carry target="_blank" too,
+                      // which opened a second tab of our own site. Routed
+                      // through next/link now so it navigates in place.
                       const href = name === "Meeting Room" ? BOOKING.meetingRoom.all : BOOKING.tour;
+                      if (isExternalBooking(href)) {
+                        return (
+                          <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+                            {inner}
+                          </a>
+                        );
+                      }
                       return (
-                        <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+                        <Link href={href} className={cls}>
                           {inner}
-                        </a>
+                        </Link>
                       );
                     })()}
                   </div>

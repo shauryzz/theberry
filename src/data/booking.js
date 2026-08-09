@@ -15,13 +15,13 @@
 //
 //  SELF-SERVICE vs ENQUIRY-ONLY (confirmed with client Oct 2026):
 //    Self-service via DeskOS: Meeting Rooms, Day Pass, Multi Visit Plans.
-//    Everything else (Flexible Seat, Dedicated Desk, Private Cabin, Managed
-//    Office, Virtual Office) is enquiry-only → routes to /contact by design.
+//    Everything else (Private Office, Dedicated Desk, Virtual Office) is
+//    enquiry-only → routes to /contact by design.
 //    This is intentional; do NOT re-add placeholder URLs.
 //
-//  PLAN ID CHANGES (Oct 2026):
-//    - hot-desk     → flexible-seat  (renamed per client language)
-//    - custom-suite → managed-office (renamed + scope narrowed to Noida)
+//  PLAN IDS (Aug 2026) — must stay in sync with `id` in data/plans.js:
+//    private-office · dedicated-desk
+//    See the note above `plans` below for what was renamed and why.
 // ──────────────────────────────────────────────────────────────────────────
 
 const DESKOS = "https://berry.deskos.net";
@@ -33,29 +33,36 @@ export const BOOKING = {
   tour: "/contact",
 
   // ── Per-plan × per-location deep links ──────────────────────────────────
-  // All plans below are enquiry-only. `null` routes to /contact via
-  // getPlanBookingUrl(). This is the intended behaviour, not missing data.
+  // KEYS MUST MATCH `id` IN data/plans.js. LocationDetail calls
+  // getPlanBookingUrl(plan.id, location.id), so a key that does not match a
+  // plan id is never read — the lookup silently misses and falls through to
+  // /contact, which looks correct today only because every value is null.
+  //
+  // RENAMED (Aug 2026) to close that gap, following the client's product
+  // consolidation:
+  //   private-cabin  → private-office   ("private cabin" and "private office"
+  //                                      are ONE product; Private Office is
+  //                                      the name that ships)
+  //   flexible-seat  → REMOVED          (merged into dedicated-desk; "open
+  //                                      seat", "hot desk" and "dedicated
+  //                                      desk" are ONE product)
+  //   managed-office → REMOVED          (no longer a self-serve plan; it is
+  //                                      an enterprise offering on
+  //                                      /for-enterprises and is absent from
+  //                                      plans.js)
+  //
+  // All values stay null. That is deliberate: both products are enquiry-only
+  // and route to /contact. Do NOT re-add placeholder URLs.
   plans: {
-    "flexible-seat": {
-      barakhamba:   null,   // Not offered at Barakhamba
-      jhandewalan: null,   // Enquiry-only
-      "noida-sector-142":       null,   // Enquiry-only
+    "private-office": {
+      barakhamba:         null,   // Enquiry-only
+      jhandewalan:        null,   // Enquiry-only
+      "noida-sector-142": null,   // Enquiry-only
     },
     "dedicated-desk": {
-      barakhamba:   null,   // Enquiry-only
-      jhandewalan: null,   // Enquiry-only
-      "noida-sector-142":       null,   // Enquiry-only
-    },
-    "private-cabin": {
-      barakhamba:   null,   // Enquiry-only
-      jhandewalan: null,   // Enquiry-only
-      "noida-sector-142":       null,   // Enquiry-only
-    },
-    "managed-office": {
-      // Enterprise, Noida-only. Enquiry-only → routes to /contact.
-      barakhamba:   null,
-      jhandewalan: null,
-      "noida-sector-142":       null,
+      barakhamba:         null,   // Not offered at Barakhamba (no coworking floor)
+      jhandewalan:        null,   // Enquiry-only
+      "noida-sector-142": null,   // Enquiry-only
     },
   },
 
@@ -102,8 +109,16 @@ export const BOOKING = {
     ],
   },
 
-  // ── WhatsApp (confirmed from brand deck) ────────────────────────────────
-  whatsapp: "https://wa.me/917290811818",
+  // ── WhatsApp ────────────────────────────────────────────────────────────
+  // Aug 2026: moved onto the main landline (+91 11 4000 2726). Calls hit an
+  // IVR, messages route via MSG91 as the WhatsApp BSP. Old number
+  // 917290811818 is retired.
+  //
+  // ⚠️ DUPLICATE SOURCE OF TRUTH: SITE.whatsappHref in data/site.js holds
+  // this same URL. Both must be changed together or the floating button and
+  // the footer will point at different numbers. Consider collapsing this to
+  // read from SITE instead.
+  whatsapp: "https://wa.me/911140002726",
   whatsappMessage: "Hi! I'd like to know more about The Berry Coworks.",
 
   // ── App store links (white-labelled DeskOS app) ─────────────────────────

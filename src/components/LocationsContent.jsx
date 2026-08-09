@@ -190,11 +190,11 @@ export default function LocationsContent() {
                       Explore {loc.label}
                       <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:rotate-45" />
                     </Link>
-                    <a href={BOOKING.tour} target="_blank" rel="noopener noreferrer"
+                    <Link href={BOOKING.tour}
                       className="group/btn inline-flex items-center justify-center gap-2.5 px-6 py-3.5 border border-[#0a0a0a]/25 text-[#0a0a0a]/85 hover:bg-[#0a0a0a] hover:text-[#fafaf7] rounded-full text-sm font-['NeueMontreal'] tracking-wide transition-all duration-300">
                       Book a Tour
                       <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:rotate-45" />
-                    </a>
+                    </Link>
                   </motion.div>
                 </div>
               </motion.article>
@@ -313,15 +313,13 @@ export default function LocationsContent() {
             variants={fadeUp}
             className="mt-10 sm:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
           >
-            <a
+            <Link
               href={BOOKING.tour}
-              target="_blank"
-              rel="noopener noreferrer"
               className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#FF6700] text-[#0a0a0a] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#0a0a0a] hover:text-[#FF6700] transition-colors duration-300"
             >
               Book a Free Tour
               <LuArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" />
-            </a>
+            </Link>
             <a
               href={whatsappLink()}
               target="_blank"
