@@ -175,7 +175,7 @@ export default function AppShowcase() {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/5 to-black/70" />
                     <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/35 backdrop-blur-sm text-white text-[9px] font-medium">
-                        <LuMapPin className="w-2.5 h-2.5" strokeWidth={2.5} /> Barakhamba
+                        <LuMapPin className="w-2.5 h-2.5" strokeWidth={2.5} /> Noida
                       </span>
                       <span className="w-7 h-7 rounded-full bg-[#FF6700] flex items-center justify-center text-[#0a0a0a] text-[11px] font-bold font-['Founders_Grotesk']">
                         P
@@ -183,10 +183,10 @@ export default function AppShowcase() {
                     </div>
                     <div className="absolute bottom-7 sm:bottom-8 left-4 right-4">
                       <p className="text-[8px] uppercase tracking-[0.18em] text-white/85 font-['NeueMontreal'] mb-1">
-                        Good Morning · Barakhamba
+                        Good Morning · Noida
                       </p>
                       <p className="font-['Founders_Grotesk'] font-bold text-lg sm:text-xl leading-none text-white">
-                        Parineeta
+                        Parineeti
                       </p>
                     </div>
                     <div className="absolute bottom-8 sm:bottom-9 right-4 flex items-center gap-1">
@@ -208,12 +208,12 @@ export default function AppShowcase() {
                       </span>
                     </div>
                     <p className="font-['Founders_Grotesk'] font-bold text-base leading-tight text-[#0a0a0a] mb-2.5">
-                      Parineeta
+                      Parineeti
                     </p>
                     <div className="border-t border-dashed border-[#0a0a0a]/15 pt-2.5 flex">
                       <div className="flex-1">
                         <p className="text-[7.5px] uppercase tracking-[0.14em] text-[#0a0a0a]/40 mb-0.5">Location</p>
-                        <p className="text-[11px] font-bold text-[#0a0a0a]">Barakhamba</p>
+                        <p className="text-[11px] font-bold text-[#0a0a0a]">Noida</p>
                       </div>
                       <div className="flex-1">
                         <p className="text-[7.5px] uppercase tracking-[0.14em] text-[#0a0a0a]/40 mb-0.5">Status</p>

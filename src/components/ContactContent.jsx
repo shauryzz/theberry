@@ -325,10 +325,6 @@ export default function ContactContent() {
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="relative max-w-4xl mx-auto text-center">
           <Heading lead="The best decisions are made" accent="in person." />
 
-          <motion.p variants={fadeUp} className="mt-8 sm:mt-10 font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/60 leading-relaxed max-w-[44ch] mx-auto">
-            {SITE.hours}
-          </motion.p>
-
           <motion.div variants={fadeUp} className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-3 sm:gap-4">
             <SweepCTA href="/locations">See our spaces</SweepCTA>
             <SweepCTA href={whatsappLink()} external>WhatsApp us</SweepCTA>

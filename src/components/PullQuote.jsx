@@ -18,7 +18,7 @@ import { MEDIA } from "../data/media";
 const EYEBROW = "From · The Berry Coworks";
 const STATEMENT = {
   lead:
-    "The Berry is not your home, though it should be as easy to settle into. It is not a conventional office either, though the work gets done. It sits somewhere between the two: good light, a short walk from the metro, and a floor full of people worth knowing. That last part is",
+    "The Berry feels easy to settle into, with the comfort of home and the energy of a place where work gets done. It brings together the best parts of a familiar space and a well-designed office: good light, a short walk from the metro, and a floor full of people worth knowing. That last part is",
   accent: "the whole point.",
 };
 

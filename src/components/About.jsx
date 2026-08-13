@@ -21,30 +21,33 @@ const fadeUp = {
 
 /* Two treatments of the same three photos.
 
-   `box` — lg and up: absolutely positioned in the OUTER MARGINS either side of
-   the headline, not over it. The text column is capped (lg:max-w-4xl) so these
-   sit clear of it and nothing gets covered. Percentage offsets keep the
-   collage scaling with the container.
+   `box` — lg and up: large-scale, asymmetric, and allowed to bleed off the
+   panel edge (the panel wrapper is overflow-hidden, so anything pushed past
+   left-0 / right-0 gets cropped by the frame on purpose — that crop IS the
+   look). Shot 0 anchors top-left, shot 1 bleeds off the top-right corner,
+   shot 2 is the small one and breaks below the paragraph instead of sitting
+   inert in a margin. Percentage offsets keep the collage scaling with the
+   container.
 
-   `mobile` — below lg the margins are too narrow to hold a photo without it
-   crossing the type, so the collage is laid out in normal flow instead: a
-   single overlapping row under the paragraph. Same shapes and rotations, so
-   it still reads as the same collage rather than a separate gallery. */
+   `mobile` — below lg there's no margin to bleed into, so the collage drops
+   into normal flow instead: one overlapping row under the paragraph, sized
+   unevenly (biggest / smallest / mid) to echo the same asymmetry rather than
+   three equal thumbnails in a row. */
 const ABOUT_SHOTS = [
   {
     i: 0,
-    box: "left-0 top-[34%] w-[13%] aspect-square rounded-full -rotate-6",
-    mobile: "w-[30%] aspect-square rounded-full -rotate-6",
+    box: "left-0 top-[6%] w-[17%] aspect-square rounded-full -rotate-6 z-20",
+    mobile: "w-[34%] aspect-square rounded-full -rotate-6",
   },
   {
     i: 1,
-    box: "right-0 top-[3%] w-[14%] aspect-[5/4] rounded-[1.6rem] rotate-[4deg]",
-    mobile: "w-[36%] aspect-[5/4] rounded-[1.25rem] rotate-[4deg] -mt-4",
+    box: "-right-6 sm:-right-10 md:-right-14 top-0 w-[24%] aspect-[3/4] rounded-[2rem] rotate-[4deg] z-10",
+    mobile: "w-[40%] aspect-[3/4] rounded-[1.5rem] rotate-[4deg] -mt-6",
   },
   {
     i: 2,
-    box: "right-[1%] bottom-[8%] w-[12%] aspect-[4/3] rounded-[1.4rem] -rotate-3",
-    mobile: "w-[32%] aspect-[4/3] rounded-[1.1rem] -rotate-3 mt-5",
+    box: "left-1/2 -translate-x-1/2 bottom-[-10%] sm:bottom-[-14%] w-[14%] aspect-[4/3] rounded-[1.75rem] -rotate-3 z-30",
+    mobile: "w-[28%] aspect-[4/3] rounded-[1.25rem] -rotate-3 mt-4",
   },
 ];
 
@@ -155,7 +158,7 @@ export default function About() {
           {/* Photo collage — lg and up, sits in the side margins.
               Mobile gets the same photos in flow, below the paragraph. */}
           <div className="hidden lg:block pointer-events-none absolute inset-0 z-20" aria-hidden="true">
-            {ABOUT_SHOTS.map(({ i, box }) => (
+            {ABOUT_SHOTS.filter(({ i }) => i !== 2).map(({ i, box }) => (
               <span
                 key={i}
                 className={`absolute overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] ${box}`}
@@ -187,6 +190,28 @@ export default function About() {
           >
             The Berry Coworks blends the comfort of working from home with the energy of a shared workplace, giving you room for focus and company in the same day, in a space you&apos;ll genuinely want to work from.
           </motion.p>
+
+          {/* Third photo (the working-laptop shot) — desktop only, in normal
+              flow below the paragraph. It used to be absolutely positioned
+              with a negative `bottom` offset measured against the whole
+              hero container's height, which put it mid-paragraph on some
+              viewports since that height shifts with font-size across
+              breakpoints. In-flow with a top margin, it can never overlap
+              the text above it, and can be sized up freely. */}
+          <motion.div
+            variants={fadeUp}
+            aria-hidden="true"
+            className="hidden lg:flex justify-center mt-14"
+          >
+            <span className="block w-[19%] max-w-[300px] aspect-[4/3] rounded-[1.75rem] overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] -rotate-3">
+              <img decoding="async"
+                src={MEDIA.aboutInlineShots[2]}
+                alt=""
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+            </span>
+          </motion.div>
 
           {/* Same three photos, in flow — below lg only, where the absolute
               collage above is hidden. Slight negative gap lets the shapes
@@ -303,8 +328,12 @@ export default function About() {
                     {String(i + 1).padStart(2, "0")}
                   </p>
 
-                  {/* Image */}
-                  <div className="mt-6 sm:mt-8 relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#0a0a0a]/5">
+                  {/* Image — box ratio matches the photos (all landscape,
+                      ~3:2) instead of the old portrait 4:5, which was either
+                      cropping hard into the subject (cover) or leaving big
+                      grey letterbox bars (contain). 3:2 + cover keeps a full
+                      photo look with only a light edge trim. */}
+                  <div className="mt-6 sm:mt-8 relative w-full aspect-[3/2] rounded-xl overflow-hidden bg-[#0a0a0a]/5">
                     <img decoding="async"
                       src={perk.img}
                       alt=""
