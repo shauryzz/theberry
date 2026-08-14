@@ -8,7 +8,7 @@ export const SITE = {
   tagline: "A workspace worth showing up to.",
 
   description:
-    "Coworking spaces in Barakhamba, Jhandewalan, and Noida. Ready-to-move-in cabins, flexible seats, meeting rooms, and managed offices across Delhi NCR.",
+    "Work your way at The Berry Coworks, with spaces for independent professionals, teams and businesses. Choose a desk, a private space or an office that fits what you’re building.",
 
   // Contact
   email: "contact@theberrycoworks.com",
