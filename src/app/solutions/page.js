@@ -5,7 +5,7 @@ import SolutionsContent from "../../components/SolutionsContent";
 export const metadata = {
   title: "Solutions · The Berry Coworks",
   description:
-    "Private cabins, managed offices, and multi-location access for teams and enterprises across Barakhamba, Jhandewalan & Noida. We design the space, run the fit-out, and handle the day-to-day.",
+    "A dedicated desk when you need your own spot, a flexible setup when things change, or a managed office when your team needs more. Find the setup that works for you.",
 };
 
 export default function SolutionsPage() {

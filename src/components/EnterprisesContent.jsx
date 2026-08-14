@@ -177,7 +177,7 @@ export default function EnterprisesContent() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full h-[34vh] sm:h-[42vh] md:h-[52vh] min-h-[260px] max-h-[560px] overflow-hidden bg-[#0a0a0a]/5"
+        className="relative w-full h-[34vh] sm:h-[42vh] md:h-[85vh] min-h-[260px] max-h-[1000px] overflow-hidden bg-[#0a0a0a]/5"
       >
         <motion.img
           src={ENTERPRISE_HERO_IMAGE}

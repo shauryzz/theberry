@@ -12,26 +12,28 @@ export const SITE = {
   email:        "contact@theberrycoworks.com",        // Confirmed by client (Oct 2026)
   emailHref:    "mailto:contact@theberrycoworks.com",
 
-  // ── ONE NUMBER, TWO CHANNELS (client change, Aug 2026) ─────────────────
-  // Calls and WhatsApp now both land on +91 11 4000 2726. Calling hits an
-  // IVR; messaging routes through MSG91 as the WhatsApp BSP.
+  // ── ONE NUMBER, TWO CHANNELS (client change, Aug 2026 → replaced) ──────
+  // Calls and WhatsApp both land on +91 87962 20683.
   //
-  // This is the SAME number that was already here as "011-40002726" —
-  // 011 is the Delhi STD code, so 011-40002726 === +91 11 40002726. Only
-  // the WhatsApp value actually changed; the old WhatsApp number
-  // (+91 72908 11818) is retired.
+  // This REPLACES +91 11 4000 2726 outright — that number (011-40002726
+  // locally) is fully retired, not forwarded, not left as a fallback. It
+  // should not appear anywhere else in the codebase; if a search turns it
+  // up in a component that doesn't read from SITE.phone/whatsappHref
+  // (footer, schema.org JSON-LD, a page-specific WhatsApp link), that spot
+  // needs the same swap by hand.
   //
-  // Display format is now international on both, because the number is
-  // WhatsApp-facing and 011- prefixed local notation reads wrong next to a
-  // wa.me link. Revert both display strings to "011-40002726" if the client
-  // prefers the local form.
+  // This is a 10-digit mobile number, not an 011-prefixed Delhi landline,
+  // so there's no separate local/international display form the way the
+  // old number had — "+91 87962 20683" is used as-is for both display
+  // strings.
   //
-  // phoneHref uses +91 rather than 011 so it dials correctly from a phone
-  // that is not roaming on an Indian network.
-  phone:        "+91 11 4000 2726",
-  phoneHref:    "tel:+911140002726",
-  whatsapp:     "+91 11 4000 2726",
-  whatsappHref: "https://wa.me/911140002726",
+  // phoneHref / whatsappHref stay in unbroken +91 form (no spaces) so they
+  // dial/open correctly from a phone that is not roaming on an Indian
+  // network.
+  phone:        "+91 87962 20683",
+  phoneHref:    "tel:+918796220683",
+  whatsapp:     "+91 87962 20683",
+  whatsappHref: "https://wa.me/918796220683",
 
   // Hours (general; per-location hours live in locations.js).
   // Standardised to 8 AM to match locations.js. Update this one value if the
@@ -41,8 +43,6 @@ export const SITE = {
   // Brand
   founded: 2020,
   copyrightYear: 2026,
-
-  belief: "Together we strive for better.",
 
   addressLine: "Barakhamba, Jhandewalan, Noida",
 

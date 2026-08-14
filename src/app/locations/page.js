@@ -5,7 +5,7 @@ import Footer            from "../../components/Footer";
 export const metadata = {
   title: "Locations · The Berry Coworks",
   description:
-    "Premium coworking spaces across Delhi NCR's most-wanted neighbourhoods — Barakhamba, Jhandewalan, and Noida.",
+    "Explore The Berry Coworks locations and find a workspace that fits your needs. With new spaces opening across Delhi NCR and beyond, we’re continuing to grow into new places.",
 };
 
 export default function LocationsPage() {

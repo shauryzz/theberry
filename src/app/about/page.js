@@ -5,7 +5,7 @@ import Footer        from "../../components/Footer";
 export const metadata = {
   title: "About · The Berry Coworks",
   description:
-    "Founded in 2020 by Parul Jain and Vishesh Kalkhandey, The Berry Coworks runs three coworking spaces across Delhi NCR — built on the belief that great design and genuine accessibility belong together.",
+    "Founded in 2020, The Berry Coworks builds coworking and office spaces around how people work today, with a focus on design, accessibility and the everyday work experience.",
 };
 
 export default function AboutPage() {

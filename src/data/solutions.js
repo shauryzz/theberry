@@ -81,7 +81,7 @@ export const ADDITIONAL_SOLUTIONS = [
       "Host your next event at The Berry Coworks. Whether it's a workshop, a brand activation, a team celebration or a panel talk, we have a space equipped to make it memorable. Pick from a mix of room sizes and layouts, and lean on our team for the on-ground support that keeps the day running the way you planned it.",
     href: "/contact",
     ctaLabel: "Enquire",
-    image: "/images/booth-social.webp",
+    image: "/images/people-booth.webp",
   },
   {
     id: "virtual-office",

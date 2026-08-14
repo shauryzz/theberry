@@ -5,7 +5,7 @@ import LegalContent from "../../../components/LegalContent";
 export const metadata = {
   title: "Terms of Service · The Berry Coworks",
   description:
-    "The terms governing your use of The Berry Coworks website, including content, payments, KYC, cancellations and user conduct.",
+    "These terms explain how bookings and services work at The Berry Coworks, along with the policies that apply when you use our spaces and services.",
 };
 
 export default function TermsPage() {

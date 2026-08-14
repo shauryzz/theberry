@@ -10,7 +10,6 @@ import {
   COWORKING_EXTRAS,
   ADDITIONAL_SOLUTIONS,
   SPACE_INCLUDES,
-  PRICING_BREAK,
   SOLUTIONS_CLOSING,
 } from "../data/solutions";
 import { PLANS } from "../data/plans";
@@ -277,24 +276,6 @@ export default function SolutionsContent() {
               </div>
             </motion.article>
           ))}
-        </motion.div>
-      </section>
-
-      {/* ── TRANSPARENT PRICING BREAK — lead-in to what's included ────── */}
-      <section className="relative w-full bg-[#FF6700] overflow-hidden px-5 sm:px-10 md:px-20 py-16 sm:py-24">
-        <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: "radial-gradient(#0a0a0a 1.5px,transparent 1.5px)", backgroundSize: "24px 24px" }} />
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="relative max-w-4xl">
-          <h2 className="font-['Founders_Grotesk'] font-bold uppercase tracking-tighter leading-[0.95] text-[9vw] sm:text-[6.5vw] md:text-[5vw] lg:text-[4vw] text-[#0a0a0a]">
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block">{PRICING_BREAK.headline.lead}</motion.span>
-            </span>
-            <span className="block overflow-hidden pb-[0.05em]">
-              <motion.span variants={lineUp} className="block text-[#fafaf7]">{PRICING_BREAK.headline.accent}</motion.span>
-            </span>
-          </h2>
-          <motion.p variants={fadeUp} className="mt-6 font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/75 leading-relaxed max-w-[54ch]">
-            {PRICING_BREAK.body}
-          </motion.p>
         </motion.div>
       </section>
 

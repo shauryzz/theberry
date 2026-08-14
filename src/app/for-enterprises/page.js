@@ -5,7 +5,7 @@ import EnterprisesContent from "../../components/EnterprisesContent";
 export const metadata = {
   title: "For Enterprises · The Berry Coworks",
   description:
-    "Managed offices by The Berry Coworks. We source, design, build and run the entire office for your team, then keep it running once you've moved in. Available at Noida.",
+    "Need an office that works around your team? The Berry Coworks takes care of the space, setup and everyday operations, giving businesses a ready-to-use office.",
 };
 
 export default function ForEnterprisesPage() {

@@ -41,7 +41,7 @@ export const ENTERPRISE_INTRO = {
 
 // Hero image band, matching the treatment on the Solutions page.
 export const ENTERPRISE_HERO_IMAGE =
-  "/images/boardroom-long.webp";
+  "/images/noida-cafe.webp";
 
 // ── Managed offices, the dark showcase the client asked to keep ───────────
 export const MANAGED_OFFICE = {

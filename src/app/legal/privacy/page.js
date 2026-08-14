@@ -5,7 +5,7 @@ import LegalContent from "../../../components/LegalContent";
 export const metadata = {
   title: "Privacy Policy · The Berry Coworks",
   description:
-    "How The Berry Coworks collects, uses, and protects your data. Member privacy policy for our coworking spaces in Barakhamba, Jhandewalan & Noida.",
+    "We take your privacy seriously at The Berry Coworks. Learn how we collect, use and protect your information when you visit our website, make a booking or interact with our services.",
 };
 
 export default function PrivacyPage() {

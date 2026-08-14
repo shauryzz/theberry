@@ -232,7 +232,7 @@ const ICONS = {
     </svg>
   ),
 
-  /* ── 24/7 access: clock hands spin ── */
+  /* ── Flexible Hours: clock hands spin ── */
   access: () => (
     <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={SW} strokeLinecap="round" strokeLinejoin="round">
       <circle cx="24" cy="24" r="14" />
