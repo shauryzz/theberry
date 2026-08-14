@@ -32,7 +32,12 @@ const fadeUp = {
    `mobile` — below lg there's no margin to bleed into, so the collage drops
    into normal flow instead: one overlapping row under the paragraph, sized
    unevenly (biggest / smallest / mid) to echo the same asymmetry rather than
-   three equal thumbnails in a row. */
+   three equal thumbnails in a row.
+
+   NOTE: this array is no longer referenced by the hero panel below — the
+   hero now uses the simpler two-image "reference" layout instead of the
+   absolute-positioned collage this array was built for. Left in place
+   (unused) rather than deleted. */
 const ABOUT_SHOTS = [
   {
     i: 0,
@@ -155,24 +160,6 @@ export default function About() {
           variants={stagger}
           className="relative max-w-7xl mx-auto text-center"
         >
-          {/* Photo collage — lg and up, sits in the side margins.
-              Mobile gets the same photos in flow, below the paragraph. */}
-          <div className="hidden lg:block pointer-events-none absolute inset-0 z-20" aria-hidden="true">
-            {ABOUT_SHOTS.filter(({ i }) => i !== 2).map(({ i, box }) => (
-              <span
-                key={i}
-                className={`absolute overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] ${box}`}
-              >
-                <img decoding="async"
-                  src={MEDIA.aboutInlineShots[i]}
-                  alt=""
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-              </span>
-            ))}
-          </div>
-
           {/* Uppercase display heading — matches the site-wide h-heading
               style (font-bold uppercase, tighter tracking, orange accent),
               e.g. the "However you like to work" h3 below. */}
@@ -184,58 +171,58 @@ export default function About() {
             <span className="text-[#FF6700]">right.</span>
           </motion.h2>
 
-          <motion.p
-            variants={fadeUp}
-            className="mt-8 sm:mt-10 mx-auto max-w-[62ch] font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/65 leading-relaxed"
-          >
-            The Berry Coworks blends the comfort of working from home with the energy of a shared workplace, giving you room for focus and company in the same day, in a space you&apos;ll genuinely want to work from.
-          </motion.p>
+          {/* Reference-style composition (VOIR "A studio built on passion"
+              layout): a small square-ish image and a taller portrait image
+              sit top-aligned side by side with a small gap (no overlap, no
+              rotation), and the paragraph runs beside the pair. One
+              responsive block — stacks to a centered column on mobile, sits
+              in a row on md+ — so no separate mobile/desktop trees are
+              needed. Replaces the old absolutely-positioned collage. */}
+          <div className="mt-12 sm:mt-16 md:mt-20 lg:mt-24">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-7 sm:gap-8 md:gap-8 lg:gap-10 max-w-4xl mx-auto">
 
-          {/* Third photo (the working-laptop shot) — desktop only, in normal
-              flow below the paragraph. It used to be absolutely positioned
-              with a negative `bottom` offset measured against the whole
-              hero container's height, which put it mid-paragraph on some
-              viewports since that height shifts with font-size across
-              breakpoints. In-flow with a top margin, it can never overlap
-              the text above it, and can be sized up freely. */}
-          <motion.div
-            variants={fadeUp}
-            aria-hidden="true"
-            className="hidden lg:flex justify-center mt-14"
-          >
-            <span className="block w-[19%] max-w-[300px] aspect-[4/3] rounded-[1.75rem] overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] -rotate-3">
-              <img decoding="async"
-                src={MEDIA.aboutInlineShots[2]}
-                alt=""
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-            </span>
-          </motion.div>
-
-          {/* Same three photos, in flow — below lg only, where the absolute
-              collage above is hidden. Slight negative gap lets the shapes
-              overlap a touch so it stays a collage, not a filmstrip. */}
-          <motion.div
-            variants={fadeUp}
-            aria-hidden="true"
-            className="lg:hidden mt-10 sm:mt-12 flex items-center justify-center gap-2 sm:gap-4"
-          >
-            {ABOUT_SHOTS.map(({ i, mobile }) => (
-              <span
-                key={i}
-                className={`block flex-shrink-0 overflow-hidden shadow-[0_18px_45px_-18px_rgba(10,10,10,0.35)] ${mobile}`}
+              {/* Image pair */}
+              <motion.div
+                variants={fadeUp}
+                className="flex items-start gap-2.5 sm:gap-3 md:gap-3 lg:gap-4 shrink-0"
               >
-                <img
-                  decoding="async"
-                  src={MEDIA.aboutInlineShots[i]}
-                  alt=""
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-              </span>
-            ))}
-          </motion.div>
+                {/* Small, roughly square image */}
+                <div className="w-[100px] sm:w-[115px] md:w-[120px] lg:w-[140px] aspect-square rounded-2xl overflow-hidden shadow-[0_18px_40px_-18px_rgba(10,10,10,0.28)]">
+                  <img
+                    decoding="async"
+                    src={MEDIA.aboutInlineShots[0]}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Larger, taller portrait image — top-aligned with the
+                    small one, extending further down, matching the
+                    reference */}
+                <div className="w-[185px] sm:w-[210px] md:w-[220px] lg:w-[260px] aspect-[4/5] rounded-2xl overflow-hidden shadow-[0_26px_58px_-20px_rgba(10,10,10,0.32)]">
+                  <img
+                    decoding="async"
+                    src={MEDIA.aboutInlineShots[1]}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Paragraph — sits beside the image pair on desktop, stacks
+                  below it on mobile. Wording unchanged. */}
+              <motion.p
+                variants={fadeUp}
+                className="font-['NeueMontreal'] text-sm sm:text-base text-[#0a0a0a]/65 leading-relaxed max-w-[42ch] md:max-w-[28ch] lg:max-w-[30ch] text-center md:text-left"
+              >
+                The Berry Coworks blends the comfort of working from home with the energy of a shared workplace, giving you room for focus and company in the same day, in a space you&apos;ll genuinely want to work from.
+              </motion.p>
+            </div>
+          </div>
         </motion.div>
       </div>
 

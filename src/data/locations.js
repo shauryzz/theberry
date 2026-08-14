@@ -2,11 +2,12 @@
 // LOCATIONS — The Berry Coworks
 // ─────────────────────────────────────────────────────────────────────────
 
-const HERO_CONNAUGHT            = "/images/barakhamba-hero.webp";
-const HERO_JHANDEWALAN          = "/images/jhandewalan-hero.webp";
-const HERO_NOIDA                = "/images/noida-reception.webp";
-const HERO_SECTOR63             = "/images/sector63-hero.webp";
-const HERO_GURUGRAM_SECTOR53    = "/images/gurugram-sector53-hero.webp";
+const HERO_CONNAUGHT = "/images/barakhamba-hero.webp";
+const HERO_JHANDEWALAN = "/images/jhandewalan-hero.webp";
+const HERO_NOIDA = "/images/noida-reception.webp";
+const HERO_SECTOR63 = "/images/sector63-hero.webp";
+const HERO_GURUGRAM_SECTOR53 =
+  "/images/gurugram-sector53-hero.webp";
 
 export const LOCATIONS = [
   // ───────────────────────────────────────────────────────────────────────
@@ -35,9 +36,7 @@ export const LOCATIONS = [
       full: "102, FF, 27 New Delhi House, Barakhamba Rd, Connaught Lane, Barakhamba, New Delhi, Delhi 110001",
     },
 
-    // Was "011-40002726" — retired site-wide (see site.js). Same new
-    // number used everywhere, per-location entries included.
-    phone: "+91 87962 20683",
+    phone: "+91 72908 11818",
     email: "contact@theberrycoworks.com",
     hours: "Mon to Sat, 8 AM to 8 PM.",
 
@@ -118,9 +117,7 @@ export const LOCATIONS = [
       full: "1-E/3, First Floor, Block E 1, Jhandewalan Extension, Jhandewalan, New Delhi, Delhi 110055",
     },
 
-    // Was "011-40002726" — retired site-wide (see site.js). Same new
-    // number used everywhere, per-location entries included.
-    phone: "+91 87962 20683",
+    phone: "+91 72908 11818",
     email: "contact@theberrycoworks.com",
     hours: "Mon to Sat, 8 AM to 8 PM.",
 
@@ -200,9 +197,7 @@ export const LOCATIONS = [
       full: "Vinpar Softech Building, Plot No 15, Sector 142, Noida, Uttar Pradesh 201304",
     },
 
-    // Was "011-40002726" — retired site-wide (see site.js). Same new
-    // number used everywhere, per-location entries included.
-    phone: "+91 87962 20683",
+    phone: "+91 72908 11818",
     email: "contact@theberrycoworks.com",
     hours: "Mon to Sat, 8 AM to 8 PM.",
 
@@ -346,7 +341,8 @@ export const UPCOMING_LOCATIONS = [
     label: "Noida",
     area: "Sector 63",
     badge: "Coming Soon",
-    desc: "Our next centre is taking shape in Noida, Sector 63. More on this soon.",
+    desc:
+      "Our next centre is taking shape in Noida, Sector 63. More on this soon.",
     img: HERO_SECTOR63,
   },
 ];

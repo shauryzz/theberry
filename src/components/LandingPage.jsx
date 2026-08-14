@@ -58,13 +58,15 @@ export default function LandingPage() {
               <span>Plan Your Visit</span>
               <span className="w-2 h-2 rounded-full bg-white group-hover:bg-[#FF6700] transition-colors duration-300" />
             </Link>
-            <Link
-              href="/contact"
+            <a
+              href="tel:+917290811818"
+              aria-label="Call The Berry Coworks at +91 72908 11818"
               className="group inline-flex items-center gap-2.5 border border-white/40 text-white hover:bg-white hover:text-[#0a0a0a] hover:border-white px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-['NeueMontreal'] transition-colors duration-300"
             >
               <span>Get in Touch</span>
+
               <span className="w-2 h-2 rounded-full bg-white group-hover:bg-[#0a0a0a] transition-colors duration-300" />
-            </Link>
+            </a>
           </motion.div>
 
         </motion.div>

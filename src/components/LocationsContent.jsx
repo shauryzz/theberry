@@ -60,7 +60,7 @@ const fmt = {
 };
 
 // Hero image.
-const LOCATIONS_HERO_IMAGE = "/images/coworking-people.webp";
+const LOCATIONS_HERO_IMAGE = "/images/locations-hero.webp";
 
 export default function LocationsContent() {
   return (
@@ -481,7 +481,7 @@ export default function LocationsContent() {
                 icon: "printer",
               },
               {
-                label: "Flexible Hours",
+                label: "Power Backup",
                 icon: "access",
               },
             ]}

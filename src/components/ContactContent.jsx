@@ -71,6 +71,11 @@ const INTERESTS = [
   "Just exploring",
 ];
 
+// ── Web3Forms ────────────────────────────────────────────────────────────
+// Public client-side access key supplied from the Web3Forms form setup.
+const WEB3FORMS_ACCESS_KEY =
+  "88e28733-a6e2-41a4-a222-11e939900ffd";
+
 /* Single-line section heading, last word orange, dark option. */
 function Heading({ lead, accent, dark = false }) {
   return (
@@ -155,7 +160,10 @@ export default function ContactContent() {
   });
 
   const [status, setStatus] = useState("idle");
+
   const [errors, setErrors] = useState({});
+
+  const [submitError, setSubmitError] = useState("");
 
   const updateField = (field, value) => {
     setForm((prev) => ({
@@ -168,6 +176,10 @@ export default function ContactContent() {
         ...prev,
         [field]: undefined,
       }));
+    }
+
+    if (submitError) {
+      setSubmitError("");
     }
   };
 
@@ -183,7 +195,8 @@ export default function ContactContent() {
     } else if (
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
     ) {
-      next.email = "That doesn't look like a valid email.";
+      next.email =
+        "That doesn't look like a valid email.";
     }
 
     setErrors(next);
@@ -197,14 +210,60 @@ export default function ContactContent() {
     if (!validate()) return;
 
     setStatus("submitting");
+    setSubmitError("");
 
-    // TODO: replace this stub with a real /api/contact POST.
-    // eslint-disable-next-line no-console
-    console.log("[contact submission]", form);
+    // Submit the enquiry directly to Web3Forms.
+    // Web3Forms accepts JSON submissions to its /submit endpoint and uses
+    // the public access_key to route the submission to the configured email.
+    try {
+      const payload = {
+        access_key: WEB3FORMS_ACCESS_KEY,
 
-    await new Promise((r) => setTimeout(r, 1200));
+        subject:
+          "New Contact Form Submission - The Berry Coworks",
 
-    setStatus("success");
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        interest: form.interest,
+        location: form.location,
+        message: form.message.trim(),
+      };
+
+      const response = await fetch(
+        "https://api.web3forms.com/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.message ||
+            "Unable to submit the form."
+        );
+      }
+
+      setStatus("success");
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(
+        "[Web3Forms submission error]",
+        error
+      );
+
+      setStatus("idle");
+      setSubmitError(
+        "Something went wrong while sending your message. Please try again."
+      );
+    }
   };
 
   return (
@@ -303,6 +362,8 @@ export default function ContactContent() {
                       message: "",
                     });
 
+                    setErrors({});
+                    setSubmitError("");
                     setStatus("idle");
                   }}
                 />
@@ -321,7 +382,10 @@ export default function ContactContent() {
                         type="text"
                         value={form.name}
                         onChange={(e) =>
-                          updateField("name", e.target.value)
+                          updateField(
+                            "name",
+                            e.target.value
+                          )
                         }
                         className="w-full bg-transparent border-b border-[#0a0a0a]/20 focus:border-[#FF6700] py-3 text-base sm:text-lg font-['NeueMontreal'] text-[#0a0a0a] placeholder:text-[#0a0a0a]/30 outline-none transition-colors"
                         placeholder="Your full name"
@@ -339,7 +403,10 @@ export default function ContactContent() {
                           type="email"
                           value={form.email}
                           onChange={(e) =>
-                            updateField("email", e.target.value)
+                            updateField(
+                              "email",
+                              e.target.value
+                            )
                           }
                           className="w-full bg-transparent border-b border-[#0a0a0a]/20 focus:border-[#FF6700] py-3 text-base sm:text-lg font-['NeueMontreal'] text-[#0a0a0a] placeholder:text-[#0a0a0a]/30 outline-none transition-colors"
                           placeholder="you@company.com"
@@ -355,7 +422,10 @@ export default function ContactContent() {
                           type="tel"
                           value={form.phone}
                           onChange={(e) =>
-                            updateField("phone", e.target.value)
+                            updateField(
+                              "phone",
+                              e.target.value
+                            )
                           }
                           className="w-full bg-transparent border-b border-[#0a0a0a]/20 focus:border-[#FF6700] py-3 text-base sm:text-lg font-['NeueMontreal'] text-[#0a0a0a] placeholder:text-[#0a0a0a]/30 outline-none transition-colors"
                           placeholder="+91 98765 43210"
@@ -369,7 +439,10 @@ export default function ContactContent() {
                     options={INTERESTS}
                     value={form.interest}
                     onChange={(v) =>
-                      updateField("interest", v)
+                      updateField(
+                        "interest",
+                        v
+                      )
                     }
                   />
 
@@ -378,7 +451,10 @@ export default function ContactContent() {
                     options={locationOptions}
                     value={form.location}
                     onChange={(v) =>
-                      updateField("location", v)
+                      updateField(
+                        "location",
+                        v
+                      )
                     }
                   />
 
@@ -389,7 +465,10 @@ export default function ContactContent() {
                       <textarea
                         value={form.message}
                         onChange={(e) =>
-                          updateField("message", e.target.value)
+                          updateField(
+                            "message",
+                            e.target.value
+                          )
                         }
                         rows={5}
                         className="w-full bg-transparent border-b border-[#0a0a0a]/20 focus:border-[#FF6700] py-3 text-base sm:text-lg font-['NeueMontreal'] text-[#0a0a0a] placeholder:text-[#0a0a0a]/30 outline-none transition-colors resize-none"
@@ -398,10 +477,21 @@ export default function ContactContent() {
                     }
                   />
 
+                  {submitError && (
+                    <p
+                      role="alert"
+                      className="font-['NeueMontreal'] text-sm text-[#CC5200]"
+                    >
+                      {submitError}
+                    </p>
+                  )}
+
                   <div className="pt-2">
                     <button
                       type="submit"
-                      disabled={status === "submitting"}
+                      disabled={
+                        status === "submitting"
+                      }
                       className="group inline-flex items-center gap-2 px-8 py-4 bg-[#0a0a0a] text-[#fafaf7] rounded-full text-sm font-['NeueMontreal'] tracking-wide hover:bg-[#FF6700] hover:text-[#0a0a0a] transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {status === "submitting" ? (
@@ -557,8 +647,7 @@ export default function ContactContent() {
                       max-w-[42ch]
                     "
                   >
-                    Day passes and meeting rooms are self-serve. No enquiry, no
-                    waiting on us.
+                    Day passes and meeting rooms are self-serve. You can book whenever you need them.
                   </p>
 
                   <SweepCTA href="/solutions">
@@ -592,8 +681,7 @@ export default function ContactContent() {
               variants={fadeUp}
               className="mt-6 font-['NeueMontreal'] text-base sm:text-lg text-[#0a0a0a]/60 leading-relaxed max-w-[56ch]"
             >
-              Three addresses across Delhi NCR, no appointment needed. Open a
-              space to see the full tour, hours, and directions.
+              Find The Berry Coworks space near you. Open a space to see our locations, take a tour, and get directions.
             </motion.p>
           </motion.div>
 

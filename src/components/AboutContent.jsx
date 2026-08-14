@@ -457,7 +457,7 @@ export default function AboutContent() {
           <div className="lg:col-span-7">
             <h2 className={`${HEADING_CLS} text-[#0a0a0a] mb-8`}>
               <motion.span variants={lineUp} className="block">
-                Why a <span className="text-[#FF6700]">berry.</span>
+                Why a <span className="text-[#FF6700]">berry?</span>
               </motion.span>
             </h2>
             <motion.p variants={fadeUp} className="font-['NeueMontreal'] text-lg sm:text-xl text-[#0a0a0a]/75 leading-relaxed mb-6">

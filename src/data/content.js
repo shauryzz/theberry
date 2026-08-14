@@ -67,7 +67,7 @@ export const FLEX_OPTIONS = [
   {
     icon: LuCalendarDays,
     name: "Day Pass",
-    desc: "A desk for the day. Walk in, work, leave. No membership, no lock-in.",
+    desc: "A desk for the day, without committing to a membership or long term plan.",
     img:  "/images/open-seating.webp",
   },
   {
@@ -137,7 +137,7 @@ export const ABOUT_STORY = {
   eyebrowless_heading: { lead: "The space we", accent: "wished existed." },
   paragraphs: [
     "Six years ago, if you wanted a well-designed workspace in India, you paid for it heavily. And if you couldn't, you made do with something that got the job done but never quite felt like yours. There was rarely anything in between. Workspace was either a considerable expense or a compromise, and for a generation of founders, freelancers and growing teams, that gap was just something you learned to live with.",
-    "Two designers decided it didn't have to be.",
+    "ONE DESIGNER & ANOTHER ENGINEER DECIDED IT DIDN'T HAVE TO BE!",
     "The Berry Coworks was founded by Parul Jain and Vishesh Kalkhandey, who kept circling back to the same question: why should a well-designed office be out of reach for anyone who wasn't already running a large company? They set out to build exactly that: a workspace shaped by design, but built to run as a serious business from day one.",
   ],
   // The berry metaphor + closing, kept as their own beats.
@@ -195,11 +195,11 @@ export const JOURNEY_SHOTS = {
 // founder + space photography. Deliberately a mix of orientations so the
 // scattered layout reads like a moodboard (see the client's references).
 export const ABOUT_COLLAGE = [
-  "/images/detail-round-table.webp",
-  "/images/detail-carpe-diem.webp",
+  "/images/about-barakhamba.webp",
+  "/images/about-jhandewalan.webp",
   "/images/glass-shelves-2.webp",
-  "/images/people-cafe.webp",
-  "/images/booth-mural.webp",
+  "/images/locations-hero.webp",
+  "/images/about-jhandewalan2.webp",
 ];
 
 // ── The Berry app, feature list + quick-action tiles (AppShowcase.jsx) ──
