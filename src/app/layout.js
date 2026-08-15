@@ -30,7 +30,7 @@ const fontBody = Inter({
 // URLs, and without this Next emits a relative path that WhatsApp, LinkedIn
 // and Slack all silently ignore — the link previews as bare text.
 //
-// SHARE IMAGE: /images/noida-signage.webp
+// SHARE IMAGE: /images/berry-lounge.webp
 //
 // ⚠️ WEBP IS A COMPATIBILITY RISK FOR LINK PREVIEWS. Most scrapers handle it
 // now, but WhatsApp is the historic hold-out and is exactly where these links
@@ -60,14 +60,14 @@ export const metadata = {
     url:         "/",
     locale:      "en_IN",
     images: [
-      { url: "/images/noida-signage.webp", width: 1200, height: 630, alt: SITE.name },
+      { url: "/images/berry-lounge.webp", width: 1200, height: 630, alt: SITE.name },
     ],
   },
   twitter: {
     card:        "summary_large_image",
     title:       `${SITE.name} | ${SITE.tagline}`,
     description: SITE.description,
-    images:      ["/images/noida-signage.webp"],
+    images:      ["/images/berry-lounge.webp"],
   },
   icons: { icon: "/favicon.ico" },
 };

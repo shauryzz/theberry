@@ -118,7 +118,7 @@ export const BOOKING = {
   // this same URL. Both must be changed together or the floating button and
   // the footer will point at different numbers. Consider collapsing this to
   // read from SITE instead.
-  whatsapp: "https://wa.me/911140002726",
+  whatsapp: "https://wa.me/917290811818",
   whatsappMessage: "Hi! I'd like to know more about The Berry Coworks.",
 
   // ── App store links (white-labelled DeskOS app) ─────────────────────────
