@@ -5,7 +5,7 @@ export const SITE = {
   shortName: "The Berry",
 
   // Tagline: short, specific, no filler. Used in <title> tags and hero fallbacks.
-  tagline: "A workspace worth showing up to.",
+  tagline: "Coworking Spaces across Delhi NCR.",
 
   description:
     "Work your way at The Berry Coworks, with spaces for independent professionals, teams and businesses. Choose a desk, a private space or an office that fits what you’re building.",

@@ -232,7 +232,10 @@ const ICONS = {
     </svg>
   ),
 
-  /* ── Power Backup: clock hands spin ── */
+  /* ── 24/7 access: clock hands spin. Kept as-is — this key is also read by
+     content.js's APP_QUICK_ACTIONS ("Hours"), a different concept from
+     power backup, so it isn't touched here. See `battery` below for the
+     Power Backup icon instead. ── */
   access: () => (
     <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={SW} strokeLinecap="round" strokeLinejoin="round">
       <circle cx="24" cy="24" r="14" />
@@ -241,6 +244,21 @@ const ICONS = {
         <line className="ico-clock-hr" x1="24" y1="24" x2="30" y2="24" />
       </g>
       <circle cx="24" cy="24" r="1.4" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+
+  /* ── Power Backup: a plain battery with a "24" face and a bolt breaking
+     out of the top-right corner. The bolt reuses the `.ico-bolt` class
+     (and its flash animation) already defined for the `power` icon above
+     — same visual language, no new CSS needed for it. The backup/restore
+     arc that used to circle this was removed — it read as a stray dot at
+     tile size. ── */
+  battery: () => (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={SW} strokeLinecap="round" strokeLinejoin="round">
+      <path className="ico-bolt" d="M34 9l-6 8h4l-3 7 7-9h-4z" fill="currentColor" fillOpacity="0.12" />
+      <rect x="17" y="21" width="14" height="15" rx="2" />
+      <rect x="21" y="17" width="6" height="4" rx="1" />
+      <text x="24" y="31.5" textAnchor="middle" fontSize="7" fontWeight="700" fill="currentColor" stroke="none">24</text>
     </svg>
   ),
 

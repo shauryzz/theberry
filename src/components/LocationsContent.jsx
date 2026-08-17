@@ -113,11 +113,11 @@ export default function LocationsContent() {
         className="
           relative
           w-full
-          h-[34vh]
-          sm:h-[42vh]
-          md:h-[52vh]
-          min-h-[260px]
-          max-h-[560px]
+          h-[42vh]
+          sm:h-[50vh]
+          md:h-[58vh]
+          min-h-[300px]
+          max-h-[620px]
           overflow-hidden
           bg-[#0a0a0a]/5
         "
@@ -482,7 +482,7 @@ export default function LocationsContent() {
               },
               {
                 label: "Power Backup",
-                icon: "access",
+                icon: "battery",
               },
             ]}
           />

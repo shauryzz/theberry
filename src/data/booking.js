@@ -1,31 +1,38 @@
 // ──────────────────────────────────────────────────────────────────────────
 //  BOOKING — all external booking + action URLs in ONE place.
 //
-//  UPDATED (Nov 2026): Meeting Rooms and Day Pass now route to a SINGLE
-//  universal booking link — https://booking.theberrycoworks.com/ — instead
-//  of per-campus / per-plan DeskOS deep links. The client wants one entry
-//  point site-wide, matching the same decision already made for Meeting
-//  Rooms in Oct 2026, now extended to Day Pass as well.
+//  Real booking platform URLs wired in Oct 2026 from client's spreadsheet.
+//  DOMAIN UPDATED (Nov 2026): berry.deskos.net → booking.theberrycoworks.com
+//  Only the domain changed — every path and ID below is unchanged from the
+//  original spreadsheet and confirmed against the client's updated sheet.
 //
-//  The old berry.deskos.net deep links (campus IDs, plan IDs) are REMOVED
-//  below. Campus IDs kept only as a historical reference in this comment,
-//  in case the client ever asks for per-location links again:
-//    80 = Noida · 81 = Jhandewalan · 82 = Barakhamba (Connaught Place)
+//  URL naming on the booking platform:
+//    /meeting-rooms/berry?campus_id={N}  →  location-scoped meeting-room picker
+//    /day-pass/{campus_id}/{plan_id}     →  specific day-pass plan
+//
+//  Campus IDs (from client spreadsheet):
+//    80 = Noida
+//    81 = Jhandewalan
+//    82 = Barakhamba (Connaught Place)
 //
 //  SELF-SERVICE vs ENQUIRY-ONLY (confirmed with client Oct 2026):
-//    Self-service: Meeting Rooms, Day Pass, Multi Visit Plans — now all via
-//    the universal link below.
+//    Self-service via the booking platform: Meeting Rooms, Day Pass, Multi
+//    Visit Plans.
 //    Everything else (Private Office, Dedicated Desk, Virtual Office) is
 //    enquiry-only → routes to /contact by design.
 //    This is intentional; do NOT re-add placeholder URLs.
+//
+//  PLAN IDS (Aug 2026) — must stay in sync with `id` in data/plans.js:
+//    private-office · dedicated-desk
+//    See the note above `plans` below for what was renamed and why.
 // ──────────────────────────────────────────────────────────────────────────
 
-const UNIVERSAL_BOOKING = "https://booking.theberrycoworks.com/";
+const BOOKING_PLATFORM = "https://booking.theberrycoworks.com";
 
 export const BOOKING = {
   // ── Generic CTAs ────────────────────────────────────────────────────────
   // "Book a Free Tour" buttons across the site → /contact form.
-  // Client confirmed tours are handled through enquiry rather than online booking.
+  // Client confirmed tours are handled through enquiry rather than the booking platform.
   tour: "/contact",
 
   // ── Per-plan × per-location deep links ──────────────────────────────────
@@ -63,10 +70,15 @@ export const BOOKING = {
   },
 
   // ── Meeting Rooms — universal booking link (client decision, Oct 2026) ──
-  // `all` is the ONE link used site-wide. It opens the universal booking
-  // page where the user picks campus + room (Mulberry / Raspberry / Açaí).
+  // `all` is the ONE link used site-wide. It opens the meeting-room picker
+  // where the user chooses campus + room (Mulberry / Raspberry / Açaí).
+  //
+  // The per-campus and per-room deep links from the client's spreadsheet are
+  // deliberately NOT used — the client asked for the universal link only, so
+  // there is a single booking entry point and no link rot when rooms change.
+  // Campus IDs kept here for reference only: 80 Noida · 81 Jhandewalan · 82 Barakhamba.
   meetingRoom: {
-    all: UNIVERSAL_BOOKING,
+    all: `${BOOKING_PLATFORM}/meeting-rooms/berry`,
   },
 
   // ── Virtual Office — enquiry-only, routes to /contact ───────────────────
@@ -76,26 +88,27 @@ export const BOOKING = {
     "noida-sector-142":       null,   // Enquiry-only
   },
 
-  // ── Day Pass bundles — now all point to the universal booking link ─────
-  // (Nov 2026) Every bundle, at every location, opens the same
-  // UNIVERSAL_BOOKING URL. The per-location / per-bundle structure is kept
-  // as-is — DayPassPickerModal reads this shape directly — only the `url`
-  // values changed. Barakhamba has no bundles (day passes not offered).
+  // ── Day Pass bundles — real URLs from client, one entry per bundle ──────
+  // The Solutions page Day Pass card opens a picker modal that renders this
+  // structure. Barakhamba has no bundles (day passes not offered).
+  //
+  // "Monthly" is used for both Jhandewalan's "30 DAYS PLAN" and Noida's
+  // "MONTH PLAN" — same product, normalized label so the modal reads clean.
   dayPassBundles: {
     barakhamba: [],  // Not offered at Barakhamba
     jhandewalan: [
-      { id: "single",   label: "Day Pass",       sub: "1 visit",    url: UNIVERSAL_BOOKING },
-      { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: UNIVERSAL_BOOKING },
-      { id: "visits15", label: "15-Visit Pack",  sub: "15 visits",  url: UNIVERSAL_BOOKING },
-      { id: "monthly",  label: "Monthly Pass",   sub: "30 days",    url: UNIVERSAL_BOOKING },
-      { id: "visits45", label: "45-Visit Pack",  sub: "45 visits",  url: UNIVERSAL_BOOKING },
+      { id: "single",   label: "Day Pass",       sub: "1 visit",    url: `${BOOKING_PLATFORM}/day-pass/81/90` },
+      { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: `${BOOKING_PLATFORM}/day-pass/81/92` },
+      { id: "visits15", label: "15-Visit Pack",  sub: "15 visits",  url: `${BOOKING_PLATFORM}/day-pass/81/93` },
+      { id: "monthly",  label: "Monthly Pass",   sub: "30 days",    url: `${BOOKING_PLATFORM}/day-pass/81/91` },
+      { id: "visits45", label: "45-Visit Pack",  sub: "45 visits",  url: `${BOOKING_PLATFORM}/day-pass/81/94` },
     ],
     "noida-sector-142": [
-      { id: "single",   label: "Day Pass",       sub: "1 visit",    url: UNIVERSAL_BOOKING },
-      { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: UNIVERSAL_BOOKING },
-      { id: "visits15", label: "15-Visit Pack",  sub: "15 visits",  url: UNIVERSAL_BOOKING },
-      { id: "monthly",  label: "Monthly Pass",   sub: "30 days",    url: UNIVERSAL_BOOKING },
-      { id: "visits45", label: "45-Visit Pack",  sub: "45 visits",  url: UNIVERSAL_BOOKING },
+      { id: "single",   label: "Day Pass",       sub: "1 visit",    url: `${BOOKING_PLATFORM}/day-pass/80/85` },
+      { id: "visits10", label: "10-Visit Pack",  sub: "10 visits",  url: `${BOOKING_PLATFORM}/day-pass/80/87` },
+      { id: "visits15", label: "15-Visit Pack",  sub: "15 visits",  url: `${BOOKING_PLATFORM}/day-pass/80/88` },
+      { id: "monthly",  label: "Monthly Pass",   sub: "30 days",    url: `${BOOKING_PLATFORM}/day-pass/80/86` },
+      { id: "visits45", label: "45-Visit Pack",  sub: "45 visits",  url: `${BOOKING_PLATFORM}/day-pass/80/89` },
     ],
   },
 
@@ -111,7 +124,7 @@ export const BOOKING = {
   whatsapp: "https://wa.me/917290811818",
   whatsappMessage: "Hi! I'd like to know more about The Berry Coworks.",
 
-  // ── App store links (white-labelled DeskOS app) ─────────────────────────
+  // ── App store links (white-labelled booking platform app) ──────────────
   appStore:  "https://apps.apple.com/app/the-berry-coworks",                          // PLACEHOLDER
   playStore: "https://play.google.com/store/apps/details?id=com.theberrycoworks.app", // PLACEHOLDER
 };
