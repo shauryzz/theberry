@@ -497,18 +497,111 @@ export default function LocationDetail({ location }) {
             </h2>
           </div>
 
-          {(() => {
-            const visible = PLANS.filter((plan) => plan.availableAt?.includes(location.id));
+                    {(() => {
+            const planItems = PLANS
+              .filter((plan) => plan.availableAt?.includes(location.id))
+              .map((plan) => ({
+                id: plan.id,
+                name: plan.name,
+                tagline: plan.tagline,
+                price: plan.pricing?.[location.id] ?? null,
+                pricePrefix: plan.pricePrefix,
+                priceUnit: plan.priceUnit,
+                bookingUrl: getPlanBookingUrl(plan.id, location.id),
+                forceBookNow: false,
+              }));
 
-            // Card renderer, shared between the grid and single-plan layouts.
-            const renderCard = (plan, i) => {
-              const price       = plan.pricing?.[location.id];
-              const bookingUrl  = getPlanBookingUrl(plan.id, location.id);
-              const isExternal  = isExternalBooking(bookingUrl);
-              const buttonLabel = price !== null && price !== undefined ? "Book Now" : "Get Quote";
+            // Meeting Room + Day Pass — self-service bookables, not part of
+            // PLANS. PLANS only models a single fixed price per seat/desk;
+            // these two have multiple duration/bundle tiers with no one
+            // price to show here, so they render without a price block.
+            // forceBookNow: true because — unlike Private Office / Dedicated
+            // Desk, whose "Book Now" label only appears once a price is
+            // shown even though the link is actually an enquiry — these ARE
+            // genuinely instant-bookable, so the button must say "Book Now"
+            // regardless of the missing price display.
+            // Copy reused verbatim from FLEX_OPTIONS (data/content.js)
+            // rather than invented fresh, so it matches what's already said
+            // about these products elsewhere on the site.
+                        // Client-supplied copy + pricing per location (Nov 2026). Note
+            // the Meeting Room "pricePrefix" is genuinely inconsistent
+            // between locations in what was supplied — Jhandewalan carries
+            // "Starting at", Noida doesn't, despite both being ₹1,199/hr.
+            // Kept exactly as given rather than normalised, since that
+            // might reflect real tiered pricing at Jhandewalan — worth
+            // confirming with the client if it's actually a typo.
+            const BOOKABLES_COPY = {
+              jhandewalan: {
+                dayPass: {
+                  tagline: "A flexible workspace for a day.",
+                  price: 500,
+                  priceUnit: "per day + taxes",
+                  pricePrefix: null,
+                },
+                meetingRoom: {
+                  tagline: "A professional space for meetings and team conversations.",
+                  price: 1199,
+                  priceUnit: "per hour + taxes",
+                  pricePrefix: "Starting at",
+                },
+              },
+              "noida-sector-142": {
+                dayPass: {
+                  tagline: "A flexible workspace for a day.",
+                  price: 500,
+                  priceUnit: "per day + taxes",
+                  pricePrefix: null,
+                },
+                meetingRoom: {
+                  tagline: "A professional space for meetings, presentations and team conversations.",
+                  price: 1199,
+                  priceUnit: "per hour + taxes",
+                  pricePrefix: null,
+                },
+              },
+            };
+
+            const copy = BOOKABLES_COPY[location.id];
+            const bookableItems = [];
+
+            const meetingRoomUrl = BOOKING.meetingRoom[location.id];
+            if (meetingRoomUrl && copy?.meetingRoom) {
+              bookableItems.push({
+                id: "meeting-room",
+                name: "Meeting Room",
+                tagline: copy.meetingRoom.tagline,
+                price: copy.meetingRoom.price,
+                priceUnit: copy.meetingRoom.priceUnit,
+                pricePrefix: copy.meetingRoom.pricePrefix,
+                bookingUrl: meetingRoomUrl,
+                forceBookNow: true,
+              });
+            }
+
+            const dayPassUrl = BOOKING.dayPassBundles[location.id]?.[0]?.url;
+            if (dayPassUrl && copy?.dayPass) {
+              bookableItems.push({
+                id: "day-pass",
+                name: "Day Pass",
+                tagline: copy.dayPass.tagline,
+                price: copy.dayPass.price,
+                priceUnit: copy.dayPass.priceUnit,
+                pricePrefix: copy.dayPass.pricePrefix,
+                bookingUrl: dayPassUrl,
+                forceBookNow: true,
+              });
+            }
+
+            const visible = [...planItems, ...bookableItems];
+
+            // Card renderer, shared across every item type above.
+            const renderCard = (item, i) => {
+              const isExternal  = isExternalBooking(item.bookingUrl);
+              const hasPrice    = item.price !== null && item.price !== undefined;
+              const buttonLabel = item.forceBookNow || hasPrice ? "Book Now" : "Get Quote";
               return (
                 <motion.div
-                  key={plan.id}
+                  key={item.id}
                   variants={cardUp}
                   className="group relative flex flex-col rounded-3xl border border-[#0a0a0a]/10 bg-white overflow-hidden hover:border-[#FF6700]/40 hover:shadow-[0_40px_90px_-45px_rgba(10,10,10,0.35)] transition-all duration-500 p-7 sm:p-9 min-h-[300px]"
                 >
@@ -525,28 +618,28 @@ export default function LocationDetail({ location }) {
                     </span>
                   </div>
                   <h3 className='font-["Founders_Grotesk"] font-bold uppercase text-2xl md:text-3xl tracking-tight leading-[0.95] text-[#0a0a0a] mb-3'>
-                    {plan.name}
+                    {item.name}
                   </h3>
                   <p className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/55 leading-relaxed max-w-[34ch]">
-                    {plan.tagline}
+                    {item.tagline}
                   </p>
                   <div className="flex-1" />
                   <div className="mt-8 pt-6 border-t border-[#0a0a0a]/10">
-                    {price !== null && price !== undefined ? (
+                    {hasPrice ? (
                       <div className="mb-5">
-                        {plan.pricePrefix && (
+                        {item.pricePrefix && (
                           <span className="block font-['Founders_Grotesk'] text-sm text-[#0a0a0a]/45 mb-0.5">
-                            {plan.pricePrefix}
+                            {item.pricePrefix}
                           </span>
                         )}
                         <div className="flex items-baseline gap-1.5">
                           <span className='font-["Founders_Grotesk"] font-bold text-4xl md:text-5xl tracking-tighter text-[#0a0a0a]'>
-                            ₹{price.toLocaleString("en-IN")}
+                            ₹{item.price.toLocaleString("en-IN")}
                           </span>
-                          <span className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/45">{plan.priceUnit}</span>
+                          <span className="font-['NeueMontreal'] text-sm text-[#0a0a0a]/45">{item.priceUnit}</span>
                         </div>
                       </div>
-                    ) : (
+                    ) : item.forceBookNow ? null : (
                       <div className="mb-5">
                         <span className='font-["Founders_Grotesk"] font-bold text-3xl tracking-tighter text-[#0a0a0a]'>
                           Custom quote
@@ -554,14 +647,14 @@ export default function LocationDetail({ location }) {
                       </div>
                     )}
                     {isExternal ? (
-                      <a href={bookingUrl} target="_blank" rel="noopener noreferrer"
+                      <a href={item.bookingUrl} target="_blank" rel="noopener noreferrer"
                         className="group/btn relative flex items-center justify-center gap-2 w-full py-3.5 rounded-full overflow-hidden border border-[#0a0a0a] text-sm font-['NeueMontreal'] tracking-wide">
                         <span aria-hidden="true" className="absolute inset-0 bg-[#0a0a0a] group-hover/btn:bg-[#FF6700] transition-colors duration-300" />
                         <span className="relative text-[#fafaf7] group-hover/btn:text-[#0a0a0a] transition-colors duration-300">{buttonLabel}</span>
                         <LuArrowUpRight className="relative w-4 h-4 text-[#fafaf7] group-hover/btn:text-[#0a0a0a] transition-all duration-300 group-hover/btn:rotate-45" />
                       </a>
                     ) : (
-                      <Link href={bookingUrl}
+                      <Link href={item.bookingUrl}
                         className="group/btn relative flex items-center justify-center gap-2 w-full py-3.5 rounded-full overflow-hidden border border-[#0a0a0a] text-sm font-['NeueMontreal'] tracking-wide">
                         <span aria-hidden="true" className="absolute inset-0 bg-[#0a0a0a] group-hover/btn:bg-[#FF6700] transition-colors duration-300" />
                         <span className="relative text-[#fafaf7] group-hover/btn:text-[#0a0a0a] transition-colors duration-300">{buttonLabel}</span>
@@ -573,9 +666,9 @@ export default function LocationDetail({ location }) {
               );
             };
 
-            // SINGLE PLAN (e.g. Barakhamba): a lone card in a 4-col grid strands
-            // three empty columns. Instead, pair the card with a copy panel so
-            // the row is balanced and the space does real work.
+            // SINGLE ITEM (Barakhamba — no meeting room, no day pass, so this
+            // stays exactly one card): pair it with a copy panel so the row
+            // is balanced instead of stranding three empty columns.
             if (visible.length === 1) {
               return (
                 <motion.div
@@ -612,11 +705,9 @@ export default function LocationDetail({ location }) {
               variants={stagger}
               className={`grid grid-cols-1 sm:grid-cols-2 ${lgCols} gap-4 md:gap-5`}
             >
-              {visible.map((plan, i) => renderCard(plan, i))}
+              {visible.map((item, i) => renderCard(item, i))}
             </motion.div>
 
-            {/* Secondary link sits BELOW the cards, centered — the site never
-                floats a link to the right of a heading. */}
             <motion.div variants={fadeUp} className="mt-10 sm:mt-12 flex justify-center">
               <Link
                 href="/solutions"

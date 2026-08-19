@@ -77,8 +77,18 @@ export const BOOKING = {
   // deliberately NOT used — the client asked for the universal link only, so
   // there is a single booking entry point and no link rot when rooms change.
   // Campus IDs kept here for reference only: 80 Noida · 81 Jhandewalan · 82 Barakhamba.
-  meetingRoom: {
+    meetingRoom: {
     all: `${BOOKING_PLATFORM}/meeting-rooms/berry`,
+
+    // Per-campus deep links — used on each location's own "Book Here"
+    // section, where jumping straight into that campus's room picker beats
+    // sending the visitor to the universal picker and making them choose
+    // the campus again. This does NOT contradict the "universal link only"
+    // decision above `all` — that covers the site-wide Meeting Room CTA
+    // (Solutions page, homepage). These two are additive, location-page-only.
+    barakhamba: null, // Not offered at Barakhamba
+    jhandewalan: `${BOOKING_PLATFORM}/meeting-rooms/berry?campus_id=81`,
+    "noida-sector-142": `${BOOKING_PLATFORM}/meeting-rooms/berry?campus_id=80`,
   },
 
   // ── Virtual Office — enquiry-only, routes to /contact ───────────────────
