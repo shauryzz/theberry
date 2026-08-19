@@ -29,7 +29,7 @@ export const PLANS = [
     id: "private-office",
     name: "Private Office",
     alias: "Also called a private cabin",
-    tagline: "A closed office for your team",
+    tagline: "A closed, furnished office for your team",
     description:
       "A closed, furnished office built for privacy and comfort, ready for your team to move straight in.",
     image: "/images/private-cabin-window.webp",

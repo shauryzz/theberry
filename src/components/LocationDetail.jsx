@@ -585,10 +585,10 @@ export default function LocationDetail({ location }) {
                   {renderCard(visible[0], 0)}
                   <motion.div variants={fadeUp} className="lg:pl-6">
                     <p className="font-['Founders_Grotesk'] text-lg sm:text-xl text-[#fafaf7]/45 mb-4">
-                      One home for your team here
+                      A private office in the heart of Delhi 
                     </p>
                     <p className="font-['NeueMontreal'] text-base sm:text-lg text-[#fafaf7]/70 leading-relaxed max-w-[46ch] mb-8">
-                      This address is a private-office space, built for teams who want a room of their own at {location.label}. Coworking, day passes and meeting rooms live at our other centres.
+                      A dedicated workspace for your team, in one of central Delhi’s most established business districts.
                     </p>
                     <Link
                       href="/solutions"

@@ -23,10 +23,10 @@ export const LOCATIONS = [
       "Set inside Connaught Place, one of Delhi's oldest and busiest commercial circles, Barakhamba puts you a few minutes from some of the city's best-known offices, restaurants and metro connections, right where central Delhi does its business.",
 
     whatsInside:
-      "Barakhamba offers dedicated cabin seats and private cabins, priced at ₹16,500 per seat, both finished with the same care as the rest of the Berry Coworks. A virtual office is available for businesses that want a central Delhi address without a desk attached to it. For meetings, an eight-seater room is available at ₹1,499 an hour, with bundles running from ₹4,999 for four hours to ₹16,999 for twenty. Open seating and day passes aren't offered at this address.",
+      "Barakhamba is a private-office workspace in the heart of central Delhi, built for businesses looking for a dedicated space of their own. Private offices are fully furnished and ready for teams to move in and work comfortably. A virtual office is also available for businesses that want a central Delhi business address without a physical workspace.",
 
     whoItsFor:
-      "Barakhamba suits anyone working out of central Delhi, from a solo professional running a virtual office to a team settling into a private cabin for the long term.",
+      "Barakhamba is built for businesses looking for a private office in central Delhi, whether you’re a small team setting up a dedicated workspace or an established business looking for a long-term office.",
 
     address: {
       line1: "102, First Floor, 27 New Delhi House",
@@ -104,10 +104,10 @@ export const LOCATIONS = [
       "Tucked into Jhandewalan's quieter commercial stretch, this centre sits close to Paharganj and central Delhi's older business lanes, an easy reach for anyone working out of the heart of the city.",
 
     whatsInside:
-      "Jhandewalan offers flexi seating and day passes at ₹500 a day, alongside open seating at ₹8,500 a month and private cabins at ₹11,500 per seat. A virtual office is available for businesses that need an address without a desk, and two seven-seater meeting rooms are on hand at ₹1,199 an hour, with bundles from ₹3,999 for four hours to ₹12,999 for twenty. Flexi seat bundles are also available across 10, 15, 30 and 45 day options, starting at ₹4,599.",
+      "Jhandewalan is a flexible workspace for professionals and teams, with private offices, dedicated desks, day passes and meeting rooms. Whether you need a desk for the day, a workspace for the month or a private office for your team, there’s a setup that fits. Meeting rooms are also available for teams that need a professional space for meetings and conversations.",
 
     whoItsFor:
-      "This centre suits a wide mix of people, professionals dropping by for a single day, and teams that have made it their permanent base.",
+      "Jhandewalan works well for professionals who need a workspace for the day, people looking for a dedicated desk, and teams that want a private office as their regular base.",
 
     address: {
       line1: "1-E/3, First Floor, Block E 1",
@@ -184,10 +184,10 @@ export const LOCATIONS = [
       "Set inside Sector 142's fast-growing business corridor, this centre sits among some of Noida's newer corporate campuses and tech offices, built for teams who need scale close by.",
 
     whatsInside:
-      "Noida, Sector 142 offers the widest range of any address: flexible open seating and dedicated desks at ₹5,500 a month, private cabins at ₹7,500 per seat, and day passes at ₹500 a day. A virtual office covers registration and correspondence, and the meeting room setup runs from an eight-seater at ₹899 an hour to a nine-seater at ₹999, up to a twenty-four person boardroom at ₹2,499. The centre also runs its own DG power backup, casual lounges, and flexi seat bundles starting at ₹3,499.",
+      "Noida, Sector 142 offers a flexible workspace for professionals and teams, with open seating, dedicated desks, private offices and day passes. Meeting rooms are also available for meetings, presentations and team discussions. Day passes are available for professionals who need a workspace for the day. A virtual office is also available for businesses that need a professional address without a physical workspace.",
 
     whoItsFor:
-      "Noida, Sector 142 currently hosts our largest teams and widest range of formats, from a single flexible seat to a full private cabin.",
+      "Noida, Sector 142 works well for professionals who need a flexible workspace, growing teams looking for dedicated desks, and businesses that want a private office as their regular base.",
 
     address: {
       line1: "Vinpar Softech Building, Plot No 15",
